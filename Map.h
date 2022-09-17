@@ -10,8 +10,8 @@ private:
 public:
     Map(int x, int y, char symbol) : x(x), y(y), symbol(symbol) {}
     void drawMap();
-    void printColumns();
-    void printLine();
+    void printVerticalFence();
+    void printHorizontalFence();
 };
 
 
