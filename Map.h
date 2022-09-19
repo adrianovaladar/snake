@@ -13,7 +13,7 @@ private:
 public:
     Map(int x, int y, char symbol) : x(x), y(y), symbol(symbol) {}
     void drawMap();
-    void printVerticalFence();
+    void printVerticalFence(int y);
     void printHorizontalFence();
 };
 
