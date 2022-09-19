@@ -6,18 +6,18 @@
 #include <vector>
 
 Snake::Snake() {
-    std::vector<int> x {4, 3, 2};
-    std::vector<int> y {4, 4, 4};
-    positionsSnake.push_back(x);
-    positionsSnake.push_back(y);
+    positionsSnake.push_back(std::make_pair(4, 4));
+    positionsSnake.push_back(std::make_pair(3, 4));
+    positionsSnake.push_back(std::make_pair(2, 4));
     symbol = 's';
 }
 
-const std::vector<std::vector<int>> &Snake::getPositionsSnake() const {
-    return positionsSnake;
-}
 
 char Snake::getSymbol() const {
     return symbol;
+}
+
+const std::vector<std::pair<int, int>> &Snake::getPositionsSnake() const {
+    return positionsSnake;
 }
 

@@ -7,16 +7,11 @@
 class Snake {
 
 private:
-    std::vector<std::vector<int>> positionsSnake;
+    std::vector<std::pair<int, int>> positionsSnake;
     char symbol {};
 public:
+    const std::vector<std::pair<int, int>> &getPositionsSnake() const;
     char getSymbol() const;
-
-public:
-    const std::vector<std::vector<int>> &getPositionsSnake() const;
-
-
-public:
     explicit Snake();
     void moveUp();
     void moveDown();

@@ -2,7 +2,7 @@
 #include "Map.h"
 
 int main () {
-    Map map(30, 40, '#');
+    Map map(80, 10, '#');
     map.drawMap();
     return 0;
 }
