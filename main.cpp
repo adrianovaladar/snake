@@ -1,6 +1,8 @@
-#include <stdio>
+#include <iostream>
+#include "Map.h"
 
 int main () {
-    std::cout << "Snake game" << std::endl
+    Map map(30, 40, '#');
+    map.drawMap();
     return 0;
 }
