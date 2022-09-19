@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include<bits/stdc++.h>
+#include <chrono>
+#include <thread>
 
 
 void Map::printHorizontalFence() {
@@ -29,11 +31,17 @@ void Map::printVerticalFence(int j) {
 }
 
 void Map::drawMap() {
-    std::cout << "Snake game" << std::endl;
-    printHorizontalFence();
-    for(int j {}; j < y ; j++)
-        printVerticalFence(j);
-    printHorizontalFence();
+    bool gameOver = false;
+    while(!gameOver) {
+        std::cout << "\033[2J\033[1;1H";
+        std::cout << "Snake game" << std::endl;
+        printHorizontalFence();
+        for (int j{}; j < y; j++) {
+            printVerticalFence(j);
+        }
+        printHorizontalFence();
+        std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
+    }
 }
 
 

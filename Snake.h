@@ -15,7 +15,7 @@ public:
     explicit Snake();
     void moveUp();
     void moveDown();
-    void moveRigth();
+    void moveRight();
     void moveLeft();
     void increaseSnake();
 };
