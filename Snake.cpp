@@ -1,7 +1,3 @@
-//
-// Created by Admin on 19/09/2022.
-//
-
 #include "Snake.h"
 #include <vector>
 
@@ -21,10 +17,25 @@ const std::vector<std::pair<int, int>> &Snake::getPositionsSnake() const {
     return positionsSnake;
 }
 
-void Snake::moveRight() {
+void Snake::move(char direction) {
+    std::pair<int, int> previousPosition = positionsSnake.at(0);
     std::vector<std::pair<int, int>>::iterator it = positionsSnake.begin();
-    while(it != positionsSnake.end()) {
-        (*it).first++;
+    if (direction == 'r')
+        positionsSnake.at(0).first++;
+    else if (direction == 'l')
+        positionsSnake.at(0).first--;
+    else if (direction == 'u')
+        positionsSnake.at(0).second--;
+    else if(direction == 'd')
+        positionsSnake.at(0).second++;
+    while (it != positionsSnake.end()) {
+        if (it == positionsSnake.begin()) {
+            it++;
+            continue;
+        }
+        std::pair<int, int> tmp = *it;
+        *it = previousPosition;
+        previousPosition = tmp;
         it++;
     }
 }

@@ -13,17 +13,9 @@ public:
     const std::vector<std::pair<int, int>> &getPositionsSnake() const;
     char getSymbol() const;
     explicit Snake();
-    void moveUp();
-    void moveDown();
-    void moveRight();
-    void moveLeft();
+    void move(char direction);
     void increaseSnake();
 };
 
 
 #endif //SNAKE_SNAKE_H
-/*
- *
- *
- *
- */

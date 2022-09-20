@@ -41,6 +41,7 @@ void Map::drawMap() {
         }
         printHorizontalFence();
         std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
+        snake.move('r');
     }
 }
 
