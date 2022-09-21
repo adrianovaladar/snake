@@ -8,7 +8,7 @@ class Food {
     std::pair<int, int> position;
     char symbol;
 public:
-    void setPosition(const std::pair<int, int> &position);
+    void setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake);
     void setSymbol(char symbol);
     char getSymbol() const;
     explicit Food();
