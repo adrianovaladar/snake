@@ -16,8 +16,8 @@ int main (int argc, char *argv[]) {
         printHelp();
     }
     else {
-        Game map(80, 10, '#');
-        map.drawMap();
+        Game game(80, 10, '#');
+        game.drawMap();
     }
     printBye();
     return 0;
