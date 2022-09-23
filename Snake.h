@@ -14,7 +14,8 @@ public:
     char getSymbol() const;
     explicit Snake();
     void move(char direction);
-    void increaseSnake();
+    void increase();
+    void setSymbol(char symbol);
 };
 
 

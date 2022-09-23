@@ -38,3 +38,7 @@ void Snake::move(char direction) {
         it++;
     }
 }
+
+void Snake::setSymbol(char symbol) {
+    Snake::symbol = symbol;
+}

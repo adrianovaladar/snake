@@ -13,7 +13,7 @@ void Game::printHorizontalFence() {
     std::cout << std::endl;
 }
 
-void Game::printVerticalFence(int j) {
+void Game::printVerticalFenceAndPlayableArea(int j) {
     std::cout << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
@@ -30,7 +30,15 @@ void Game::printVerticalFence(int j) {
 
 }
 
-void Game::drawMap() {
+void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
+    this->x = i;
+    this->y = j;
+    this->symbol = symbolFence;
+    snake.setSymbol(symbolSnake);
+    //food.setSymbol(symbolFood);
+}
+
+void Game::printMap() {
     bool gameOver = false;
     char c = 'r';
     while(!gameOver) {
@@ -38,7 +46,7 @@ void Game::drawMap() {
         std::cout << "Snake game" << std::endl;
         printHorizontalFence();
         for (int j{}; j < y; j++) {
-            printVerticalFence(j);
+            printVerticalFenceAndPlayableArea(j);
         }
         printHorizontalFence();
         std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));

@@ -11,9 +11,10 @@ private:
     char symbol;
     Snake snake;
 public:
-    Game(int x, int y, char symbol) : x(x), y(y), symbol(symbol) {}
-    void drawMap();
-    void printVerticalFence(int y);
+    Game() : x(0), y(0), symbol(0) {}
+    void init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
+    void printMap();
+    void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence();
 };
 
