@@ -8,12 +8,11 @@ Snake::Snake() {
     symbol = 'o';
 }
 
-
 char Snake::getSymbol() const {
     return symbol;
 }
 
-const std::vector<std::pair<int, int>> &Snake::getPositionsSnake() const {
+const std::vector<std::pair<int, int>> &Snake::getPositions() const {
     return positionsSnake;
 }
 
@@ -39,4 +38,3 @@ void Snake::move(char direction) {
         it++;
     }
 }
-

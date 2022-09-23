@@ -4,14 +4,14 @@
 #define SNAKE_MAP_H
 
 
-class Map {
+class Game {
 private:
     int x;
     int y;
     char symbol;
     Snake snake;
 public:
-    Map(int x, int y, char symbol) : x(x), y(y), symbol(symbol) {}
+    Game(int x, int y, char symbol) : x(x), y(y), symbol(symbol) {}
     void drawMap();
     void printVerticalFence(int y);
     void printHorizontalFence();
