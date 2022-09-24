@@ -2,9 +2,9 @@
 #include <vector>
 
 Snake::Snake() {
-    positionsSnake.push_back(std::make_pair(4, 4));
-    positionsSnake.push_back(std::make_pair(3, 4));
-    positionsSnake.push_back(std::make_pair(2, 4));
+    positionsSnake.emplace_back(4, 4);
+    positionsSnake.emplace_back(3, 4);
+    positionsSnake.emplace_back(2, 4);
     symbol = 'o';
 }
 
@@ -18,7 +18,7 @@ const std::vector<std::pair<int, int>> &Snake::getPositions() const {
 
 void Snake::move(char direction) {
     std::pair<int, int> previousPosition = positionsSnake.at(0);
-    std::vector<std::pair<int, int>>::iterator it = positionsSnake.begin();
+    auto it = positionsSnake.begin();
     if (direction == 'r')
         positionsSnake.at(0).first++;
     else if (direction == 'l')
@@ -39,6 +39,6 @@ void Snake::move(char direction) {
     }
 }
 
-void Snake::setSymbol(char symbol) {
-    Snake::symbol = symbol;
+void Snake::setSymbol(char s) {
+    Snake::symbol = s;
 }

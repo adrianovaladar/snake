@@ -15,7 +15,7 @@ public:
     explicit Snake();
     void move(char direction);
     void increase();
-    void setSymbol(char symbol);
+    void setSymbol(char s);
 };
 
 
