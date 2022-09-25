@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include "Food.h"
+#include <ctime>
+
 
 Food::Food() {
     position = std::make_pair(0, 0);
@@ -30,6 +32,7 @@ void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std
     std::vector<std::pair<int, int>>::iterator it;
     bool pos = false;
     do {
+        srand((unsigned) time(0));
         foodPosition.first = std::rand() % sizeMap.first;
         foodPosition.second = std::rand() % sizeMap.second;
         pos = std::binary_search(posSnake.begin(), posSnake.end(), foodPosition);
