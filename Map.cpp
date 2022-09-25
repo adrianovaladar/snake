@@ -20,20 +20,20 @@ void Map::printVerticalFence(int j) {
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
             std::cout << snake.getSymbol();
-        else if (food.getPosition()==pos)
-            std::cout << food.getSymbol();
         else
             std::cout << " ";
     }
     std::cout << symbol;
     std::cout << std::endl;
+
 }
 
 void Map::drawMap() {
     std::cout << "Snake game" << std::endl;
-    food.setPosition(std::make_pair(x, y), snake.getPositionsSnake());
     printHorizontalFence();
     for(int j {}; j < y ; j++)
         printVerticalFence(j);
     printHorizontalFence();
 }
+
+
