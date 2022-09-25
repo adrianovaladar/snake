@@ -10,20 +10,13 @@ private:
     std::vector<std::pair<int, int>> positionsSnake;
     char symbol {};
 public:
-    const std::vector<std::pair<int, int>> &getPositionsSnake() const;
+    const std::vector<std::pair<int, int>> &getPositions() const;
     char getSymbol() const;
     explicit Snake();
-    void moveUp();
-    void moveDown();
-    void moveRigth();
-    void moveLeft();
-    void increaseSnake();
+    void move(char direction);
+    void increase();
+    void setSymbol(char s);
 };
 
 
 #endif //SNAKE_SNAKE_H
-/*
- *
- *
- *
- */
