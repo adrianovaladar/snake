@@ -26,6 +26,8 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
             std::cout << snake.getSymbol();
+        else if (food.getPosition()==pos)
+            std::cout << food.getSymbol();
         else
             std::cout << " ";
     }
@@ -39,12 +41,13 @@ void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     this->y = j;
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
-    //food.setSymbol(symbolFood);
+    food.setSymbol(symbolFood);
 }
 
 void Game::printMap() {
     bool gameOver = false;
     char c = 'r';
+    food.setPosition(std::make_pair(x, y), snake.getPositions());
     while(!gameOver) {
         #ifdef _WIN32
         system("cls");
