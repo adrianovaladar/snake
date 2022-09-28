@@ -41,13 +41,9 @@ bool Game::isGameOver() {
     bool selfCollision {};
     selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1 ? true : false;
     bool fenceCollision {};
-    auto it = snake.getPositions().begin();
-    while (it != snake.getPositions().end()) {
-        if ((*it).first < 0 || (*it).second < 0 || (*it).first > this->x || (*it).second > this->y) {
-            fenceCollision = true;
-            break;
-        }
-        it++;
+    std::pair<int ,int> positionHead = snake.getPositions().at(0);
+    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > this->x-1 || positionHead.second > this->y-1) {
+        fenceCollision = true;
     }
     return selfCollision || fenceCollision;
 }
