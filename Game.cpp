@@ -3,11 +3,7 @@
 #include <vector>
 #include<bits/stdc++.h>
 #include <chrono>
-#ifdef _WIN32
-#include <conio.h>
-#else
 #include "input.h"
-#endif
 
 
 void Game::printHorizontalFence() {
@@ -60,11 +56,7 @@ void Game::printMap() {
     char c = 'r';
     food.setPosition(std::make_pair(x, y), snake.getPositions());
     while(!isGameOver()) {
-        #ifdef _WIN32
-        system("cls");
-        #else
         std::cout << "\033[2J\033[1;1H";
-        #endif
         std::cout << "Snake game" << std::endl;
         printHorizontalFence();
         for (int j{}; j < y; j++) {
