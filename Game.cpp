@@ -32,6 +32,18 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
 
 }
 
+bool Game::isGameOver() {
+    std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
+    bool selfCollision {};
+    selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1 ? true : false;
+    bool fenceCollision {};
+    std::pair<int ,int> positionHead = snake.getPositions().at(0);
+    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > this->x-1 || positionHead.second > this->y-1) {
+        fenceCollision = true;
+    }
+    return selfCollision || fenceCollision;
+}
+
 void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
     this->x = i;
     this->y = j;
@@ -41,10 +53,9 @@ void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
 }
 
 void Game::printMap() {
-    bool gameOver = false;
     char c = 'r';
     food.setPosition(std::make_pair(x, y), snake.getPositions());
-    while(!gameOver) {
+    while(!isGameOver()) {
         std::cout << "\033[2J\033[1;1H";
         std::cout << "Snake game" << std::endl;
         printHorizontalFence();
