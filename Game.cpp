@@ -4,7 +4,7 @@
 #include<bits/stdc++.h>
 #include <chrono>
 #include "input.h"
-
+#include "direction.h"
 
 void Game::printHorizontalFence() {
     for (int i {}; i < x + 2 ; i++) { // +2 because of the first and the last elements
@@ -52,8 +52,39 @@ void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     food.setSymbol(symbolFood);
 }
 
+void Game::readDirectionAndMoveSnake() {
+    char c {};
+    if(_kbhit())
+        c = getchar();
+    switch (tolower(c)) {
+        case 'w': {
+            if (snake.getDirection() != Direction::DOWN)
+                snake.setDirection(Direction::UP);
+            break;
+        }
+        case 'a': {
+            if (snake.getDirection() != Direction::RIGHT)
+                snake.setDirection(Direction::LEFT);
+            break;
+        }
+        case 's': {
+            if (snake.getDirection() != Direction::UP)
+                snake.setDirection(Direction::DOWN);
+            break;
+        }
+        case 'd': {
+            if (snake.getDirection() != Direction::LEFT)
+                snake.setDirection(Direction::RIGHT);
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    snake.move();
+};
+
 void Game::printMap() {
-    char c = 'r';
     food.setPosition(std::make_pair(x, y), snake.getPositions());
     while(!isGameOver()) {
         std::cout << "\033[2J\033[1;1H";
@@ -64,9 +95,7 @@ void Game::printMap() {
         }
         printHorizontalFence();
         std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
-           if(_kbhit())
-               c = getchar();
-        snake.move(c);
+        readDirectionAndMoveSnake();
     }
 }
 
