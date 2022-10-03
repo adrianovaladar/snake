@@ -97,6 +97,28 @@ void Game::printMap() {
         std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
         readDirectionAndMoveSnake();
     }
+    if (isBestScore()) {
+        std::cout << "test" << std::endl;
+    }
 }
 
-
+bool Game::isBestScore() {
+    std::ifstream myFile;
+    myFile.open("best_scores.txt", std::ios::in);
+    std::vector<Player> players {};
+    Player player;
+    int s;
+    std::string n;
+    while (myFile >> s >> n ) {
+        Player p{s, n};
+        players.emplace_back(p);
+    }
+    myFile.close();
+    if (players.size() < sizeBestScores){
+        return true;
+    }
+    if (this->score > players.at(players.size() - 1).getScore()){
+        return true;
+    }
+    return false;
+}
