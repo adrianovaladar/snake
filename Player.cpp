@@ -16,3 +16,7 @@ int Player::getScore() const {
 Player::~Player() {
 
 }
+
+const std::string &Player::getName() const {
+    return name;
+}

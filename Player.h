@@ -11,6 +11,7 @@ public:
     Player(int s, std::string n);
     virtual ~Player();
     int getScore() const;
+    const std::string &getName() const;
 };
 
 #endif //SNAKE_PLAYER_H

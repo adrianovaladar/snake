@@ -19,7 +19,11 @@ private:
     void printHorizontalFence();
     bool isGameOver();
     void readDirectionAndMoveSnake();
-    bool isBestScore();
+    bool isBestScore(std::vector<Player> players);
+    void writeBestScore(std::vector<Player> players);
+    std::vector<Player> readBestScores();
+    void printBestScores(const std::vector<Player> &players);
+
 public:
     Game() : x(0), y(0), symbol(0), score(0), sizeBestScores(5) {};
     void init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
