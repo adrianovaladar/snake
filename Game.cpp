@@ -139,7 +139,20 @@ void Game::writeBestScore(std::vector<Player> players) {
     std::cin >> name;
     Player p {this ->score, name};
     myFile.open("best_scores.txt", std::ios::out);
-    myFile << p.getScore() << " " << p.getName() << std::endl;
+    for (int x {}; x < players.size(); x++) {
+        if (p.getScore() > players.at(x).getScore()) {
+            players.insert(players.begin() + x, p);
+        }
+    }
+    if (players.size() < 5) {
+        players.push_back(p);
+    }
+    else {
+        players.pop_back();
+    }
+    for (auto r : players) {
+        myFile << r.getScore() << " " << r.getName() << std::endl;
+    }
     myFile.close();
 }
 
