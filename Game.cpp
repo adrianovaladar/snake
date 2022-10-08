@@ -50,6 +50,7 @@ void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
     food.setSymbol(symbolFood);
+    food.setPosition(std::make_pair(x, y), snake.getPositions());
 }
 
 void Game::readDirectionAndMoveSnake() {
@@ -84,25 +85,27 @@ void Game::readDirectionAndMoveSnake() {
     snake.move();
 };
 
-void Game::printMap() {
-    food.setPosition(std::make_pair(x, y), snake.getPositions());
-    while(!isGameOver()) {
-        std::cout << "\033[2J\033[1;1H";
-        std::cout << "Snake game" << std::endl;
-        printHorizontalFence();
-        for (int j{}; j < y; j++) {
-            printVerticalFenceAndPlayableArea(j);
+void Game::logic() {
+    std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
+    readDirectionAndMoveSnake();
+    if (isGameOver()) {
+        auto bestScores = readBestScores();
+        if (isBestScore(bestScores)) {
+            writeBestScore(bestScores);
         }
-        printHorizontalFence();
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
-        readDirectionAndMoveSnake();
+        bestScores = readBestScores();
+        printBestScores(bestScores);
     }
-    auto bestScores = readBestScores();
-    if (isBestScore(bestScores)) {
-        writeBestScore(bestScores);
+}
+
+void Game::print() {
+    std::cout << "\033[2J\033[1;1H";
+    std::cout << "Snake game" << std::endl;
+    printHorizontalFence();
+    for (int j{}; j < y; j++) {
+        printVerticalFenceAndPlayableArea(j);
     }
-    bestScores = readBestScores();
-    printBestScores(bestScores);
+    printHorizontalFence();
 }
 
 std::vector<Player> Game::readBestScores() {

@@ -22,7 +22,10 @@ int main (int argc, char *argv[]) {
             game.init(80, 10, '#', 'o', 'f');
         else
             game.init(std::stoi(argv[1]), std::stoi(argv[2]), *argv[3], *argv[4], *argv[5]);
-        game.printMap();
+        while(!game.isGameOver()) {
+            game.print();
+            game.logic();
+        }
     }
     printBye();
     return 0;
