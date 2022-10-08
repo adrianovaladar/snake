@@ -97,6 +97,67 @@ void Game::printMap() {
         std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
         readDirectionAndMoveSnake();
     }
+    auto bestScores = readBestScores();
+    if (isBestScore(bestScores)) {
+        writeBestScore(bestScores);
+    }
+    bestScores = readBestScores();
+    printBestScores(bestScores);
 }
 
+std::vector<Player> Game::readBestScores() {
+    std::ifstream myFile;
+    myFile.open("best_scores.txt", std::ios::in);
+    std::vector<Player> players {};
+    Player player;
+    int s;
+    std::string n;
+    while (myFile >> s >> n ) {
+        Player p{s, n};
+        players.emplace_back(p);
+    }
+    myFile.close();
+    return players;
+}
 
+bool Game::isBestScore(std::vector<Player> players) {
+
+    if (players.size() < sizeBestScores){
+        return true;
+    }
+    if (this->score > players.at(players.size() - 1).getScore()){
+        return true;
+    }
+    return false;
+}
+
+void Game::writeBestScore(std::vector<Player> players) {
+    std::ofstream myFile;
+    std::string name {};
+    std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
+    std::cout << "Please insert your name: ";
+    std::cin >> name;
+    Player p {this ->score, name};
+    myFile.open("best_scores.txt", std::ios::out);
+    for (int x {}; x < players.size(); x++) {
+        if (p.getScore() > players.at(x).getScore()) {
+            players.insert(players.begin() + x, p);
+        }
+    }
+    if (players.size() < 5) {
+        players.push_back(p);
+    }
+    else {
+        players.pop_back();
+    }
+    for (auto r : players) {
+        myFile << r.getScore() << " " << r.getName() << std::endl;
+    }
+    myFile.close();
+}
+
+void Game::printBestScores(const std::vector<Player> &players) {
+    std::cout << "Best scores" << std::endl;
+    for (auto p : players)
+        std::cout << "name: " << p.getName() << " score: " << p.getScore() << std::endl;
+}
