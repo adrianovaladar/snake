@@ -88,6 +88,11 @@ void Game::readDirectionAndMoveSnake() {
 void Game::logic() {
     std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
     readDirectionAndMoveSnake();
+    if (isEatFood()) {
+        snake.increase();
+        score++;
+        food.setPosition(std::make_pair(x, y), snake.getPositions());
+    }
     if (isGameOver()) {
         auto bestScores = readBestScores();
         if (isBestScore(bestScores)) {
@@ -106,6 +111,12 @@ void Game::print() {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
+    std::cout << "Score: " << score << std::endl;
+}
+
+bool Game::isEatFood() {
+    bool isEatFood = snake.getPositions().at(0) == food.getPosition();
+    return isEatFood;
 }
 
 std::vector<Player> Game::readBestScores() {

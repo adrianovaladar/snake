@@ -22,6 +22,7 @@ private:
     void writeBestScore(std::vector<Player> players);
     std::vector<Player> readBestScores();
     void printBestScores(const std::vector<Player> &players);
+    bool isEatFood();
 public:
     bool isGameOver();
     Game() : x(0), y(0), symbol(0), score(0), sizeBestScores(5) {};
