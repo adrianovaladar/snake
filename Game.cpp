@@ -130,6 +130,25 @@ std::vector<Player> Game::readBestScores() {
         Player p{s, n};
         players.emplace_back(p);
     }
+    auto bestScores = readBestScores();
+    if (isBestScore(bestScores)) {
+        writeBestScore(bestScores);
+    }
+    bestScores = readBestScores();
+    printBestScores(bestScores);
+}
+
+std::vector<Player> Game::readBestScores() {
+    std::ifstream myFile;
+    myFile.open("best_scores.txt", std::ios::in);
+    std::vector<Player> players {};
+    Player player;
+    int s;
+    std::string n;
+    while (myFile >> s >> n ) {
+        Player p{s, n};
+        players.emplace_back(p);
+    }
     myFile.close();
     return players;
 }
