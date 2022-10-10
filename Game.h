@@ -17,17 +17,18 @@ private:
     const int sizeBestScores;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence();
-    bool isGameOver();
     void readDirectionAndMoveSnake();
     bool isBestScore(std::vector<Player> players);
     void writeBestScore(std::vector<Player> players);
     std::vector<Player> readBestScores();
     void printBestScores(const std::vector<Player> &players);
-
+    bool isEatFood();
 public:
+    bool isGameOver();
     Game() : x(0), y(0), symbol(0), score(0), sizeBestScores(5) {};
     void init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
-    void printMap();
+    void logic();
+    void print();
 };
 
 #endif //SNAKE_MAP_H
