@@ -1,7 +1,8 @@
 #include "Game.h"
 #include <iostream>
 #include <vector>
-#include<bits/stdc++.h>
+#include <string>
+#include <bits/stdc++.h>
 #include <chrono>
 #include "input.h"
 #include "direction.h"
@@ -149,13 +150,14 @@ void Game::writeBestScore(std::vector<Player> players) {
     std::ofstream myFile;
     std::string name {};
     std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name: ";
+    std::cout << "Please insert your name (max 5 characters): ";
     std::cin >> name;
-    Player p {this ->score, name};
+    Player p {this ->score, name.substr(0, 15)};
     myFile.open("best_scores.txt", std::ios::out);
-    for (int x {}; x < players.size(); x++) {
-        if (p.getScore() > players.at(x).getScore()) {
-            players.insert(players.begin() + x, p);
+    for (int k {}; k < players.size(); k++) {
+        if (p.getScore() > players.at(k).getScore()) {
+            players.insert(players.begin() + k, p);
+            break;
         }
     }
     if (players.size() < 5) {
@@ -171,7 +173,13 @@ void Game::writeBestScore(std::vector<Player> players) {
 }
 
 void Game::printBestScores(const std::vector<Player> &players) {
-    std::cout << "Best scores" << std::endl;
-    for (auto p : players)
-        std::cout << "name: " << p.getName() << " score: " << p.getScore() << std::endl;
+    std::cout << std::endl;
+    std::cout << std::setw(25) << "BEST SCORES" << std::endl << std::endl;
+    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME " << std::setw(15+1) << "SCORE" << std::endl; //
+    int r{1};
+    for (auto p : players) {
+        std::cout << std::setw(8) << r << std::setw(15+1) << p.getName() << std::setw(15+1) << p.getScore() << std::endl;
+        r++;
+    }
+    std::cout << std::endl;
 }
