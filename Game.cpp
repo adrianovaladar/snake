@@ -45,12 +45,15 @@ bool Game::isGameOver() {
     return selfCollision || fenceCollision;
 }
 
-void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
+bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
+    if (i < 10 || j < 5)
+        return false;
     size = std::make_pair(i, j);
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
     food.setSymbol(symbolFood);
     food.setPosition(std::make_pair(i, j), snake.getPositions());
+    return true;
 }
 
 void Game::readDirectionAndMoveSnake() {

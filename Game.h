@@ -26,7 +26,7 @@ public:
     Game() : size(0 ,0), symbol(0), score(0), sizeBestScores(5) {};
     virtual ~Game();
     bool isGameOver();
-    void init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
+    bool init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
     void logic();
     void print();
 };
