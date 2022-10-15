@@ -53,3 +53,7 @@ void Snake::setDirection(Direction direction) {
 void Snake::increase() {
     positionsSnake.emplace_back(std::make_pair(-1, -1));
 }
+
+Snake::~Snake() {
+
+}

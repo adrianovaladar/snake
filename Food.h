@@ -8,12 +8,12 @@ class Food {
     std::pair<int, int> position;
     char symbol;
 public:
+    explicit Food();
+    virtual ~Food();
     void setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake);
     void setSymbol(char symbol);
     char getSymbol() const;
-    explicit Food();
     const std::pair<int, int> &getPosition() const;
-    virtual ~Food();
 };
 
 

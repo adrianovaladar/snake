@@ -11,11 +11,12 @@ private:
     char symbol {};
     Direction direction;
 public:
+    explicit Snake();
+    virtual ~Snake();
     const std::vector<std::pair<int, int>> &getPositions() const;
     Direction getDirection() const;
     void setDirection(Direction direction);
     char getSymbol() const;
-    explicit Snake();
     void move();
     void increase();
     void setSymbol(char s);

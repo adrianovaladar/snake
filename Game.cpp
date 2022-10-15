@@ -8,7 +8,7 @@
 #include "direction.h"
 
 void Game::printHorizontalFence() {
-    for (int i {}; i < x + 2 ; i++) { // +2 because of the first and the last elements
+    for (int i {}; i < size.first + 2 ; i++) { // +2 because of the first and the last elements
         std::cout << symbol;
     }
     std::cout << std::endl;
@@ -18,7 +18,7 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
     std::cout << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
-    for(int i {}; i < x ; i++) {
+    for(int i {}; i < size.first ; i++) {
         std::pair<int, int> pos = std::make_pair(i, j);
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
@@ -39,19 +39,18 @@ bool Game::isGameOver() {
     selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1 ? true : false;
     bool fenceCollision {};
     std::pair<int ,int> positionHead = snake.getPositions().at(0);
-    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > this->x-1 || positionHead.second > this->y-1) {
+    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
         fenceCollision = true;
     }
     return selfCollision || fenceCollision;
 }
 
 void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
-    this->x = i;
-    this->y = j;
+    size = std::make_pair(i, j);
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
     food.setSymbol(symbolFood);
-    food.setPosition(std::make_pair(x, y), snake.getPositions());
+    food.setPosition(std::make_pair(i, j), snake.getPositions());
 }
 
 void Game::readDirectionAndMoveSnake() {
@@ -92,7 +91,7 @@ void Game::logic() {
     if (isEatFood()) {
         snake.increase();
         score++;
-        food.setPosition(std::make_pair(x, y), snake.getPositions());
+        food.setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
         auto bestScores = readBestScores();
@@ -108,7 +107,7 @@ void Game::print() {
     std::cout << "\033[2J\033[1;1H";
     std::cout << "Snake game" << std::endl;
     printHorizontalFence();
-    for (int j{}; j < y; j++) {
+    for (int j{}; j < this->size.second; j++) {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
@@ -175,11 +174,15 @@ void Game::writeBestScore(std::vector<Player> players) {
 void Game::printBestScores(const std::vector<Player> &players) {
     std::cout << std::endl;
     std::cout << std::setw(25) << "BEST SCORES" << std::endl << std::endl;
-    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME " << std::setw(15+1) << "SCORE" << std::endl; //
-    int r{1};
+    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME " << std::setw(15+1) << "SCORE" << std::endl;
+    int r {1};
     for (auto p : players) {
         std::cout << std::setw(8) << r << std::setw(15+1) << p.getName() << std::setw(15+1) << p.getScore() << std::endl;
         r++;
     }
     std::cout << std::endl;
+}
+
+Game::~Game() {
+
 }

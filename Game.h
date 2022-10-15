@@ -8,8 +8,7 @@
 
 class Game {
 private:
-    int x;
-    int y;
+    std::pair<int, int> size;
     char symbol;
     Snake snake;
     Food food;
@@ -24,8 +23,9 @@ private:
     void printBestScores(const std::vector<Player> &players);
     bool isEatFood();
 public:
+    Game() : size(0 ,0), symbol(0), score(0), sizeBestScores(5) {};
+    virtual ~Game();
     bool isGameOver();
-    Game() : x(0), y(0), symbol(0), score(0), sizeBestScores(5) {};
     void init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
     void logic();
     void print();
