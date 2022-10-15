@@ -1,5 +1,5 @@
 # snake
-Snake game for unix terminals
+Snake game for unix terminals developed in C++ 17
 
 To run it, just insert no parameters (./snake) or insert as following: sizeX sizeY symbolFence symbolSnake symbolFood (example: ./snake 20 20 x y z)
 
