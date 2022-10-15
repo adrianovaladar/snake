@@ -11,9 +11,9 @@ public:
     explicit Food();
     virtual ~Food();
     void setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake);
-    void setSymbol(char symbol);
-    char getSymbol() const;
-    const std::pair<int, int> &getPosition() const;
+    void setSymbol(char s);
+    [[nodiscard]] char getSymbol() const;
+    [[nodiscard]] const std::pair<int, int> &getPosition() const;
 };
 
 

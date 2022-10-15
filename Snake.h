@@ -2,7 +2,7 @@
 #define SNAKE_SNAKE_H
 
 #include <vector>
-#include "direction.h"
+#include "Direction.h"
 
 class Snake {
 
@@ -13,10 +13,10 @@ private:
 public:
     explicit Snake();
     virtual ~Snake();
-    const std::vector<std::pair<int, int>> &getPositions() const;
-    Direction getDirection() const;
-    void setDirection(Direction direction);
-    char getSymbol() const;
+    [[nodiscard]] const std::vector<std::pair<int, int>> &getPositions() const;
+    [[nodiscard]] Direction getDirection() const;
+    void setDirection(Direction d);
+    [[nodiscard]] char getSymbol() const;
     void move();
     void increase();
     void setSymbol(char s);

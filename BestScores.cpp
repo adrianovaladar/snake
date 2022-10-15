@@ -1,4 +1,3 @@
-#include <sstream>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -6,7 +5,7 @@
 
 BestScores::~BestScores() {}
 
-void BestScores::setNameFile(const std::pair<int, int> sizeGame) {
+void BestScores::setNameFile(const std::pair<int, int> &sizeGame) {
     std::stringstream nf;
     nf << "best_scores_" << sizeGame.first << "_" << sizeGame.second << ".txt";
     this->nameFile = nf.str();
@@ -39,7 +38,7 @@ void BestScores::updateAndWrite(int score) {
             break;
         }
     }
-    if (players.size() < 5) {
+    if (players.size() < this->size) {
         players.push_back(p);
     }
     else {

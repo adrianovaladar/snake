@@ -5,9 +5,9 @@
 #include <bits/stdc++.h>
 #include <chrono>
 #include "input.h"
-#include "direction.h"
+#include "Direction.h"
 
-void Game::printHorizontalFence() {
+void Game::printHorizontalFence() const {
     for (int i {}; i < size.first + 2 ; i++) { // +2 because of the first and the last elements
         std::cout << symbol;
     }
@@ -35,8 +35,7 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
 
 bool Game::isGameOver() {
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
-    bool selfCollision {};
-    selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1 ? true : false;
+    bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
     bool fenceCollision {};
     std::pair<int ,int> positionHead = snake.getPositions().at(0);
     if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
@@ -87,7 +86,7 @@ void Game::readDirectionAndMoveSnake() {
         }
     }
     snake.move();
-};
+}
 
 void Game::logic() {
     std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
@@ -122,7 +121,4 @@ bool Game::isEatFood() {
     return isEatFood;
 }
 
-Game::~Game() {
-
-}
-
+Game::~Game() = default;

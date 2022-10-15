@@ -12,7 +12,7 @@ class BestScores {
 public:
     explicit BestScores() : size(5) {};
     virtual ~BestScores();
-    void setNameFile(const std::pair<int, int> sizeGame);
+    void setNameFile(const std::pair<int, int> &sizeGame);
     void read();
     void updateAndWrite(int score);
     bool isBestScore(int score);

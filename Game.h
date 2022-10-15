@@ -16,7 +16,7 @@ private:
     char symbol;
     int score;
     void printVerticalFenceAndPlayableArea(int y);
-    void printHorizontalFence();
+    void printHorizontalFence() const;
     void readDirectionAndMoveSnake();
     bool isEatFood();
 public:
