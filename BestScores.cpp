@@ -32,16 +32,18 @@ void BestScores::updateAndWrite(int score) {
     std::cin >> name;
     Player p {score, name.substr(0, 15)};
     myFile.open(nameFile, std::ios::out);
+    bool inserted = false;
     for (int k {}; k < players.size(); k++) {
         if (p.getScore() > players.at(k).getScore()) {
             players.insert(players.begin() + k, p);
+            inserted = true;
             break;
         }
     }
-    if (players.size() < this->size) {
+    if (!inserted && players.size() < this->size) {
         players.push_back(p);
     }
-    else {
+    else if (players.size() > this->size) {
         players.pop_back();
     }
     for (auto r : players) {
