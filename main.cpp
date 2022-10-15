@@ -5,7 +5,7 @@ void printHelp() {
     std::cout << "To run this game, please insert no parameters or insert them as following:" << std::endl;
     std::cout << "sizeX sizeY symbolFence symbolSnake symbolFood" << std::endl;
     std::cout << "Minimum for sixeX and sixeY is 10 and 5 respectively" << std::endl;
-    std::cout << std::endl;
+    std::cout << "Default values: 80 20 # o f" << std::endl;
 }
 
 void printBye() {
@@ -21,7 +21,7 @@ int main (int argc, char *argv[]) {
         Game game {};
         bool isGameOk {};
         if (argc == 1)
-            isGameOk = game.init(80, 10, '#', 'o', 'f');
+            isGameOk = game.init(80, 20, '#', 'o', 'f');
         else
             isGameOk = game.init(std::stoi(argv[1]), std::stoi(argv[2]), *argv[3], *argv[4], *argv[5]);
         if (isGameOk) {

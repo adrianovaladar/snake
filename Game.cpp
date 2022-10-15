@@ -89,7 +89,7 @@ void Game::readDirectionAndMoveSnake() {
 }
 
 void Game::logic() {
-    std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
+    std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));
     readDirectionAndMoveSnake();
     if (isEatFood()) {
         snake.increase();
