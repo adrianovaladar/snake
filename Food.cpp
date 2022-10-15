@@ -29,6 +29,7 @@ void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std
 
     std::pair<int, int> foodPosition;
     std::vector<std::pair<int, int>> posSnake = positionsSnake;
+    std::sort(posSnake.begin(), posSnake.end());
     std::vector<std::pair<int, int>>::iterator it;
     bool pos = false;
     do {
