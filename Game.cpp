@@ -53,6 +53,7 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     snake.setSymbol(symbolSnake);
     food.setSymbol(symbolFood);
     food.setPosition(std::make_pair(i, j), snake.getPositions());
+    bestScores.setNameFile(size);
     return true;
 }
 
@@ -97,12 +98,11 @@ void Game::logic() {
         food.setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
-        auto bestScores = readBestScores();
-        if (isBestScore(bestScores)) {
-            writeBestScore(bestScores);
+        bestScores.read();
+        if (bestScores.isBestScore(score) ) {
+            bestScores.updateAndWrite(score);
         }
-        bestScores = readBestScores();
-        printBestScores(bestScores);
+        bestScores.print();
     }
 }
 
@@ -120,70 +120,6 @@ void Game::print() {
 bool Game::isEatFood() {
     bool isEatFood = snake.getPositions().at(0) == food.getPosition();
     return isEatFood;
-}
-
-std::vector<Player> Game::readBestScores() {
-    std::ifstream myFile;
-    myFile.open("best_scores.txt", std::ios::in);
-    std::vector<Player> players {};
-    Player player;
-    int s;
-    std::string n;
-    while (myFile >> s >> n ) {
-        Player p{s, n};
-        players.emplace_back(p);
-    }
-    myFile.close();
-    return players;
-}
-
-bool Game::isBestScore(std::vector<Player> players) {
-
-    if (players.size() < sizeBestScores){
-        return true;
-    }
-    if (this->score > players.at(players.size() - 1).getScore()){
-        return true;
-    }
-    return false;
-}
-
-void Game::writeBestScore(std::vector<Player> players) {
-    std::ofstream myFile;
-    std::string name {};
-    std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name (max 5 characters): ";
-    std::cin >> name;
-    Player p {this ->score, name.substr(0, 15)};
-    myFile.open("best_scores.txt", std::ios::out);
-    for (int k {}; k < players.size(); k++) {
-        if (p.getScore() > players.at(k).getScore()) {
-            players.insert(players.begin() + k, p);
-            break;
-        }
-    }
-    if (players.size() < 5) {
-        players.push_back(p);
-    }
-    else {
-        players.pop_back();
-    }
-    for (auto r : players) {
-        myFile << r.getScore() << " " << r.getName() << std::endl;
-    }
-    myFile.close();
-}
-
-void Game::printBestScores(const std::vector<Player> &players) {
-    std::cout << std::endl;
-    std::cout << std::setw(25) << "BEST SCORES" << std::endl << std::endl;
-    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME " << std::setw(15+1) << "SCORE" << std::endl;
-    int r {1};
-    for (auto p : players) {
-        std::cout << std::setw(8) << r << std::setw(15+1) << p.getName() << std::setw(15+1) << p.getScore() << std::endl;
-        r++;
-    }
-    std::cout << std::endl;
 }
 
 Game::~Game() {
