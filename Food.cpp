@@ -9,9 +9,7 @@ Food::Food() {
     position = std::make_pair(0, 0);
 }
 
-Food::~Food() {
-
-}
+Food::~Food() = default;
 
 char Food::getSymbol() const {
     return symbol;
@@ -21,22 +19,22 @@ const std::pair<int, int> &Food::getPosition() const {
     return position;
 }
 
-void Food::setSymbol(char symbol) {
-    Food::symbol = symbol;
+void Food::setSymbol(char s) {
+    Food::symbol = s;
 }
 
 void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake) {
 
     std::pair<int, int> foodPosition;
     std::vector<std::pair<int, int>> posSnake = positionsSnake;
-    std::vector<std::pair<int, int>>::iterator it;
-    bool pos = false;
+    std::sort(posSnake.begin(), posSnake.end());
+    bool isSnakePosition;
     do {
-        srand((unsigned) time(0));
+        srand( time(nullptr));
         foodPosition.first = std::rand() % sizeMap.first;
         foodPosition.second = std::rand() % sizeMap.second;
-        pos = std::binary_search(posSnake.begin(), posSnake.end(), foodPosition);
-    } while (pos);
+        isSnakePosition = std::binary_search(posSnake.begin(), posSnake.end(), foodPosition);
+    } while (isSnakePosition);
 
     this->position = foodPosition;
 

@@ -46,10 +46,12 @@ Direction Snake::getDirection() const {
     return direction;
 }
 
-void Snake::setDirection(Direction direction) {
-    Snake::direction = direction;
+void Snake::setDirection(Direction d) {
+    Snake::direction = d;
 }
 
 void Snake::increase() {
     positionsSnake.emplace_back(std::make_pair(-1, -1));
 }
+
+Snake::~Snake() = default;

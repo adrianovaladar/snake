@@ -5,10 +5,10 @@
 #include <bits/stdc++.h>
 #include <chrono>
 #include "input.h"
-#include "direction.h"
+#include "Direction.h"
 
-void Game::printHorizontalFence() {
-    for (int i {}; i < x + 2 ; i++) { // +2 because of the first and the last elements
+void Game::printHorizontalFence() const {
+    for (int i {}; i < size.first + 2 ; i++) { // +2 because of the first and the last elements
         std::cout << symbol;
     }
     std::cout << std::endl;
@@ -18,7 +18,7 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
     std::cout << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
-    for(int i {}; i < x ; i++) {
+    for(int i {}; i < size.first ; i++) {
         std::pair<int, int> pos = std::make_pair(i, j);
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
@@ -35,23 +35,25 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
 
 bool Game::isGameOver() {
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
-    bool selfCollision {};
-    selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1 ? true : false;
+    bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
     bool fenceCollision {};
     std::pair<int ,int> positionHead = snake.getPositions().at(0);
-    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > this->x-1 || positionHead.second > this->y-1) {
+    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
         fenceCollision = true;
     }
     return selfCollision || fenceCollision;
 }
 
-void Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
-    this->x = i;
-    this->y = j;
+bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
+    if (i < 10 || j < 5)
+        return false;
+    size = std::make_pair(i, j);
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
     food.setSymbol(symbolFood);
-    food.setPosition(std::make_pair(x, y), snake.getPositions());
+    food.setPosition(std::make_pair(i, j), snake.getPositions());
+    bestScores.setNameFile(size);
+    return true;
 }
 
 void Game::readDirectionAndMoveSnake() {
@@ -84,23 +86,22 @@ void Game::readDirectionAndMoveSnake() {
         }
     }
     snake.move();
-};
+}
 
 void Game::logic() {
-    std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
+    std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));
     readDirectionAndMoveSnake();
     if (isEatFood()) {
         snake.increase();
         score++;
-        food.setPosition(std::make_pair(x, y), snake.getPositions());
+        food.setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
-        auto bestScores = readBestScores();
-        if (isBestScore(bestScores)) {
-            writeBestScore(bestScores);
+        bestScores.read();
+        if (bestScores.isBestScore(score) ) {
+            bestScores.updateAndWrite(score);
         }
-        bestScores = readBestScores();
-        printBestScores(bestScores);
+        bestScores.print();
     }
 }
 
@@ -108,7 +109,7 @@ void Game::print() {
     std::cout << "\033[2J\033[1;1H";
     std::cout << "Snake game" << std::endl;
     printHorizontalFence();
-    for (int j{}; j < y; j++) {
+    for (int j{}; j < this->size.second; j++) {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
@@ -120,66 +121,4 @@ bool Game::isEatFood() {
     return isEatFood;
 }
 
-std::vector<Player> Game::readBestScores() {
-    std::ifstream myFile;
-    myFile.open("best_scores.txt", std::ios::in);
-    std::vector<Player> players {};
-    Player player;
-    int s;
-    std::string n;
-    while (myFile >> s >> n ) {
-        Player p{s, n};
-        players.emplace_back(p);
-    }
-    myFile.close();
-    return players;
-}
-
-bool Game::isBestScore(std::vector<Player> players) {
-
-    if (players.size() < sizeBestScores){
-        return true;
-    }
-    if (this->score > players.at(players.size() - 1).getScore()){
-        return true;
-    }
-    return false;
-}
-
-void Game::writeBestScore(std::vector<Player> players) {
-    std::ofstream myFile;
-    std::string name {};
-    std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name (max 5 characters): ";
-    std::cin >> name;
-    Player p {this ->score, name.substr(0, 15)};
-    myFile.open("best_scores.txt", std::ios::out);
-    for (int k {}; k < players.size(); k++) {
-        if (p.getScore() > players.at(k).getScore()) {
-            players.insert(players.begin() + k, p);
-            break;
-        }
-    }
-    if (players.size() < 5) {
-        players.push_back(p);
-    }
-    else {
-        players.pop_back();
-    }
-    for (auto r : players) {
-        myFile << r.getScore() << " " << r.getName() << std::endl;
-    }
-    myFile.close();
-}
-
-void Game::printBestScores(const std::vector<Player> &players) {
-    std::cout << std::endl;
-    std::cout << std::setw(25) << "BEST SCORES" << std::endl << std::endl;
-    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME " << std::setw(15+1) << "SCORE" << std::endl; //
-    int r{1};
-    for (auto p : players) {
-        std::cout << std::setw(8) << r << std::setw(15+1) << p.getName() << std::setw(15+1) << p.getScore() << std::endl;
-        r++;
-    }
-    std::cout << std::endl;
-}
+Game::~Game() = default;
