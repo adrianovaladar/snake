@@ -28,7 +28,7 @@ void BestScores::updateAndWrite(int score) {
     std::ofstream myFile;
     std::string name {};
     std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name (max 5 characters): ";
+    std::cout << "Please insert your name (max 15 characters): ";
     std::cin >> name;
     Player p {score, name.substr(0, 15)};
     myFile.open(nameFile, std::ios::out);
