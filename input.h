@@ -1,7 +1,7 @@
 #ifndef SNAKE_INPUT_H
 #define SNAKE_INPUT_H
-int morePortable();
-int _kbhit(void);
-
+void enable_raw_mode();
+void disable_raw_mode();
+bool _kbhit();
 
 #endif //SNAKE_INPUT_H

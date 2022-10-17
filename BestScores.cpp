@@ -26,10 +26,17 @@ void BestScores::read() {
 
 void BestScores::updateAndWrite(int score) {
     std::ofstream myFile;
+    std::string n {};
     std::string name {};
     std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name (max 15 characters): ";
-    std::cin >> name;
+    std::cout << "Please insert your name (max 15 characters and only alphanumerical): ";
+    std:: cin >> n;
+    for (int i = 0 ; i < n.size(); i++) {
+        if (std::isalnum(n.at(i)))
+            name += n.at(i);
+    }
+    if (name.empty())
+        name = "guest";
     Player p {score, name.substr(0, 15)};
     myFile.open(nameFile, std::ios::out);
     bool inserted = false;
@@ -66,7 +73,7 @@ bool BestScores::isBestScore(int score) {
 void BestScores::print() {
     std::cout << std::endl;
     std::cout << std::setw(25) << "BEST SCORES" << std::endl << std::endl;
-    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME " << std::setw(15+1) << "SCORE" << std::endl;
+    std::cout <<  std::setw(8) << "POSITION" << std::setw(15+1) << "NAME" << std::setw(15+1) << "SCORE" << std::endl;
     int r {1};
     for (auto p : players) {
         std::cout << std::setw(8) << r << std::setw(15+1) << p.getName() << std::setw(15+1) << p.getScore() << std::endl;

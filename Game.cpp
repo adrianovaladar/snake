@@ -53,6 +53,7 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     food.setSymbol(symbolFood);
     food.setPosition(std::make_pair(i, j), snake.getPositions());
     bestScores.setNameFile(size);
+    enable_raw_mode();
     return true;
 }
 
@@ -97,6 +98,7 @@ void Game::logic() {
         food.setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
+        disable_raw_mode();
         bestScores.read();
         if (bestScores.isBestScore(score) ) {
             bestScores.updateAndWrite(score);

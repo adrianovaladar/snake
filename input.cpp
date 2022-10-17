@@ -1,38 +1,27 @@
-#include<bits/stdc++.h>
-#include <chrono>
 #include <termios.h>
+#include <sys/ioctl.h>
 
-/* http://www.flipcode.com/archives/_kbhit_for_Linux.shtml */
-int morePortable() {
-    struct timeval timeout;
-    fd_set rdset;
+// https://stackoverflow.com/questions/29335758/using-kbhit-and-getch-on-linux
 
-    FD_ZERO(&rdset);
-    FD_SET(STDIN_FILENO, &rdset);
-    timeout.tv_sec  = 0;
-    timeout.tv_usec = 0;
-
-    return select(STDOUT_FILENO, &rdset, NULL, NULL, &timeout);
+void enable_raw_mode()
+{
+    termios term;
+    tcgetattr(0, &term);
+    term.c_lflag &= ~(ICANON | ECHO); // Disable echo as well
+    tcsetattr(0, TCSANOW, &term);
 }
 
-int _kbhit(void) {
-    static int initialized = 0;
+void disable_raw_mode()
+{
+    termios term;
+    tcgetattr(0, &term);
+    term.c_lflag |= ICANON | ECHO;
+    tcsetattr(0, TCSANOW, &term);
+}
 
-    if (! initialized) {
-        // Use termios to turn off line buffering
-        struct termios term;
-        tcgetattr(STDIN_FILENO, &term);
-        term.c_lflag &= ~ICANON;
-        tcsetattr(STDIN_FILENO, TCSANOW, &term);
-        setbuf(stdin, NULL);
-        initialized = 1;
-    }
-
-#if 0
-    int bytesWaiting;
-    ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
-    return bytesWaiting;
-#else
-    return morePortable();
-#endif
+bool _kbhit()
+{
+    int byteswaiting;
+    ioctl(0, FIONREAD, &byteswaiting);
+    return byteswaiting > 0;
 }
