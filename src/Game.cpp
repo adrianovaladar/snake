@@ -59,7 +59,7 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
 
 void Game::readDirectionAndMoveSnake() {
     char c {};
-    if(_kbhit())
+    if(kbhit())
         c = getchar();
     switch (tolower(c)) {
         case 'w': {

@@ -2,6 +2,6 @@
 #define SNAKE_INPUT_H
 void enable_raw_mode();
 void disable_raw_mode();
-bool _kbhit();
+bool kbhit();
 
 #endif //SNAKE_INPUT_H
