@@ -1,5 +1,5 @@
-#include <iostream>
 #include "Game.h"
+#include <iostream>
 
 void printHelp() {
     std::cout << "To run this game, please insert no parameters or insert them as following:" << std::endl;
@@ -14,13 +14,12 @@ void printBye() {
     std::cout << "Game developed by Adriano Valadar and Rogério Lopes" << std::endl;
 }
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     if (argc != 1 && argc != 6) {
         printHelp();
-    }
-    else {
-        Game game {};
-        bool isGameOk {};
+    } else {
+        Game game{};
+        bool isGameOk{};
         if (argc == 1)
             isGameOk = game.init(80, 20, '#', 'o', 'f');
         else
@@ -30,8 +29,7 @@ int main (int argc, char *argv[]) {
                 game.print();
                 game.logic();
             }
-        }
-        else
+        } else
             printHelp();
     }
     printBye();

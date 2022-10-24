@@ -1,7 +1,7 @@
 #include "Snake.h"
 #include <vector>
 
-Snake::Snake() : symbol {'o'}, direction {Direction::RIGHT} {
+Snake::Snake() : symbol{'o'}, direction{Direction::RIGHT} {
     positionsSnake.emplace_back(4, 4);
     positionsSnake.emplace_back(3, 4);
     positionsSnake.emplace_back(2, 4);
@@ -24,7 +24,7 @@ void Snake::move() {
         positionsSnake.at(0).first--;
     else if (direction == Direction::UP)
         positionsSnake.at(0).second--;
-    else if(direction == Direction::DOWN)
+    else if (direction == Direction::DOWN)
         positionsSnake.at(0).second++;
     while (it != positionsSnake.end()) {
         if (it == positionsSnake.begin()) {

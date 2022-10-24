@@ -1,14 +1,14 @@
 #include "Game.h"
-#include <iostream>
-#include <vector>
-#include <string>
+#include "Direction.h"
+#include "input.h"
 #include <bits/stdc++.h>
 #include <chrono>
-#include "input.h"
-#include "Direction.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
 void Game::printHorizontalFence() const {
-    for (int i {}; i < size.first + 2 ; i++) { // +2 because of the first and the last elements
+    for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
         std::cout << symbol;
     }
     std::cout << std::endl;
@@ -18,26 +18,25 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
     std::cout << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
-    for(int i {}; i < size.first ; i++) {
+    for (int i{}; i < size.first; i++) {
         std::pair<int, int> pos = std::make_pair(i, j);
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
             std::cout << snake.getSymbol();
-        else if (food.getPosition()==pos)
+        else if (food.getPosition() == pos)
             std::cout << food.getSymbol();
         else
             std::cout << " ";
     }
     std::cout << symbol;
     std::cout << std::endl;
-
 }
 
 bool Game::isGameOver() {
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
-    bool fenceCollision {};
-    std::pair<int ,int> positionHead = snake.getPositions().at(0);
+    bool fenceCollision{};
+    std::pair<int, int> positionHead = snake.getPositions().at(0);
     if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
         fenceCollision = true;
     }
@@ -58,8 +57,8 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
 }
 
 void Game::readDirectionAndMoveSnake() {
-    char c {};
-    if(kbhit())
+    char c{};
+    if (kbhit())
         c = getchar();
     switch (tolower(c)) {
         case 'w': {
@@ -100,7 +99,7 @@ void Game::logic() {
     if (isGameOver()) {
         disable_raw_mode();
         bestScores.read();
-        if (bestScores.isBestScore(score) ) {
+        if (bestScores.isBestScore(score)) {
             bestScores.updateAndWrite(score);
         }
         bestScores.print();

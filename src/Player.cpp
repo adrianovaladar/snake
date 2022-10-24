@@ -4,8 +4,7 @@
 
 Player::Player() = default;
 
-Player::Player(int s, std::string n) : score(s), name(std::move(n)){
-
+Player::Player(int s, std::string n) : score(s), name(std::move(n)) {
 }
 
 

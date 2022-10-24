@@ -4,8 +4,9 @@
 #include <string>
 
 class Player {
-    int score {};
+    int score{};
     std::string name{};
+
 public:
     Player();
     Player(int s, std::string n);
@@ -14,4 +15,4 @@ public:
     [[nodiscard]] const std::string &getName() const;
 };
 
-#endif //SNAKE_PLAYER_H
+#endif//SNAKE_PLAYER_H

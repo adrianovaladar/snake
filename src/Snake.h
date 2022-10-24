@@ -1,15 +1,16 @@
 #ifndef SNAKE_SNAKE_H
 #define SNAKE_SNAKE_H
 
-#include <vector>
 #include "Direction.h"
+#include <vector>
 
 class Snake {
 
 private:
     std::vector<std::pair<int, int>> positionsSnake;
-    char symbol {};
+    char symbol{};
     Direction direction;
+
 public:
     explicit Snake();
     virtual ~Snake();
@@ -23,4 +24,4 @@ public:
 };
 
 
-#endif //SNAKE_SNAKE_H
+#endif//SNAKE_SNAKE_H

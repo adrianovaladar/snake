@@ -3,10 +3,12 @@
 
 
 #include <utility>
+#include <vector>
 
 class Food {
     std::pair<int, int> position;
     char symbol;
+
 public:
     explicit Food();
     virtual ~Food();
@@ -17,4 +19,4 @@ public:
 };
 
 
-#endif //SNAKE_FOOD_H
+#endif//SNAKE_FOOD_H

@@ -1,8 +1,8 @@
-#include <vector>
-#include <cstdlib>
-#include <algorithm>
 #include "Food.h"
+#include <algorithm>
+#include <cstdlib>
 #include <ctime>
+#include <vector>
 
 
 Food::Food() {
@@ -30,12 +30,11 @@ void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std
     std::sort(posSnake.begin(), posSnake.end());
     bool isSnakePosition;
     do {
-        srand( time(nullptr));
+        srand(time(nullptr));
         foodPosition.first = std::rand() % sizeMap.first;
         foodPosition.second = std::rand() % sizeMap.second;
         isSnakePosition = std::binary_search(posSnake.begin(), posSnake.end(), foodPosition);
     } while (isSnakePosition);
 
     this->position = foodPosition;
-
 }
