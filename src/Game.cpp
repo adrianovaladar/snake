@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Direction.h"
-#include "input.h"
+#include "Input.h"
 #include <bits/stdc++.h>
 #include <chrono>
 #include <iostream>
@@ -52,13 +52,13 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     food.setSymbol(symbolFood);
     food.setPosition(std::make_pair(i, j), snake.getPositions());
     bestScores.setNameFile(size);
-    enable_raw_mode();
+    Input::enableRawMode();
     return true;
 }
 
 void Game::readDirectionAndMoveSnake() {
     char c{};
-    if (kbhit())
+    if (Input::kbHit())
         c = getchar();
     switch (tolower(c)) {
         case 'w': {
@@ -97,7 +97,7 @@ void Game::logic() {
         food.setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
-        disable_raw_mode();
+        Input::disableRawMode();
         bestScores.read();
         if (bestScores.isBestScore(score)) {
             bestScores.updateAndWrite(score);
