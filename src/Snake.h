@@ -1,8 +1,12 @@
 #ifndef SNAKE_SNAKE_H
 #define SNAKE_SNAKE_H
 
-#include "Direction.h"
 #include <vector>
+
+enum class Direction { RIGHT,
+                       LEFT,
+                       UP,
+                       DOWN };
 
 class Snake {
 
