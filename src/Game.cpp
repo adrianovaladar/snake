@@ -56,34 +56,10 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
 }
 
 void Game::readDirectionAndMoveSnake() {
-    char c{};
+    int c{};
     if (Input::kbHit())
         c = getchar();
-    switch (tolower(c)) {
-        case 'w': {
-            if (snake.getDirection() != Direction::DOWN)
-                snake.setDirection(Direction::UP);
-            break;
-        }
-        case 'a': {
-            if (snake.getDirection() != Direction::RIGHT)
-                snake.setDirection(Direction::LEFT);
-            break;
-        }
-        case 's': {
-            if (snake.getDirection() != Direction::UP)
-                snake.setDirection(Direction::DOWN);
-            break;
-        }
-        case 'd': {
-            if (snake.getDirection() != Direction::LEFT)
-                snake.setDirection(Direction::RIGHT);
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    snake.validateDirection(tolower(c));
     snake.move();
 }
 

@@ -25,6 +25,7 @@ public:
     void move();
     void increase();
     void setSymbol(char s);
+    void validateDirection(int c);
 };
 
 
