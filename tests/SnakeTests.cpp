@@ -52,7 +52,7 @@ TEST(Snake, validateDirection) {
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
     snake.validateDirection('w');
     EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection('a');
+    snake.validateDirection('d');
     snake.validateDirection('s');
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
     // character that does not change direction
@@ -90,7 +90,7 @@ TEST(Snake, validateDirection) {
     snake.setDirection(Direction::DOWN);
     snake.validateDirection('a');
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection('w');
+    snake.validateDirection('s');
     snake.validateDirection('d');
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
     snake.validateDirection('s');
