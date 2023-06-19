@@ -10,3 +10,5 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 # 'Snake.cpp' is the source file that will be tested
 add_executable(SnakeTests ../tests/SnakeTests.cpp ../src/Snake.cpp)
 target_link_libraries(SnakeTests gtest gtest_main)
+add_executable(FoodTests ../tests/FoodTests.cpp ../src/Food.cpp)
+target_link_libraries(FoodTests gtest gtest_main)
