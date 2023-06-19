@@ -18,5 +18,6 @@ public:
     void updateAndWrite(int score);
     bool isBestScore(int score);
     void print();
+    const std::vector<Player> &getPlayers() const;
 };
 #endif//SNAKE_BESTSCORES_H

@@ -81,3 +81,7 @@ void BestScores::print() {
     }
     std::cout << std::endl;
 }
+
+const std::vector<Player> &BestScores::getPlayers() const {
+    return players;
+}
