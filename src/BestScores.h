@@ -15,9 +15,9 @@ public:
     virtual ~BestScores();
     void setNameFile(const std::pair<int, int> &sizeGame);
     void read();
-    void updateAndWrite(int score);
+    void updateAndWrite(std::istream &input, int score);
     bool isBestScore(int score);
     void print();
-    const std::vector<Player> &getPlayers() const;
+    [[nodiscard]] const std::vector<Player> &getPlayers() const;
 };
 #endif//SNAKE_BESTSCORES_H

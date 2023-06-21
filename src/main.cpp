@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
         printHelp();
     } else {
         Game game{};
-        bool isGameOk{};
+        bool isGameOk;
         if (argc == 1)
             isGameOk = game.init(80, 20, '#', 'o', 'f');
         else

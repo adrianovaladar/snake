@@ -75,7 +75,7 @@ void Game::logic() {
         Input::disableRawMode();
         bestScores.read();
         if (bestScores.isBestScore(score)) {
-            bestScores.updateAndWrite(score);
+            bestScores.updateAndWrite(std::cin, score);
         }
         bestScores.print();
     }
