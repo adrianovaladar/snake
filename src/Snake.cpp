@@ -51,7 +51,7 @@ void Snake::setDirection(Direction d) {
 }
 
 void Snake::increase() {
-    positionsSnake.emplace_back(std::make_pair(-1, -1));
+    positionsSnake.emplace_back(-1, -1);
 }
 
 Snake::~Snake() = default;
@@ -82,4 +82,7 @@ void Snake::validateDirection(int c) {
             break;
         }
     }
+}
+void Snake::setPositions(const std::vector<std::pair<int, int>> &pS) {
+    Snake::positionsSnake = pS;
 }

@@ -38,3 +38,7 @@ void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std
 
     this->position = foodPosition;
 }
+
+void Food::setPosition(const std::pair<int, int> &p) {
+    Food::position = p;
+}

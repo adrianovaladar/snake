@@ -26,6 +26,7 @@ public:
     void increase();
     void setSymbol(char s);
     void validateDirection(int c);
+    void setPositions(const std::vector<std::pair<int, int>> &pS);
 };
 
 

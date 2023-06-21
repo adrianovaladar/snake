@@ -97,4 +97,15 @@ bool Game::isEatFood() {
     return isEatFood;
 }
 
+void Game::setSnake(const Snake &s) {
+    Game::snake = s;
+}
+
+const std::pair<int, int> &Game::getSize() const {
+    return size;
+}
+void Game::setFood(const Food &f) {
+    Game::food = f;
+}
+
 Game::~Game() = default;
