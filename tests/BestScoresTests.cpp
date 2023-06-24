@@ -63,7 +63,8 @@ TEST(BestScores, write1Player) {
     myFile.close();
     std::ifstream ifs;
     ifs.open(fileNameTest, std::ios::out);
-    bs.updateAndWrite(ifs, 1);
+    std::stringstream output;
+    bs.updateAndWrite(ifs, output, 1);
     ifs.close();
     BestScores bs2;
     bs2.setNameFile(testSize);
@@ -83,14 +84,15 @@ TEST(BestScores, write5Players) {
     myFile.close();
     std::ifstream ifs;
     ifs.open(fileNameTest, std::ios::out);
+    std::stringstream output;
     for (int i{}; i < 5; i++) {
-        bs.updateAndWrite(ifs, 1);
+        bs.updateAndWrite(ifs, output, 1);
     }
     ifs.close();
     BestScores bs2;
     bs2.setNameFile(testSize);
     bs2.read();
-    EXPECT_EQ(1, bs2.getPlayers().size());
+    EXPECT_EQ(5, bs2.getPlayers().size());
     remove(fileName.c_str());
     remove(fileNameTest.c_str());
 }
@@ -106,8 +108,9 @@ TEST(BestScores, writeMoreThan5Players) {
     myFile.close();
     std::ifstream ifs;
     ifs.open(fileNameTest, std::ios::out);
+    std::stringstream output;
     for (int i{}; i < 10; i++) {
-        bs.updateAndWrite(ifs, 1);
+        bs.updateAndWrite(ifs, output, 1);
     }
     ifs.close();
     BestScores bs2;
@@ -130,8 +133,9 @@ TEST(BestScores, write5UnsortedPlayers) {
     std::ifstream ifs;
     ifs.open(fileNameTest, std::ios::out);
     std::vector<int> scoresToCompare;
+    std::stringstream output;
     for (int i{}; i < 5; i++) {
-        bs.updateAndWrite(ifs, i);
+        bs.updateAndWrite(ifs, output, i);
         scoresToCompare.emplace_back(i);
     }
     ifs.close();

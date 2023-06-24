@@ -29,12 +29,12 @@ void BestScores::read() {
 }
 
 
-void BestScores::updateAndWrite(std::istream &input, int score) {
+void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int score) {
     std::ofstream myFile;
     std::string n{};
     std::string name{};
-    std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name (max 15 characters and only alphanumerical): ";
+    output << "Congratulations, you are one of the best scores!!" << std::endl;
+    output << "Please insert your name (max 15 characters and only alphanumerical): ";
     input >> n;
     for (auto c: n) {
         if (std::isalnum(c))

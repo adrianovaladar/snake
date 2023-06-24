@@ -19,32 +19,43 @@ TEST(Snake, constructor) {
     EXPECT_EQ(3, snake.getPositions().size());
 }
 
-TEST(Snake, move) {
+TEST(Snake, moveRight) {
     Snake snake;
-    // test right direction (default direction is right)
+    // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first++;
     snake.move();
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
-    // test left direction
+}
+
+TEST(Snake, moveLeft) {
+    Snake snake;
     snake.setDirection(Direction::LEFT);
+    auto expectedPosition = snake.getPositions().front();
     expectedPosition.first--;
     snake.move();
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
-    // test up direction
+}
+
+TEST(Snake, moveUp) {
+    Snake snake;
     snake.setDirection(Direction::UP);
+    auto expectedPosition = snake.getPositions().front();
     expectedPosition.second--;
     snake.move();
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
-    // test down direction
+}
+
+TEST(Snake, moveDown) {
+    Snake snake;
     snake.setDirection(Direction::DOWN);
+    auto expectedPosition = snake.getPositions().front();
     expectedPosition.second++;
     snake.move();
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, validateDirection) {
-    // test right direction (default direction is right)
+TEST(Snake, validateRightDirection) {
     Snake snake;
     snake.validateDirection('a');
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
@@ -58,7 +69,9 @@ TEST(Snake, validateDirection) {
     // character that does not change direction
     snake.validateDirection('q');
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    // test left direction
+}
+TEST(Snake, validateLeftDirection) {
+    Snake snake;
     snake.setDirection(Direction::LEFT);
     snake.validateDirection('a');
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
@@ -72,7 +85,9 @@ TEST(Snake, validateDirection) {
     // character that does not change direction
     snake.validateDirection('q');
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    // test up direction
+}
+TEST(Snake, validateUpDirection) {
+    Snake snake;
     snake.setDirection(Direction::UP);
     snake.validateDirection('a');
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
@@ -86,6 +101,9 @@ TEST(Snake, validateDirection) {
     // character that does not change direction
     snake.validateDirection('q');
     EXPECT_EQ(Direction::UP, snake.getDirection());
+}
+TEST(Snake, validateDownDirection) {
+    Snake snake;
     // test down direction
     snake.setDirection(Direction::DOWN);
     snake.validateDirection('a');

@@ -5,14 +5,5 @@ project(Google_tests)
 add_subdirectory(lib)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-# 'SnakeTests' is the target name
-# 'SnakeTests.cpp' is a source file with tests
-# 'Snake.cpp' is the source file that will be tested
-add_executable(SnakeTests ../tests/SnakeTests.cpp ../src/Snake.cpp)
-target_link_libraries(SnakeTests gtest gtest_main)
-add_executable(FoodTests ../tests/FoodTests.cpp ../src/Food.cpp)
-target_link_libraries(FoodTests gtest gtest_main)
-add_executable(BestScoresTests ../tests/BestScoresTests.cpp ../src/BestScores.cpp ../src/Player.cpp)
-target_link_libraries(BestScoresTests gtest gtest_main)
-add_executable(GameTests ../tests/GameTests.cpp ../src/Game.cpp ../src/BestScores.cpp ../src/Food.cpp ../src/Player.cpp ../src/Snake.cpp ../src/Input.cpp)
-target_link_libraries(GameTests gtest gtest_main)
+add_executable(AllTests ../tests/main.cpp ../tests/SnakeTests.cpp ../src/Snake.cpp ../tests/FoodTests.cpp ../src/Food.cpp ../tests/BestScoresTests.cpp ../src/BestScores.cpp ../src/Player.cpp)
+target_link_libraries(AllTests gtest gtest_main)
