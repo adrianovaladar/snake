@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <iostream>
 
-BestScores::~BestScores() {}
+BestScores::~BestScores() = default;
 
 void BestScores::setNameFile(const std::pair<int, int> &sizeGame) {
     std::stringstream nf;
@@ -17,23 +17,28 @@ void BestScores::read() {
     Player player;
     int s;
     std::string n;
+    int numberPlayers{};
     while (myFile >> s >> n) {
         Player p{s, n};
         players.emplace_back(p);
+        numberPlayers++;
+        if (numberPlayers == 5)
+            break;
     }
     myFile.close();
 }
 
-void BestScores::updateAndWrite(int score) {
+
+void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int score) {
     std::ofstream myFile;
     std::string n{};
     std::string name{};
-    std::cout << "Congratulations, you are one of the best scores!!" << std::endl;
-    std::cout << "Please insert your name (max 15 characters and only alphanumerical): ";
-    std::cin >> n;
-    for (int i = 0; i < n.size(); i++) {
-        if (std::isalnum(n.at(i)))
-            name += n.at(i);
+    output << "Congratulations, you are one of the best scores!!" << std::endl;
+    output << "Please insert your name (max 15 characters and only alphanumerical): ";
+    input >> n;
+    for (auto c: n) {
+        if (std::isalnum(c))
+            name += c;
     }
     if (name.empty())
         name = "guest";
@@ -52,7 +57,7 @@ void BestScores::updateAndWrite(int score) {
     } else if (players.size() > this->size) {
         players.pop_back();
     }
-    for (auto r: players) {
+    for (const auto &r: players) {
         myFile << r.getScore() << " " << r.getName() << std::endl;
     }
     myFile.close();
@@ -75,9 +80,13 @@ void BestScores::print() {
               << std::endl;
     std::cout << std::setw(8) << "POSITION" << std::setw(15 + 1) << "NAME" << std::setw(15 + 1) << "SCORE" << std::endl;
     int r{1};
-    for (auto p: players) {
+    for (const auto &p: players) {
         std::cout << std::setw(8) << r << std::setw(15 + 1) << p.getName() << std::setw(15 + 1) << p.getScore() << std::endl;
         r++;
     }
     std::cout << std::endl;
+}
+
+const std::vector<Player> &BestScores::getPlayers() const {
+    return players;
 }

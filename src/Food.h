@@ -16,6 +16,7 @@ public:
     void setSymbol(char s);
     [[nodiscard]] char getSymbol() const;
     [[nodiscard]] const std::pair<int, int> &getPosition() const;
+    void setPosition(const std::pair<int, int> &p);
 };
 
 

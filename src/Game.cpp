@@ -56,34 +56,10 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
 }
 
 void Game::readDirectionAndMoveSnake() {
-    char c{};
+    int c{};
     if (Input::kbHit())
         c = getchar();
-    switch (tolower(c)) {
-        case 'w': {
-            if (snake.getDirection() != Direction::DOWN)
-                snake.setDirection(Direction::UP);
-            break;
-        }
-        case 'a': {
-            if (snake.getDirection() != Direction::RIGHT)
-                snake.setDirection(Direction::LEFT);
-            break;
-        }
-        case 's': {
-            if (snake.getDirection() != Direction::UP)
-                snake.setDirection(Direction::DOWN);
-            break;
-        }
-        case 'd': {
-            if (snake.getDirection() != Direction::LEFT)
-                snake.setDirection(Direction::RIGHT);
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    snake.validateDirection(tolower(c));
     snake.move();
 }
 
@@ -99,7 +75,7 @@ void Game::logic() {
         Input::disableRawMode();
         bestScores.read();
         if (bestScores.isBestScore(score)) {
-            bestScores.updateAndWrite(score);
+            bestScores.updateAndWrite(std::cin, std::cout, score);
         }
         bestScores.print();
     }
@@ -119,6 +95,17 @@ void Game::print() {
 bool Game::isEatFood() {
     bool isEatFood = snake.getPositions().at(0) == food.getPosition();
     return isEatFood;
+}
+
+void Game::setSnake(const Snake &s) {
+    Game::snake = s;
+}
+
+const std::pair<int, int> &Game::getSize() const {
+    return size;
+}
+void Game::setFood(const Food &f) {
+    Game::food = f;
 }
 
 Game::~Game() = default;
