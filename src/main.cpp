@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Logger.h"
 #include <iostream>
 
 void printHelp() {
@@ -14,7 +15,11 @@ void printBye() {
     std::cout << "Game developed by Adriano Valadar and Rogério Lopes" << std::endl;
 }
 
+Logger *Logger::instancePtr = nullptr;
+
 int main(int argc, char *argv[]) {
+    Logger *logger = Logger::getInstance();
+    logger->log("test", LOGLEVEL::Info);
     if (argc != 1 && argc != 6) {
         printHelp();
     } else {
