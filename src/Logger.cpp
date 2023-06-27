@@ -20,3 +20,7 @@ void Logger::log(const std::string &text, LOGLEVEL level, std::source_location c
     std::ofstream file{ss.str(), std::ofstream::app};
     file << "[" << static_cast<char>(level) << "] " << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S") << " | " << sourceToString(source) << " | " << text << std::endl;
 }
+
+void log(const std::string &text, LOGLEVEL level, std::source_location const source) {
+    Logger::log(text, level, source);
+}
