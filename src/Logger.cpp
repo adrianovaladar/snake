@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <mutex>
 #include <source_location>
 #include <sstream>
 
@@ -12,13 +13,16 @@ std::string sourceToString(std::source_location const source) {
 }
 
 void Logger::log(const std::string &text, LOGLEVEL level, std::source_location const source) {
+    static std::mutex logMutex;
     auto now = std::chrono::system_clock::now();
     std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
     std::tm *now_tm = std::localtime(&nowTime);
     std::stringstream ss;
     ss << "log_" << std::put_time(now_tm, "%Y-%m-%d") << ".txt";
+    std::lock_guard<std::mutex> lock(logMutex);
     std::ofstream file{ss.str(), std::ofstream::app};
     file << "[" << static_cast<char>(level) << "] " << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S") << " | " << sourceToString(source) << " | " << text << std::endl;
+    file.close();
 }
 
 void log(const std::string &text, LOGLEVEL level, std::source_location const source) {
