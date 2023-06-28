@@ -1,33 +1,29 @@
 #include "Snake.h"
 #include <vector>
 
-Snake::Snake() : symbol{'o'}, direction{Direction::RIGHT} {
-    positionsSnake.emplace_back(4, 4);
-    positionsSnake.emplace_back(3, 4);
-    positionsSnake.emplace_back(2, 4);
-}
+Snake::Snake() : symbol{'o'}, direction{Direction::RIGHT}, positions{} {}
 
 char Snake::getSymbol() const {
     return symbol;
 }
 
 const std::vector<std::pair<int, int>> &Snake::getPositions() const {
-    return positionsSnake;
+    return positions;
 }
 
 void Snake::move() {
-    std::pair<int, int> previousPosition = positionsSnake.at(0);
-    auto it = positionsSnake.begin();
+    std::pair<int, int> previousPosition = positions.at(0);
+    auto it = positions.begin();
     if (direction == Direction::RIGHT)
-        positionsSnake.at(0).first++;
+        positions.at(0).first++;
     else if (direction == Direction::LEFT)
-        positionsSnake.at(0).first--;
+        positions.at(0).first--;
     else if (direction == Direction::UP)
-        positionsSnake.at(0).second--;
+        positions.at(0).second--;
     else if (direction == Direction::DOWN)
-        positionsSnake.at(0).second++;
-    while (it != positionsSnake.end()) {
-        if (it == positionsSnake.begin()) {
+        positions.at(0).second++;
+    while (it != positions.end()) {
+        if (it == positions.begin()) {
             it++;
             continue;
         }
@@ -51,7 +47,7 @@ void Snake::setDirection(Direction d) {
 }
 
 void Snake::increase() {
-    positionsSnake.emplace_back(-1, -1);
+    positions.emplace_back(-1, -1);
 }
 
 Snake::~Snake() = default;
@@ -84,5 +80,10 @@ void Snake::validateDirection(int c) {
     }
 }
 void Snake::setPositions(const std::vector<std::pair<int, int>> &pS) {
-    Snake::positionsSnake = pS;
+    Snake::positions = pS;
+}
+void Snake::setPositions(const std::pair<int, int> &sizeMap) {
+    positions.emplace_back(sizeMap.first / 2.5, sizeMap.second / 2.5);
+    positions.emplace_back(sizeMap.first / 2.5 - 1, sizeMap.second / 2.5);
+    positions.emplace_back(sizeMap.first / 2.5 - 2, sizeMap.second / 2.5);
 }
