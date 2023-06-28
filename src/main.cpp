@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "Logger.h"
 #include <iostream>
 
 void printHelp() {
@@ -16,7 +15,6 @@ void printBye() {
 }
 
 int main(int argc, char *argv[]) {
-    log("test", LOGLEVEL::Info);
     if (argc != 1 && argc != 6) {
         printHelp();
     } else {

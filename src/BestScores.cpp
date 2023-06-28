@@ -1,4 +1,5 @@
 #include "BestScores.h"
+#include "Logger.h"
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -25,6 +26,7 @@ void BestScores::read() {
         if (numberPlayers == 5)
             break;
     }
+    log("Number of players read: " + std::to_string(numberPlayers), LOGLEVEL::Info);
     myFile.close();
 }
 
@@ -42,6 +44,7 @@ void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int s
     }
     if (name.empty())
         name = "guest";
+    log("New best score. Name: " + name + " Score: " + std::to_string(score), LOGLEVEL::Info);
     Player p{score, name.substr(0, 15)};
     myFile.open(nameFile, std::ios::out);
     bool inserted = false;

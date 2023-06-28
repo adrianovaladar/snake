@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Input.h"
+#include "Logger.h"
 #include <bits/stdc++.h>
 #include <chrono>
 #include <iostream>
@@ -39,13 +40,18 @@ bool Game::isGameOver() {
     if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
         fenceCollision = true;
     }
+    if (selfCollision || fenceCollision)
+        log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
     return selfCollision || fenceCollision;
 }
 
 bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
-    if (i < 10 || j < 5)
+    if (i < 10 || j < 5) {
+        log("Invalid size", LOGLEVEL::Error);
         return false;
+    }
     size = std::make_pair(i, j);
+    log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
     food.setSymbol(symbolFood);
