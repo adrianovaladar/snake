@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Input.h"
+#include "Logger.h"
 #include <bits/stdc++.h>
 #include <chrono>
 #include <iostream>
@@ -43,8 +44,10 @@ bool Game::isGameOver() {
 }
 
 bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
-    if (i < 10 || j < 5)
+    if (i < 10 || j < 5) {
+        log("Invalid size", LOGLEVEL::Error);
         return false;
+    }
     size = std::make_pair(i, j);
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
@@ -53,6 +56,8 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     food.setPosition(std::make_pair(i, j), snake.getPositions());
     bestScores.setNameFile(size);
     Input::enableRawMode();
+    log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
+    log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
     return true;
 }
 
@@ -73,6 +78,7 @@ void Game::logic() {
         food.setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
+        log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
         Input::disableRawMode();
         bestScores.read();
         if (bestScores.isBestScore(score)) {
