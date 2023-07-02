@@ -43,6 +43,7 @@ TEST(Game, fenceCollisionRIGTH) {
 
 TEST(Game, isNotGameOver) {
     Game game;
+    game.init(10, 5, 's', 'o', 'p');
     EXPECT_EQ(false, game.isGameOver());
 }
 
@@ -66,4 +67,14 @@ TEST(Game, isEatFoodFalse) {
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
     EXPECT_EQ(false, game.isEatFood());
+}
+
+TEST(Game, isSnakeInMap) {
+    Game game;
+    game.init(10, 5, 'f', 's', '%');
+    Snake snake;
+    snake.setPositions(game.getSize());
+    for (auto position: snake.getPositions()) {
+        EXPECT_EQ(false, (position.first < 0 || position.second < 0 || position.first > game.getSize().first - 1 || position.second > game.getSize().second - 1));
+    }
 }
