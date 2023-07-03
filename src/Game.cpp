@@ -51,6 +51,7 @@ bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFoo
     size = std::make_pair(i, j);
     this->symbol = symbolFence;
     snake.setSymbol(symbolSnake);
+    snake.setPositions(size);
     food.setSymbol(symbolFood);
     food.setPosition(std::make_pair(i, j), snake.getPositions());
     bestScores.setNameFile(size);

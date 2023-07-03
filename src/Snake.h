@@ -11,7 +11,7 @@ enum class Direction { RIGHT,
 class Snake {
 
 private:
-    std::vector<std::pair<int, int>> positionsSnake;
+    std::vector<std::pair<int, int>> positions;
     char symbol{};
     Direction direction;
 
@@ -27,6 +27,7 @@ public:
     void setSymbol(char s);
     void validateDirection(int c);
     void setPositions(const std::vector<std::pair<int, int>> &pS);
+    void setPositions(const std::pair<int, int> &sizeMap);
 };
 
 

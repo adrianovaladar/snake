@@ -16,11 +16,13 @@ TEST(Snake, constructor) {
     Snake snake;
     EXPECT_EQ('o', snake.getSymbol());
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    EXPECT_EQ(3, snake.getPositions().size());
+    EXPECT_EQ(0, snake.getPositions().size());
 }
+
 
 TEST(Snake, moveRight) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first++;
@@ -30,6 +32,7 @@ TEST(Snake, moveRight) {
 
 TEST(Snake, moveLeft) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     snake.setDirection(Direction::LEFT);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first--;
@@ -39,6 +42,7 @@ TEST(Snake, moveLeft) {
 
 TEST(Snake, moveUp) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     snake.setDirection(Direction::UP);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second--;
@@ -48,6 +52,7 @@ TEST(Snake, moveUp) {
 
 TEST(Snake, moveDown) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     snake.setDirection(Direction::DOWN);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second++;
@@ -57,6 +62,7 @@ TEST(Snake, moveDown) {
 
 TEST(Snake, validateRightDirection) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     snake.validateDirection('a');
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
     snake.validateDirection('d');
@@ -72,6 +78,7 @@ TEST(Snake, validateRightDirection) {
 }
 TEST(Snake, validateLeftDirection) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     snake.setDirection(Direction::LEFT);
     snake.validateDirection('a');
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
@@ -88,6 +95,7 @@ TEST(Snake, validateLeftDirection) {
 }
 TEST(Snake, validateUpDirection) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     snake.setDirection(Direction::UP);
     snake.validateDirection('a');
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
@@ -104,6 +112,7 @@ TEST(Snake, validateUpDirection) {
 }
 TEST(Snake, validateDownDirection) {
     Snake snake;
+    snake.setPositions({{2, 2}});
     // test down direction
     snake.setDirection(Direction::DOWN);
     snake.validateDirection('a');
