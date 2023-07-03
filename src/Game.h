@@ -18,18 +18,23 @@ private:
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence() const;
     void readDirectionAndMoveSnake();
+    static void showMenu();
+    static void about();
+    void settings();
 
 public:
-    Game() : size(10, 10), symbol(0), score(0){};
+    Game() : size(80, 20), symbol('#'), score(0){};
     virtual ~Game();
     bool isGameOver();
-    bool init(int i, int j, char symbolFence, char symbolSnake, char symbolFood);
+    bool init(std::pair<int, int> s);
     void logic();
     void print();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setFood(const Food &f);
     bool isEatFood();
+    void run();
+    void start();
 };
 
 #endif//SNAKE_MAP_H

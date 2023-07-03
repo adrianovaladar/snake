@@ -7,6 +7,16 @@
 #include <string>
 #include <vector>
 
+#define MIN_WEIGHT 10
+#define MIN_HEIGHT 5
+
+void clearScreen() {
+    // Position cursor in the top-left corner
+    std::cout << "\033[1;1H";
+    // Clear the screen
+    std::cout << "\033[2J";
+}
+
 void Game::printHorizontalFence() const {
     for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
         std::cout << symbol;
@@ -43,22 +53,13 @@ bool Game::isGameOver() {
     return selfCollision || fenceCollision;
 }
 
-bool Game::init(int i, int j, char symbolFence, char symbolSnake, char symbolFood) {
-    if (i < 10 || j < 5) {
-        log("Invalid size", LOGLEVEL::Error);
-        return false;
-    }
-    size = std::make_pair(i, j);
-    this->symbol = symbolFence;
-    snake.setSymbol(symbolSnake);
+void Game::start() {
+    score = 0;
+    snake.setDirection(Direction::RIGHT);
     snake.setPositions(size);
-    food.setSymbol(symbolFood);
-    food.setPosition(std::make_pair(i, j), snake.getPositions());
-    bestScores.setNameFile(size);
-    Input::enableRawMode();
     log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
     log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
-    return true;
+    food.setPosition(size, snake.getPositions());
 }
 
 void Game::readDirectionAndMoveSnake() {
@@ -80,16 +81,15 @@ void Game::logic() {
     if (isGameOver()) {
         log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
         Input::disableRawMode();
-        bestScores.read();
         if (bestScores.isBestScore(score)) {
             bestScores.updateAndWrite(std::cin, std::cout, score);
         }
-        bestScores.print();
+        bestScores.print(size);
     }
 }
 
 void Game::print() {
-    std::cout << "\033[2J\033[1;1H";
+    clearScreen();
     std::cout << "Snake game" << std::endl;
     printHorizontalFence();
     for (int j{}; j < this->size.second; j++) {
@@ -116,3 +116,92 @@ void Game::setFood(const Food &f) {
 }
 
 Game::~Game() = default;
+
+void Game::showMenu() {
+
+    std::cout << std::endl
+              << "            _____             _                    " << std::endl
+              << "           / ____|           | |                                    " << std::endl
+              << "          | (___  _ __   __ _| | _____    __ _  __ _ _ __ ___   ___ " << std::endl
+              << R"(           \___ \| '_ \ / _` | |/ / _ \  / _` |/ _` | '_ ` _ \ / _ \ )" << std::endl
+              << "           ____) | | | | (_| |   <  __/ | (_| | (_| | | | | | |  __/" << std::endl
+              << R"(          |_____/|_| |_|\__,_|_|\_\___|  \__, |\__,_|_| |_| |_|\___|)" << std::endl
+              << "                                          __/ |" << std::endl
+              << "                                         |___/" << std::endl
+              << std::endl
+              << "1 - New game" << std::endl
+              << "2 - Best scores" << std::endl
+              << "3 - Settings" << std::endl
+              << "4 - About" << std::endl
+              << "9 - Exit" << std::endl
+              << "Insert option: ";
+}
+
+void Game::settings() {
+    std::cout << "Settings" << std::endl;
+    std::cout << "If you want to keep a value, just insert the same value as the current one" << std::endl;
+    std::cout << "Minimum size of map is " << MIN_WEIGHT << "x" << MIN_HEIGHT << std::endl;
+    std::pair<int, int> tmpSize{};
+    do {
+        std::cout << "Width (current value is " << size.first << "): ";
+        std::cin >> tmpSize.first;
+        std::cout << "Height (current value is " << size.second << "): ";
+        std::cin >> tmpSize.second;
+    } while (tmpSize.first < MIN_WEIGHT || tmpSize.second < MIN_HEIGHT);
+    bool read;
+    if (tmpSize != size)
+        read = true;
+    size = tmpSize;
+    if (read) {
+        bestScores.setNameFile(size);
+        bestScores.read();
+    }
+}
+
+void Game::about() {
+    std::cout << "About" << std::endl
+              << "2023 Snake game" << std::endl
+              << "Developed by Adriano Valadar and Rogério Lopes" << std::endl;
+}
+
+void Game::run() {
+    char choice;
+    bestScores.setNameFile(size);
+    bestScores.read();
+    do {
+        clearScreen();
+        showMenu();
+        std::cin >> choice;
+        switch (choice) {
+            case '1': {
+                Input::enableRawMode();
+                start();
+                while (!isGameOver()) {
+                    print();
+                    logic();
+                }
+                break;
+            }
+            case '2': {
+                bestScores.print(size);
+                break;
+            }
+            case '3': {
+                settings();
+                break;
+            }
+            case '4': {
+                about();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        if (choice == '1' || choice == '2' || choice == '3' || choice == '4') {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.get();
+        }
+    } while (choice != '9');
+    std::cout << "Bye!" << std::endl;
+}

@@ -43,7 +43,7 @@ TEST(Game, fenceCollisionRIGTH) {
 
 TEST(Game, isNotGameOver) {
     Game game;
-    game.init(10, 5, 's', 'o', 'p');
+    game.start();
     EXPECT_EQ(false, game.isGameOver());
 }
 
@@ -71,7 +71,7 @@ TEST(Game, isEatFoodFalse) {
 
 TEST(Game, isSnakeInMap) {
     Game game;
-    game.init(10, 5, 'f', 's', '%');
+    game.start();
     Snake snake;
     snake.setPositions(game.getSize());
     for (auto position: snake.getPositions()) {

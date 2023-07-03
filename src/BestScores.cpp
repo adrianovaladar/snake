@@ -77,9 +77,9 @@ bool BestScores::isBestScore(int score) {
     return false;
 }
 
-void BestScores::print() {
+void BestScores::print(const std::pair<int, int> &sizeGame) {
     std::cout << std::endl;
-    std::cout << std::setw(25) << "BEST SCORES" << std::endl
+    std::cout << std::setw(25) << "BEST SCORES " << sizeGame.first << "X" << sizeGame.second << std::endl
               << std::endl;
     std::cout << std::setw(8) << "POSITION" << std::setw(15 + 1) << "NAME" << std::setw(15 + 1) << "SCORE" << std::endl;
     int r{1};

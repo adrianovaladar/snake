@@ -17,7 +17,7 @@ public:
     void read();
     void updateAndWrite(std::istream &input, std::ostream &output, int score);
     bool isBestScore(int score);
-    void print();
+    void print(const std::pair<int, int> &sizeGame);
     [[nodiscard]] const std::vector<Player> &getPlayers() const;
 };
 #endif//SNAKE_BESTSCORES_H
