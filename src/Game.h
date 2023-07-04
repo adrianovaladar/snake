@@ -6,6 +6,8 @@
 #include "Player.h"
 #include "Snake.h"
 
+#define DEFAULT_WIDTH 80
+#define DEFAULT_HEIGHT 20
 
 class Game {
 private:
@@ -15,18 +17,20 @@ private:
     BestScores bestScores;
     char symbol;
     int score;
+    std::string settingsFileName;
+    std::string directoryName;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence() const;
     void readDirectionAndMoveSnake();
-    static void showMenu();
+    void showMenu() const;
     static void about();
-    void settings();
+    void updateBestScores();
+    void play();
 
 public:
-    Game() : size(80, 20), symbol('#'), score(0){};
+    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"){};
     virtual ~Game();
     bool isGameOver();
-    bool init(std::pair<int, int> s);
     void logic();
     void print();
     void setSnake(const Snake &s);
@@ -35,6 +39,9 @@ public:
     bool isEatFood();
     void run();
     void start();
+    void settings(std::istream &input, std::ostream &output);
+    void readSettings();
+    void writeSettings() const;
 };
 
 #endif//SNAKE_MAP_H

@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#define MIN_WEIGHT 10
+#define MIN_WIDTH 10
 #define MIN_HEIGHT 5
 
 void clearScreen() {
@@ -15,6 +15,11 @@ void clearScreen() {
     std::cout << "\033[1;1H";
     // Clear the screen
     std::cout << "\033[2J";
+}
+
+void signalHandler(int signal) {
+    clearScreen();
+    exit(signal);
 }
 
 void Game::printHorizontalFence() const {
@@ -117,7 +122,7 @@ void Game::setFood(const Food &f) {
 
 Game::~Game() = default;
 
-void Game::showMenu() {
+void Game::showMenu() const {
 
     std::cout << std::endl
               << "            _____             _                    " << std::endl
@@ -129,6 +134,7 @@ void Game::showMenu() {
               << "                                          __/ |" << std::endl
               << "                                         |___/" << std::endl
               << std::endl
+              << "Info: Map size " << size.first << "x" << size.second << std::endl
               << "1 - New game" << std::endl
               << "2 - Best scores" << std::endl
               << "3 - Settings" << std::endl
@@ -137,25 +143,31 @@ void Game::showMenu() {
               << "Insert option: ";
 }
 
-void Game::settings() {
-    std::cout << "Settings" << std::endl;
-    std::cout << "If you want to keep a value, just insert the same value as the current one" << std::endl;
-    std::cout << "Minimum size of map is " << MIN_WEIGHT << "x" << MIN_HEIGHT << std::endl;
+void Game::settings(std::istream &input, std::ostream &output) {
+    output << "Settings" << std::endl;
+    output << "If you want to keep a value, insert the same value as the current one" << std::endl;
+    output << "Minimum size of map is " << MIN_WIDTH << "x" << MIN_HEIGHT << std::endl;
+    output << "Default size of map is" << DEFAULT_WIDTH << "X" << DEFAULT_HEIGHT << std::endl;
     std::pair<int, int> tmpSize{};
     do {
-        std::cout << "Width (current value is " << size.first << "): ";
-        std::cin >> tmpSize.first;
-        std::cout << "Height (current value is " << size.second << "): ";
-        std::cin >> tmpSize.second;
-    } while (tmpSize.first < MIN_WEIGHT || tmpSize.second < MIN_HEIGHT);
-    bool read;
+        output << "Width (current value is " << size.first << "): ";
+        input >> tmpSize.first;
+        output << "Height (current value is " << size.second << "): ";
+        input >> tmpSize.second;
+    } while (tmpSize.first < MIN_WIDTH || tmpSize.second < MIN_HEIGHT);
+    bool changed;
     if (tmpSize != size)
-        read = true;
+        changed = true;
     size = tmpSize;
-    if (read) {
-        bestScores.setNameFile(size);
-        bestScores.read();
+    if (changed) {
+        updateBestScores();
     }
+    writeSettings();
+}
+
+void Game::updateBestScores() {
+    bestScores.setNameFile(size, directoryName);
+    bestScores.read();
 }
 
 void Game::about() {
@@ -164,22 +176,53 @@ void Game::about() {
               << "Developed by Adriano Valadar and Rogério Lopes" << std::endl;
 }
 
+void Game::readSettings() {
+    std::ifstream file(directoryName + "/" + settingsFileName, std::ios::binary);
+    if (!file) {
+        log("Error opening file for reading", LOGLEVEL::Warning);
+        return;
+    }
+    file.read(reinterpret_cast<char *>(&size), sizeof(size));
+    file.close();
+}
+
+void Game::writeSettings() const {
+    std::ofstream file(directoryName + "/" + settingsFileName, std::ios::binary);
+    if (!file || !file.good()) {
+        log("Error opening file for writing", LOGLEVEL::Warning);
+        return;
+    }
+    file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    file.close();
+    if (!file.good()) {
+        log("Error occurred at writing time", LOGLEVEL::Warning);
+    }
+}
+
+void Game::play() {
+    Input::enableRawMode();
+    start();
+    while (!isGameOver()) {
+        print();
+        logic();
+    }
+}
+
 void Game::run() {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
+    std::signal(SIGINT, signalHandler);
+    readSettings();
+    updateBestScores();
     char choice;
-    bestScores.setNameFile(size);
-    bestScores.read();
     do {
         clearScreen();
         showMenu();
         std::cin >> choice;
         switch (choice) {
             case '1': {
-                Input::enableRawMode();
-                start();
-                while (!isGameOver()) {
-                    print();
-                    logic();
-                }
+                play();
                 break;
             }
             case '2': {
@@ -187,7 +230,7 @@ void Game::run() {
                 break;
             }
             case '3': {
-                settings();
+                settings(std::cin, std::cout);
                 break;
             }
             case '4': {
@@ -203,5 +246,5 @@ void Game::run() {
             std::cin.get();
         }
     } while (choice != '9');
-    std::cout << "Bye!" << std::endl;
+    clearScreen();
 }
