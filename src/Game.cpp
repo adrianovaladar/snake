@@ -149,7 +149,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
     output << "Minimum size of map is " << MIN_WIDTH << "x" << MIN_HEIGHT << std::endl;
-    output << "Default size of map is" << DEFAULT_WIDTH << "X" << DEFAULT_HEIGHT << std::endl;
+    output << "Default size of map is " << DEFAULT_WIDTH << "X" << DEFAULT_HEIGHT << std::endl;
     std::pair<int, int> tmpSize{};
     do {
         output << "Width (current value is " << size.first << "): ";
@@ -157,7 +157,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         output << "Height (current value is " << size.second << "): ";
         input >> tmpSize.second;
     } while (tmpSize.first < MIN_WIDTH || tmpSize.second < MIN_HEIGHT);
-    bool changed;
+    bool changed{};
     if (tmpSize != size)
         changed = true;
     size = tmpSize;
@@ -210,7 +210,7 @@ void Game::play() {
     }
 }
 
-void Game::showKeys() {
+void Game::showKeys() const {
     std::cout << "Show keys" << std::endl;
     std::cout << keyMoveUp << " - Move up" << std::endl;
     std::cout << keymoveDown << " - Move down" << std::endl;

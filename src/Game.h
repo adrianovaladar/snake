@@ -30,7 +30,7 @@ private:
     static void about();
     void updateBestScores();
     void play();
-    void showKeys();
+    void showKeys() const;
 
 public:
     Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'){};
