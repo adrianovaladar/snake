@@ -19,6 +19,10 @@ private:
     int score;
     std::string settingsFileName;
     std::string directoryName;
+    char keyMoveUp;
+    char keymoveDown;
+    char keyMoveLeft;
+    char keyMoveRight;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence() const;
     void readDirectionAndMoveSnake();
@@ -26,9 +30,10 @@ private:
     static void about();
     void updateBestScores();
     void play();
+    void showKeys();
 
 public:
-    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"){};
+    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'){};
     virtual ~Game();
     bool isGameOver();
     void logic();

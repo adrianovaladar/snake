@@ -19,6 +19,7 @@ void clearScreen() {
 
 void signalHandler(int signal) {
     clearScreen();
+    Input::disableRawMode();
     exit(signal);
 }
 
@@ -138,7 +139,8 @@ void Game::showMenu() const {
               << "1 - New game" << std::endl
               << "2 - Best scores" << std::endl
               << "3 - Settings" << std::endl
-              << "4 - About" << std::endl
+              << "4 - Show keys" << std::endl
+              << "5 - About" << std::endl
               << "9 - Exit" << std::endl
               << "Insert option: ";
 }
@@ -208,6 +210,14 @@ void Game::play() {
     }
 }
 
+void Game::showKeys() {
+    std::cout << "Show keys" << std::endl;
+    std::cout << keyMoveUp << " - Move up" << std::endl;
+    std::cout << keymoveDown << " - Move down" << std::endl;
+    std::cout << keyMoveLeft << " - Move left" << std::endl;
+    std::cout << keyMoveRight << " - Move right" << std::endl;
+}
+
 void Game::run() {
     if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
         std::filesystem::create_directory(directoryName);
@@ -234,6 +244,10 @@ void Game::run() {
                 break;
             }
             case '4': {
+                showKeys();
+                break;
+            }
+            case '5': {
                 about();
                 break;
             }
@@ -241,7 +255,7 @@ void Game::run() {
                 break;
             }
         }
-        if (choice == '1' || choice == '2' || choice == '3' || choice == '4') {
+        if (choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin.get();
         }
