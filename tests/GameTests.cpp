@@ -87,16 +87,17 @@ TEST(Game, writeSettings) {
     if (!file) {
         std::pair<int, int> expectedPair{DEFAULT_WIDTH, DEFAULT_HEIGHT};
         EXPECT_EQ(expectedPair, game.getSize());
+    } else {
+        // Seek to the end of the file
+        file.seekg(0, std::ios::end);
+        // Get the file size
+        std::streampos fileSize = file.tellg();
+        // Close the file
+        file.close();
+        // Determine the size of std::pair<int, int>
+        std::size_t pairSize = sizeof(std::pair<int, int>);
+        EXPECT_EQ(fileSize, pairSize);
     }
-    // Seek to the end of the file
-    file.seekg(0, std::ios::end);
-    // Get the file size
-    std::streampos fileSize = file.tellg();
-    // Close the file
-    file.close();
-    // Determine the size of std::pair<int, int>
-    std::size_t pairSize = sizeof(std::pair<int, int>);
-    EXPECT_EQ(fileSize, pairSize);
 }
 
 TEST(Game, readSettings) {
