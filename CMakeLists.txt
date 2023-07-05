@@ -9,4 +9,7 @@ set(SOURCE_FILES src/main.cpp src/BestScores.h src/BestScores.cpp src/Food.h src
 add_executable(snake ${SOURCE_FILES})
 
 # Add GTest
-add_subdirectory(Google_tests)
+add_subdirectory(third_party/Google_tests)
+
+# Add tests
+add_subdirectory(tests)
