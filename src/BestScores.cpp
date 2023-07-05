@@ -6,13 +6,14 @@
 
 BestScores::~BestScores() = default;
 
-void BestScores::setNameFile(const std::pair<int, int> &sizeGame) {
+void BestScores::setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName) {
     std::stringstream nf;
-    nf << "best_scores_" << sizeGame.first << "_" << sizeGame.second << ".txt";
+    nf << directoryName << "/best_scores_" << sizeGame.first << "_" << sizeGame.second << ".txt";
     this->nameFile = nf.str();
 }
 
 void BestScores::read() {
+    players.clear();
     std::ifstream myFile;
     myFile.open(nameFile, std::ios::in);
     Player player;
@@ -77,10 +78,14 @@ bool BestScores::isBestScore(int score) {
     return false;
 }
 
-void BestScores::print() {
+void BestScores::print(const std::pair<int, int> &sizeGame) {
     std::cout << std::endl;
-    std::cout << std::setw(25) << "BEST SCORES" << std::endl
+    std::cout << std::setw(25) << "BEST SCORES " << sizeGame.first << "X" << sizeGame.second << std::endl
               << std::endl;
+    if (players.empty()) {
+        std::cout << "Currently there are no best scores for the current map" << std::endl;
+        return;
+    }
     std::cout << std::setw(8) << "POSITION" << std::setw(15 + 1) << "NAME" << std::setw(15 + 1) << "SCORE" << std::endl;
     int r{1};
     for (const auto &p: players) {

@@ -1,20 +1,25 @@
 #include "../src/BestScores.h"
 #include "gtest/gtest.h"
+#include <filesystem>
 #include <fstream>
 
-std::string fileName = "best_scores_-1_-1.txt";
+std::string directoryName = "bestscorestests";
+std::string fileName = "bestscorestests/best_scores_-1_-1.txt";
 std::pair testSize = {-1, -1};
 
 TEST(BestScores, readEmptyFile) {
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     bs.read();
     EXPECT_EQ(0, bs.getPlayers().size());
 }
 
 TEST(BestScores, readFileWith1Player) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile({-1, -1});
+    bs.setNameFile({-1, -1}, directoryName);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     myFile << 1 << " test" << std::endl;
@@ -22,11 +27,15 @@ TEST(BestScores, readFileWith1Player) {
     EXPECT_EQ(1, bs.getPlayers().size());
     myFile.close();
     remove(fileName.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, readFileWithMaxPlayers) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
@@ -37,11 +46,15 @@ TEST(BestScores, readFileWithMaxPlayers) {
     EXPECT_EQ(5, bs.getPlayers().size());
     myFile.close();
     remove(fileName.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, readBiggerFileThanExpected) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     for (int i{}; i < 6; i++) {
@@ -51,11 +64,15 @@ TEST(BestScores, readBiggerFileThanExpected) {
     EXPECT_EQ(5, bs.getPlayers().size());
     myFile.close();
     remove(fileName.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, write1Player) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -67,16 +84,20 @@ TEST(BestScores, write1Player) {
     bs.updateAndWrite(ifs, output, 1);
     ifs.close();
     BestScores bs2;
-    bs2.setNameFile(testSize);
+    bs2.setNameFile(testSize, directoryName);
     bs2.read();
     EXPECT_EQ(1, bs2.getPlayers().size());
     remove(fileName.c_str());
     remove(fileNameTest.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, write5Players) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -90,16 +111,20 @@ TEST(BestScores, write5Players) {
     }
     ifs.close();
     BestScores bs2;
-    bs2.setNameFile(testSize);
+    bs2.setNameFile(testSize, directoryName);
     bs2.read();
     EXPECT_EQ(5, bs2.getPlayers().size());
     remove(fileName.c_str());
     remove(fileNameTest.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, writeMoreThan5Players) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -114,16 +139,20 @@ TEST(BestScores, writeMoreThan5Players) {
     }
     ifs.close();
     BestScores bs2;
-    bs2.setNameFile(testSize);
+    bs2.setNameFile(testSize, directoryName);
     bs2.read();
     EXPECT_EQ(5, bs2.getPlayers().size());
     remove(fileName.c_str());
     remove(fileNameTest.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, write5UnsortedPlayers) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -141,20 +170,24 @@ TEST(BestScores, write5UnsortedPlayers) {
     ifs.close();
     std::sort(scoresToCompare.rbegin(), scoresToCompare.rend());
     BestScores bs2;
-    bs2.setNameFile(testSize);
+    bs2.setNameFile(testSize, directoryName);
     bs2.read();
     std::vector<int> scores;
-    for (auto p: bs2.getPlayers()) {
+    for (const auto &p: bs2.getPlayers()) {
         scores.emplace_back(p.getScore());
     }
     EXPECT_EQ(scoresToCompare, scores);
     remove(fileName.c_str());
     remove(fileNameTest.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, isBestScoresWithLessThan5Players) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 2 positions filled
@@ -165,11 +198,15 @@ TEST(BestScores, isBestScoresWithLessThan5Players) {
     bs.read();
     EXPECT_EQ(true, bs.isBestScore(10));
     remove(fileName.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, isBestScoresWith5Players) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
@@ -180,11 +217,15 @@ TEST(BestScores, isBestScoresWith5Players) {
     bs.read();
     EXPECT_EQ(true, bs.isBestScore(10));
     remove(fileName.c_str());
+    std::filesystem::remove(directoryName);
 }
 
 TEST(BestScores, isBestScoresWith5PlayersWithHigherScore) {
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
     BestScores bs;
-    bs.setNameFile(testSize);
+    bs.setNameFile(testSize, directoryName);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
@@ -195,4 +236,5 @@ TEST(BestScores, isBestScoresWith5PlayersWithHigherScore) {
     bs.read();
     EXPECT_EQ(false, bs.isBestScore(0));
     remove(fileName.c_str());
+    std::filesystem::remove(directoryName);
 }
