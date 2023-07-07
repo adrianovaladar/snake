@@ -72,8 +72,13 @@ void Game::readDirectionAndMoveSnake() {
     int c{};
     if (Input::kbHit())
         c = getchar();
-    snake.validateDirection(tolower(c));
-    snake.move();
+    if (tolower(c) == 'p') {
+        pause = !pause;
+    }
+    if (!pause) {
+        snake.validateDirection(tolower(c));
+        snake.move();
+    }
 }
 
 void Game::logic() {

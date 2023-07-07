@@ -23,6 +23,7 @@ private:
     char keymoveDown;
     char keyMoveLeft;
     char keyMoveRight;
+    bool pause;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence() const;
     void readDirectionAndMoveSnake();
@@ -33,7 +34,7 @@ private:
     void showKeys() const;
 
 public:
-    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'){};
+    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'), pause(false){};
     virtual ~Game();
     bool isGameOver();
     void logic();
