@@ -23,6 +23,7 @@ private:
     char keymoveDown;
     char keyMoveLeft;
     char keyMoveRight;
+    char keyPause;
     bool pause;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence() const;
@@ -34,7 +35,7 @@ private:
     void showKeys() const;
 
 public:
-    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'), pause(false){};
+    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'), keyPause('p'), pause(false){};
     virtual ~Game();
     bool isGameOver();
     void logic();

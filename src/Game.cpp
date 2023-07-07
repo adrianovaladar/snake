@@ -19,6 +19,7 @@ void clearScreen() {
 
 void signalHandler(int signal) {
     clearScreen();
+    system("clear");
     Input::disableRawMode();
     exit(signal);
 }
@@ -72,7 +73,7 @@ void Game::readDirectionAndMoveSnake() {
     int c{};
     if (Input::kbHit())
         c = getchar();
-    if (tolower(c) == 'p') {
+    if (tolower(c) == keyPause) {
         pause = !pause;
     }
     if (!pause) {
@@ -221,6 +222,7 @@ void Game::showKeys() const {
     std::cout << keymoveDown << " - Move down" << std::endl;
     std::cout << keyMoveLeft << " - Move left" << std::endl;
     std::cout << keyMoveRight << " - Move right" << std::endl;
+    std::cout << keyPause << " - Pause/Resume" << std::endl;
 }
 
 void Game::run() {
@@ -228,6 +230,7 @@ void Game::run() {
         std::filesystem::create_directory(directoryName);
     }
     std::signal(SIGINT, signalHandler);
+    std::signal(SIGTSTP, signalHandler);
     readSettings();
     updateBestScores();
     char choice;
@@ -266,4 +269,5 @@ void Game::run() {
         }
     } while (choice != '9');
     clearScreen();
+    system("clear");
 }
