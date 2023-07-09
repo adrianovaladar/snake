@@ -69,10 +69,13 @@ void Game::start() {
     food.setPosition(size, snake.getPositions());
 }
 
-void Game::readDirectionAndMoveSnake() {
+bool Game::readDirectionAndMoveSnake() {
     int c{};
     if (Input::kbHit())
         c = getchar();
+    if (tolower(c) == 'm') {
+        return true;
+    }
     if (tolower(c) == keyPause) {
         pause = !pause;
     }
@@ -80,11 +83,13 @@ void Game::readDirectionAndMoveSnake() {
         snake.validateDirection(tolower(c));
         snake.move();
     }
+    return false;
 }
 
-void Game::logic() {
+bool Game::logic() {
     std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));
-    readDirectionAndMoveSnake();
+    if (readDirectionAndMoveSnake())
+        return true;
     if (isEatFood()) {
         snake.increase();
         score++;
@@ -98,6 +103,7 @@ void Game::logic() {
         }
         bestScores.print(size);
     }
+    return false;
 }
 
 void Game::print() {
@@ -129,6 +135,49 @@ void Game::setFood(const Food &f) {
 
 Game::~Game() = default;
 
+void Game::save() {
+    std::ofstream file(directoryName + "/" + gameFileName, std::ios::binary);
+    if (!file || !file.good()) {
+        log("Error opening file for writing", LOGLEVEL::Warning);
+        return;
+    }
+    size_t positionsSize = snake.getPositions().size();
+    file.write(reinterpret_cast<const char *>(&positionsSize), sizeof(positionsSize));
+    file.write(reinterpret_cast<const char *>(snake.getPositions().data()), static_cast<std::streamsize>(positionsSize * sizeof(std::pair<int, int>)));
+    file.write(reinterpret_cast<const char *>(&food.getPosition()), sizeof(food.getPosition()));
+    file.write(reinterpret_cast<const char *>(&score), sizeof(score));
+
+    file.close();
+    if (!file.good()) {
+        log("Error occurred at writing time", LOGLEVEL::Warning);
+    }
+}
+
+void Game::load() {
+    std::ifstream file(directoryName + "/" + gameFileName, std::ios::binary);
+    if (!file) {
+        log("Error opening file for reading", LOGLEVEL::Warning);
+        return;
+    }
+    size_t size1;
+    file.read(reinterpret_cast<char *>(&size1), sizeof(size1));
+    std::vector<std::pair<int, int>> positionsSnake;
+    positionsSnake.resize(size1);
+    file.read(reinterpret_cast<char *>(positionsSnake.data()), static_cast<std::streamsize>(size1 * sizeof(std::pair<int, int>)));
+    snake.setPositions(positionsSnake);
+    std::pair<int, int> positionFood;
+    file.read(reinterpret_cast<char *>(&positionFood), sizeof(positionFood));
+    food.setPosition(positionFood);
+    file.read(reinterpret_cast<char *>(&score), sizeof(score));
+    file.close();
+}
+
+void Game::removeIfExists() {
+    if (std::filesystem::exists(directoryName + "/" + gameFileName)) {
+        std::filesystem::remove(directoryName + "/" + gameFileName);
+    }
+}
+
 void Game::showMenu() const {
 
     std::cout << std::endl
@@ -141,8 +190,11 @@ void Game::showMenu() const {
               << "                                          __/ |" << std::endl
               << "                                         |___/" << std::endl
               << std::endl
-              << "Info: Map size " << size.first << "x" << size.second << std::endl
-              << "1 - New game" << std::endl
+              << "Info: Map size " << size.first << "x" << size.second << std::endl;
+    if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
+        std::cout << "0 - Continue Game" << std::endl;
+    }
+    std::cout << "1 - New game" << std::endl
               << "2 - Best scores" << std::endl
               << "3 - Settings" << std::endl
               << "4 - Show keys" << std::endl
@@ -171,6 +223,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         updateBestScores();
     }
     writeSettings();
+    updateGameFileName();
 }
 
 void Game::updateBestScores() {
@@ -208,11 +261,15 @@ void Game::writeSettings() const {
 }
 
 void Game::play() {
+    removeIfExists();
     Input::enableRawMode();
-    start();
     while (!isGameOver()) {
         print();
-        logic();
+        if (logic()) {
+            save();
+            Input::disableRawMode();
+            break;
+        }
     }
 }
 
@@ -223,6 +280,12 @@ void Game::showKeys() const {
     std::cout << keyMoveLeft << " - Move left" << std::endl;
     std::cout << keyMoveRight << " - Move right" << std::endl;
     std::cout << keyPause << " - Pause/Resume" << std::endl;
+    std::cout << "m"
+              << " - Save and go back to menu" << std::endl;
+}
+
+void Game::updateGameFileName() {
+    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second);
 }
 
 void Game::run() {
@@ -232,6 +295,7 @@ void Game::run() {
     std::signal(SIGINT, signalHandler);
     std::signal(SIGTSTP, signalHandler);
     readSettings();
+    updateGameFileName();
     updateBestScores();
     char choice;
     do {
@@ -239,7 +303,15 @@ void Game::run() {
         showMenu();
         std::cin >> choice;
         switch (choice) {
+            case '0': {
+                if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
+                    load();
+                    play();
+                }
+                break;
+            }
             case '1': {
+                start();
                 play();
                 break;
             }
@@ -263,7 +335,7 @@ void Game::run() {
                 break;
             }
         }
-        if (choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
+        if (choice == '0' || choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin.get();
         }
