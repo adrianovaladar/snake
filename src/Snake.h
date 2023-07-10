@@ -28,6 +28,7 @@ public:
     void validateDirection(int c);
     void setPositions(const std::vector<std::pair<int, int>> &pS);
     void setPositions(const std::pair<int, int> &sizeMap);
+    Snake &operator++();
 };
 
 
