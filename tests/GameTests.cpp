@@ -1,5 +1,6 @@
 #include "../src/Game.h"
 #include "gtest/gtest.h"
+#include <filesystem>
 #include <fstream>
 
 TEST(Game, selfCollision) {
@@ -85,7 +86,7 @@ TEST(Game, writeSettings) {
     game.writeSettings();
     std::ifstream file("settings", std::ios::binary);
     if (!file) {
-        std::pair<int, int> expectedPair{DEFAULT_WIDTH, DEFAULT_HEIGHT};
+        std::pair<int, int> expectedPair{DEFAULT_LENGTH, DEFAULT_WIDTH};
         EXPECT_EQ(expectedPair, game.getSize());
     } else {
         // Seek to the end of the file
@@ -115,7 +116,7 @@ TEST(Game, readSettings) {
     file.open(fileNameTest, std::ios::in);
     std::stringstream output;
     if (!file) {
-        std::pair<int, int> expectedSize{DEFAULT_WIDTH, DEFAULT_HEIGHT};
+        std::pair<int, int> expectedSize{DEFAULT_LENGTH, DEFAULT_WIDTH};
         EXPECT_EQ(expectedSize, game.getSize());
     } else {
         game.settings(file, output);
@@ -123,5 +124,38 @@ TEST(Game, readSettings) {
         game.readSettings();
         std::pair<int, int> expectedSize = {70, 70};
         EXPECT_EQ(expectedSize, game.getSize());
+    }
+}
+
+TEST(Game, saveAndLoad) {
+    std::string directoryName = "files";
+    std::string fileName = "game_80_20";
+    std::string fileString = directoryName + "/" + fileName;
+    if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
+        std::filesystem::create_directory(directoryName);
+    }
+    Game game;
+    Snake snake;
+    Food food;
+    food.setPosition({5, 5});
+    game.setFood(food);
+    snake.setPositions({{5, 5}});
+    snake.validateDirection(Direction::UP);
+    game.setSnake(snake);
+    game.updateGameFileName();
+    game.save();
+    Game game2;
+    game2.updateGameFileName();
+    game2.load();
+    std::ifstream file(fileString, std::ios::binary);
+    if (!file) {
+        EXPECT_EQ(3, game.getSnake().getPositions().size());
+    }
+    EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
+    EXPECT_EQ(Direction::UP, snake.getDirection());
+    EXPECT_EQ(food.getPosition(), game2.getFood().getPosition());
+    EXPECT_EQ(true, game2.isEatFood());
+    if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
+        std::filesystem::remove_all(directoryName);// Remove the empty directory
     }
 }

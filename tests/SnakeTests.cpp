@@ -63,51 +63,42 @@ TEST(Snake, moveDown) {
 TEST(Snake, validateRightDirection) {
     Snake snake;
     snake.setPositions({{2, 2}});
-    snake.validateDirection('a');
+    snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection('d');
+    snake.validateDirection(Direction::RIGHT);
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection('w');
+    snake.validateDirection(Direction::UP);
     EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection('d');
-    snake.validateDirection('s');
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    // character that does not change direction
-    snake.validateDirection('q');
+    snake.validateDirection(Direction::RIGHT);
+    snake.validateDirection(Direction::DOWN);
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
 }
 TEST(Snake, validateLeftDirection) {
     Snake snake;
     snake.setPositions({{2, 2}});
     snake.setDirection(Direction::LEFT);
-    snake.validateDirection('a');
+    snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection('d');
+    snake.validateDirection(Direction::RIGHT);
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection('w');
+    snake.validateDirection(Direction::UP);
     EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection('a');
-    snake.validateDirection('s');
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    // character that does not change direction
-    snake.validateDirection('q');
+    snake.validateDirection(Direction::LEFT);
+    snake.validateDirection(Direction::DOWN);
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
 }
 TEST(Snake, validateUpDirection) {
     Snake snake;
     snake.setPositions({{2, 2}});
     snake.setDirection(Direction::UP);
-    snake.validateDirection('a');
+    snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection('w');
-    snake.validateDirection('d');
+    snake.validateDirection(Direction::UP);
+    snake.validateDirection(Direction::RIGHT);
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection('w');
+    snake.validateDirection(Direction::UP);
     EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection('s');
-    EXPECT_EQ(Direction::UP, snake.getDirection());
-    // character that does not change direction
-    snake.validateDirection('q');
+    snake.validateDirection(Direction::DOWN);
     EXPECT_EQ(Direction::UP, snake.getDirection());
 }
 TEST(Snake, validateDownDirection) {
@@ -115,17 +106,14 @@ TEST(Snake, validateDownDirection) {
     snake.setPositions({{2, 2}});
     // test down direction
     snake.setDirection(Direction::DOWN);
-    snake.validateDirection('a');
+    snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection('s');
-    snake.validateDirection('d');
+    snake.validateDirection(Direction::DOWN);
+    snake.validateDirection(Direction::RIGHT);
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection('s');
-    snake.validateDirection('w');
+    snake.validateDirection(Direction::DOWN);
+    snake.validateDirection(Direction::UP);
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    snake.validateDirection('s');
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    // character that does not change direction
-    snake.validateDirection('q');
+    snake.validateDirection(Direction::DOWN);
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
 }
