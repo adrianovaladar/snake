@@ -25,7 +25,7 @@ public:
     void move();
     void increase();
     void setSymbol(char s);
-    void validateDirection(int c);
+    void validateDirection(Direction d);
     void setPositions(const std::vector<std::pair<int, int>> &pS);
     void setPositions(const std::pair<int, int> &sizeMap);
 };

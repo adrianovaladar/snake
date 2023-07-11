@@ -6,8 +6,18 @@
 #include "Player.h"
 #include "Snake.h"
 
-#define DEFAULT_WIDTH 80
-#define DEFAULT_HEIGHT 20
+#define DEFAULT_LENGTH 80
+#define DEFAULT_WIDTH 20
+
+#define MIN_LENGTH 10
+#define MIN_WIDTH 5
+
+#define KEY_MOVE_UP 'w'
+#define KEY_MOVE_LEFT 'a'
+#define KEY_MOVE_DOWN 's'
+#define KEY_MOVE_RIGHT 'd'
+#define KEY_PAUSE 'p'
+#define KEY_SAVE 'm'
 
 class Game {
 private:
@@ -19,26 +29,23 @@ private:
     int score;
     std::string settingsFileName;
     std::string directoryName;
-    char keyMoveUp;
-    char keymoveDown;
-    char keyMoveLeft;
-    char keyMoveRight;
-    char keyPause;
+    std::string gameFileName;
     bool pause;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence() const;
-    void readDirectionAndMoveSnake();
+    bool readDirectionAndMoveSnake();
     void showMenu() const;
     static void about();
     void updateBestScores();
     void play();
-    void showKeys() const;
+    static void showKeys();
+    void removeIfExists();
 
 public:
-    Game() : size(DEFAULT_WIDTH, DEFAULT_HEIGHT), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), keyMoveUp('w'), keymoveDown('s'), keyMoveLeft('a'), keyMoveRight('d'), keyPause('p'), pause(false){};
+    Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false){};
     virtual ~Game();
     bool isGameOver();
-    void logic();
+    bool logic();
     void print();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
@@ -49,6 +56,12 @@ public:
     void settings(std::istream &input, std::ostream &output);
     void readSettings();
     void writeSettings() const;
+    void save();
+    void load();
+    [[nodiscard]] int getScore() const;
+    [[nodiscard]] const Snake &getSnake() const;
+    [[nodiscard]] const Food &getFood() const;
+    void updateGameFileName();
 };
 
 #endif//SNAKE_MAP_H

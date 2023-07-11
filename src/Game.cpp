@@ -7,9 +7,6 @@
 #include <string>
 #include <vector>
 
-#define MIN_WIDTH 10
-#define MIN_HEIGHT 5
-
 void clearScreen() {
     // Position cursor in the top-left corner
     std::cout << "\033[1;1H";
@@ -22,6 +19,11 @@ void signalHandler(int signal) {
     system("clear");
     Input::disableRawMode();
     exit(signal);
+}
+
+void printExitScreen() {
+    std::cout << std::endl
+              << "Press enter to exit this screen ";
 }
 
 void Game::printHorizontalFence() const {
@@ -69,22 +71,36 @@ void Game::start() {
     food.setPosition(size, snake.getPositions());
 }
 
-void Game::readDirectionAndMoveSnake() {
+bool Game::readDirectionAndMoveSnake() {
     int c{};
     if (Input::kbHit())
         c = getchar();
-    if (tolower(c) == keyPause) {
+    if (tolower(c) == KEY_SAVE) {
+        return true;
+    }
+    if (tolower(c) == KEY_PAUSE) {
         pause = !pause;
     }
     if (!pause) {
-        snake.validateDirection(tolower(c));
+        Direction d;
+        if (tolower(c) == KEY_MOVE_UP)
+            d = Direction::UP;
+        else if (tolower(c) == KEY_MOVE_LEFT)
+            d = Direction::LEFT;
+        else if (tolower(c) == KEY_MOVE_DOWN)
+            d = Direction::DOWN;
+        else if (tolower(c) == KEY_MOVE_RIGHT)
+            d = Direction::RIGHT;
+        snake.validateDirection(d);
         snake.move();
     }
+    return false;
 }
 
-void Game::logic() {
+bool Game::logic() {
     std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));
-    readDirectionAndMoveSnake();
+    if (readDirectionAndMoveSnake())
+        return true;
     if (isEatFood()) {
         snake.increase();
         score++;
@@ -98,6 +114,7 @@ void Game::logic() {
         }
         bestScores.print(size);
     }
+    return false;
 }
 
 void Game::print() {
@@ -109,6 +126,8 @@ void Game::print() {
     }
     printHorizontalFence();
     std::cout << "Score: " << score << std::endl;
+    if (pause)
+        std::cout << "Game paused" << std::endl;
 }
 
 bool Game::isEatFood() {
@@ -129,6 +148,61 @@ void Game::setFood(const Food &f) {
 
 Game::~Game() = default;
 
+void Game::save() {
+    std::ofstream file(directoryName + "/" + gameFileName, std::ios::binary);
+    if (!file || !file.good()) {
+        log("Error opening file for writing", LOGLEVEL::Warning);
+        return;
+    }
+    file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    size_t positionsSize = snake.getPositions().size();
+    file.write(reinterpret_cast<const char *>(&positionsSize), sizeof(positionsSize));
+    file.write(reinterpret_cast<const char *>(snake.getPositions().data()), static_cast<std::streamsize>(positionsSize * sizeof(std::pair<int, int>)));
+    Direction d = snake.getDirection();
+    file.write(reinterpret_cast<const char *>(&d), sizeof(d));
+    file.write(reinterpret_cast<const char *>(&food.getPosition()), sizeof(food.getPosition()));
+    file.write(reinterpret_cast<const char *>(&score), sizeof(score));
+
+    file.close();
+    if (!file.good()) {
+        log("Error occurred at writing time", LOGLEVEL::Warning);
+    }
+}
+
+void Game::load() {
+    std::ifstream file(directoryName + "/" + gameFileName, std::ios::binary);
+    if (!file) {
+        log("Error opening file for reading", LOGLEVEL::Warning);
+        return;
+    }
+    std::pair<int, int> sizeMap;
+    file.read(reinterpret_cast<char *>(&sizeMap), sizeof(sizeMap));
+    if (sizeMap != size) {
+        log("Different map size found in the file", LOGLEVEL::Warning);
+        return;
+    }
+    size_t size1;
+    file.read(reinterpret_cast<char *>(&size1), sizeof(size1));
+    std::vector<std::pair<int, int>> positionsSnake;
+    positionsSnake.resize(size1);
+    file.read(reinterpret_cast<char *>(positionsSnake.data()), static_cast<std::streamsize>(size1 * sizeof(positionsSnake.begin())));
+    snake.setPositions(positionsSnake);
+    Direction d;
+    file.read(reinterpret_cast<char *>(&d), sizeof(d));
+    snake.validateDirection(d);
+    std::pair<int, int> positionFood;
+    file.read(reinterpret_cast<char *>(&positionFood), sizeof(positionFood));
+    food.setPosition(positionFood);
+    file.read(reinterpret_cast<char *>(&score), sizeof(score));
+    file.close();
+}
+
+void Game::removeIfExists() {
+    if (std::filesystem::exists(directoryName + "/" + gameFileName)) {
+        std::filesystem::remove(directoryName + "/" + gameFileName);
+    }
+}
+
 void Game::showMenu() const {
 
     std::cout << std::endl
@@ -141,8 +215,11 @@ void Game::showMenu() const {
               << "                                          __/ |" << std::endl
               << "                                         |___/" << std::endl
               << std::endl
-              << "Info: Map size " << size.first << "x" << size.second << std::endl
-              << "1 - New game" << std::endl
+              << "Info: Map size " << size.first << "x" << size.second << std::endl;
+    if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
+        std::cout << "0 - Continue game" << std::endl;
+    }
+    std::cout << "1 - New game" << std::endl
               << "2 - Best scores" << std::endl
               << "3 - Settings" << std::endl
               << "4 - Show keys" << std::endl
@@ -154,15 +231,15 @@ void Game::showMenu() const {
 void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
-    output << "Minimum size of map is " << MIN_WIDTH << "x" << MIN_HEIGHT << std::endl;
-    output << "Default size of map is " << DEFAULT_WIDTH << "X" << DEFAULT_HEIGHT << std::endl;
+    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << std::endl;
+    output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
     std::pair<int, int> tmpSize{};
     do {
-        output << "Width (current value is " << size.first << "): ";
+        output << "Length (current value is " << size.first << "): ";
         input >> tmpSize.first;
-        output << "Height (current value is " << size.second << "): ";
+        output << "Width (current value is " << size.second << "): ";
         input >> tmpSize.second;
-    } while (tmpSize.first < MIN_WIDTH || tmpSize.second < MIN_HEIGHT);
+    } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
     bool changed{};
     if (tmpSize != size)
         changed = true;
@@ -171,6 +248,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         updateBestScores();
     }
     writeSettings();
+    updateGameFileName();
 }
 
 void Game::updateBestScores() {
@@ -208,21 +286,31 @@ void Game::writeSettings() const {
 }
 
 void Game::play() {
+    removeIfExists();
     Input::enableRawMode();
-    start();
     while (!isGameOver()) {
         print();
-        logic();
+        if (logic()) {
+            save();
+            Input::disableRawMode();
+            break;
+        }
     }
 }
 
-void Game::showKeys() const {
+void Game::showKeys() {
     std::cout << "Show keys" << std::endl;
-    std::cout << keyMoveUp << " - Move up" << std::endl;
-    std::cout << keymoveDown << " - Move down" << std::endl;
-    std::cout << keyMoveLeft << " - Move left" << std::endl;
-    std::cout << keyMoveRight << " - Move right" << std::endl;
-    std::cout << keyPause << " - Pause/Resume" << std::endl;
+    std::cout << KEY_MOVE_UP << " - Move up" << std::endl;
+    std::cout << KEY_MOVE_DOWN << " - Move down" << std::endl;
+    std::cout << KEY_MOVE_LEFT << " - Move left" << std::endl;
+    std::cout << KEY_MOVE_RIGHT << " - Move right" << std::endl;
+    std::cout << KEY_PAUSE << " - Pause/Resume" << std::endl;
+    std::cout << KEY_SAVE
+              << " - Save and go back to menu" << std::endl;
+}
+
+void Game::updateGameFileName() {
+    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second);
 }
 
 void Game::run() {
@@ -232,6 +320,7 @@ void Game::run() {
     std::signal(SIGINT, signalHandler);
     std::signal(SIGTSTP, signalHandler);
     readSettings();
+    updateGameFileName();
     updateBestScores();
     char choice;
     do {
@@ -239,35 +328,70 @@ void Game::run() {
         showMenu();
         std::cin >> choice;
         switch (choice) {
+            case '0': {
+                if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
+                    load();
+                    play();
+                }
+                printExitScreen();
+                break;
+            }
             case '1': {
+                if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
+                    char option;
+                    std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. Do you want to proceed? Type a to accept, any other key to refuse ";
+                    std::cin >> option;
+                    if (tolower(option) != 'a') {
+                        printExitScreen();
+                        break;
+                    }
+                }
+                start();
                 play();
+                printExitScreen();
                 break;
             }
             case '2': {
                 bestScores.print(size);
+                printExitScreen();
                 break;
             }
             case '3': {
                 settings(std::cin, std::cout);
+                printExitScreen();
                 break;
             }
             case '4': {
                 showKeys();
+                printExitScreen();
                 break;
             }
             case '5': {
                 about();
+                printExitScreen();
                 break;
             }
             default: {
                 break;
             }
         }
-        if (choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
+        if (choice == '0' || choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin.get();
         }
     } while (choice != '9');
     clearScreen();
     system("clear");
+}
+
+int Game::getScore() const {
+    return score;
+}
+
+const Snake &Game::getSnake() const {
+    return snake;
+}
+
+const Food &Game::getFood() const {
+    return food;
 }

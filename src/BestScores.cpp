@@ -92,7 +92,6 @@ void BestScores::print(const std::pair<int, int> &sizeGame) {
         std::cout << std::setw(8) << r << std::setw(15 + 1) << p.getName() << std::setw(15 + 1) << p.getScore() << std::endl;
         r++;
     }
-    std::cout << std::endl;
 }
 
 const std::vector<Player> &BestScores::getPlayers() const {

@@ -52,24 +52,24 @@ void Snake::increase() {
 
 Snake::~Snake() = default;
 
-void Snake::validateDirection(int c) {
-    switch (c) {
-        case 'w': {
+void Snake::validateDirection(Direction d) {
+    switch (d) {
+        case Direction::UP: {
             if (direction != Direction::DOWN)
                 direction = Direction::UP;
             break;
         }
-        case 'a': {
+        case Direction::LEFT: {
             if (direction != Direction::RIGHT)
                 direction = Direction::LEFT;
             break;
         }
-        case 's': {
+        case Direction::DOWN: {
             if (direction != Direction::UP)
                 direction = Direction::DOWN;
             break;
         }
-        case 'd': {
+        case Direction::RIGHT: {
             if (direction != Direction::LEFT)
                 direction = Direction::RIGHT;
             break;
