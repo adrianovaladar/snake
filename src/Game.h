@@ -38,7 +38,7 @@ private:
     static void about();
     void updateBestScores();
     void play();
-    void showKeys() const;
+    static void showKeys();
     void removeIfExists();
 
 public:

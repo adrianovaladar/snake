@@ -298,7 +298,7 @@ void Game::play() {
     }
 }
 
-void Game::showKeys() const {
+void Game::showKeys() {
     std::cout << "Show keys" << std::endl;
     std::cout << KEY_MOVE_UP << " - Move up" << std::endl;
     std::cout << KEY_MOVE_DOWN << " - Move down" << std::endl;
@@ -341,7 +341,7 @@ void Game::run() {
                     char option;
                     std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. Do you want to proceed? Type a to accept, any other key to refuse ";
                     std::cin >> option;
-                    if (option != 'a') {
+                    if (tolower(option) != 'a') {
                         printExitScreen();
                         break;
                     }
