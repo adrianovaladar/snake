@@ -2,9 +2,10 @@
 #define SNAKE_MAP_H
 
 #include "BestScores.h"
-#include "Food.h"
 #include "Player.h"
+#include "RegularFood.h"
 #include "Snake.h"
+#include <memory>
 
 #define DEFAULT_LENGTH 80
 #define DEFAULT_WIDTH 20
@@ -22,7 +23,7 @@
 class Game {
 private:
     std::pair<int, int> size;
-    Food food;
+    std::unique_ptr<Food> regularFood;
     Snake snake;
     BestScores bestScores;
     char symbol;
@@ -42,14 +43,14 @@ private:
     void removeIfExists();
 
 public:
-    Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false){};
+    Game();
     virtual ~Game();
     bool isGameOver();
     bool logic();
     void print();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
-    void setFood(const Food &f);
+    void setFood(std::unique_ptr<Food> f);
     bool isEatFood();
     void run();
     void start();
