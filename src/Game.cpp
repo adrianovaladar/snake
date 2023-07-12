@@ -26,6 +26,10 @@ void printExitScreen() {
               << "Press enter to exit this screen ";
 }
 
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false) {
+    regularFood = std::make_unique<RegularFood>();
+}
+
 void Game::printHorizontalFence() const {
     for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
         std::cout << symbol;
@@ -42,8 +46,8 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
             std::cout << snake.getSymbol();
-        else if (food.getPosition() == pos)
-            std::cout << food.getSymbol();
+        else if (regularFood->getPosition() == pos)
+            std::cout << regularFood->getSymbol();
         else
             std::cout << " ";
     }
@@ -68,7 +72,7 @@ void Game::start() {
     snake.setPositions(size);
     log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
     log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
-    food.setPosition(size, snake.getPositions());
+    regularFood->setPosition(size, snake.getPositions());
 }
 
 bool Game::readDirectionAndMoveSnake() {
@@ -104,7 +108,7 @@ bool Game::logic() {
     if (isEatFood()) {
         snake.increase();
         score++;
-        food.setPosition(this->size, snake.getPositions());
+        regularFood->setPosition(this->size, snake.getPositions());
     }
     if (isGameOver()) {
         log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
@@ -131,7 +135,7 @@ void Game::print() {
 }
 
 bool Game::isEatFood() {
-    bool isEatFood = snake.getPositions().at(0) == food.getPosition();
+    bool isEatFood = snake.getPositions().at(0) == regularFood->getPosition();
     return isEatFood;
 }
 
@@ -142,8 +146,8 @@ void Game::setSnake(const Snake &s) {
 const std::pair<int, int> &Game::getSize() const {
     return size;
 }
-void Game::setFood(const Food &f) {
-    Game::food = f;
+void Game::setFood(std::unique_ptr<Food> f) {
+    regularFood = std::move(f);
 }
 
 Game::~Game() = default;
@@ -160,7 +164,7 @@ void Game::save() {
     file.write(reinterpret_cast<const char *>(snake.getPositions().data()), static_cast<std::streamsize>(positionsSize * sizeof(std::pair<int, int>)));
     Direction d = snake.getDirection();
     file.write(reinterpret_cast<const char *>(&d), sizeof(d));
-    file.write(reinterpret_cast<const char *>(&food.getPosition()), sizeof(food.getPosition()));
+    file.write(reinterpret_cast<const char *>(&regularFood->getPosition()), sizeof(regularFood->getPosition()));
     file.write(reinterpret_cast<const char *>(&score), sizeof(score));
 
     file.close();
@@ -192,7 +196,7 @@ void Game::load() {
     snake.validateDirection(d);
     std::pair<int, int> positionFood;
     file.read(reinterpret_cast<char *>(&positionFood), sizeof(positionFood));
-    food.setPosition(positionFood);
+    regularFood->setPosition(positionFood);
     file.read(reinterpret_cast<char *>(&score), sizeof(score));
     file.close();
 }
@@ -393,5 +397,5 @@ const Snake &Game::getSnake() const {
 }
 
 const Food &Game::getFood() const {
-    return food;
+    return *regularFood;
 }
