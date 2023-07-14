@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "RegularFood.h"
 #include "Snake.h"
+#include "SuperFood.h"
 #include <memory>
 
 #define DEFAULT_LENGTH 80
@@ -24,6 +25,7 @@ class Game {
 private:
     std::pair<int, int> size;
     std::unique_ptr<Food> regularFood;
+    std::unique_ptr<Food> superFood;
     Snake snake;
     BestScores bestScores;
     char symbol;
@@ -51,7 +53,8 @@ public:
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setFood(std::unique_ptr<Food> f);
-    bool isEatFood();
+    bool isEatRegularFood();
+    bool isEatSuperFood();
     void run();
     void start();
     void settings(std::istream &input, std::ostream &output);
