@@ -143,6 +143,7 @@ TEST(Game, saveAndLoad) {
     std::unique_ptr<Food> superFood = std::make_unique<SuperFood>();
     dynamic_cast<SuperFood *>(superFood.get())->setEnabled(true);
     superFood->setPosition({5, 5});
+    std::pair<int, int> positionsSuperFood = superFood->getPosition();
     game.setSuperFood(std::move(superFood));
     snake.setPositions({{5, 5}});
     snake.validateDirection(Direction::UP);
@@ -158,7 +159,8 @@ TEST(Game, saveAndLoad) {
     }
     EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
     EXPECT_EQ(Direction::UP, snake.getDirection());
-    EXPECT_EQ(positionsRegularFood, game2.getFood().getPosition());
+    EXPECT_EQ(positionsRegularFood, game2.getRegularFood().getPosition());
+    EXPECT_EQ(positionsSuperFood, game2.getSuperFood().getPosition());
     EXPECT_EQ(true, game2.isEatRegularFood());
     EXPECT_EQ(true, game2.isEatSuperFood());
     if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {

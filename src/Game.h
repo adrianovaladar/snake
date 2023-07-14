@@ -65,7 +65,8 @@ public:
     void load();
     [[nodiscard]] int getScore() const;
     [[nodiscard]] const Snake &getSnake() const;
-    [[nodiscard]] const Food &getFood() const;
+    [[nodiscard]] const Food &getRegularFood() const;
+    [[nodiscard]] const Food &getSuperFood() const;
     void updateGameFileName();
 };
 

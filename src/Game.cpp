@@ -440,6 +440,10 @@ const Snake &Game::getSnake() const {
     return snake;
 }
 
-const Food &Game::getFood() const {
+const Food &Game::getRegularFood() const {
     return *regularFood;
+}
+
+const Food &Game::getSuperFood() const {
+    return *superFood;
 }
