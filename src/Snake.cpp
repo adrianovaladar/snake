@@ -46,10 +46,6 @@ void Snake::setDirection(Direction d) {
     Snake::direction = d;
 }
 
-void Snake::increase() {
-    positions.emplace_back(-1, -1);
-}
-
 Snake &Snake::operator++() {
     positions.emplace_back(-1, -1);
     return *this;

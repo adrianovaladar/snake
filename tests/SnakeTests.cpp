@@ -5,7 +5,7 @@
 TEST(Snake, increase) {
     Snake snake;
     size_t sizeBefore{snake.getPositions().size()};
-    snake.increase();
+    ++snake;
     EXPECT_EQ(sizeBefore + 1, snake.getPositions().size());
     // check if the last position is -1, -1
     std::pair<int, int> expectedPosition = {-1, -1};

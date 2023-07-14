@@ -17,12 +17,9 @@ void BestScores::read() {
     std::ifstream myFile;
     myFile.open(nameFile, std::ios::in);
     Player player;
-    int s;
-    std::string n;
     int numberPlayers{};
-    while (myFile >> s >> n) {
-        Player p{s, n};
-        players.emplace_back(p);
+    while (myFile >> player) {
+        players.emplace_back(player.getScore(), player.getName());
         numberPlayers++;
         if (numberPlayers == 5)
             break;
