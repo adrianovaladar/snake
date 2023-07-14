@@ -15,7 +15,7 @@ public:
     [[nodiscard]] char getSymbol() const;
     [[nodiscard]] const std::pair<int, int> &getPosition() const;
     void setPosition(const std::pair<int, int> &p);
-    virtual void setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake) = 0;
+    virtual void setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake, const std::pair<int, int> &otherFoodPosition) = 0;
 };
 
 #endif//SNAKE_FOOD_H

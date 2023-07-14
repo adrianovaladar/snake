@@ -57,7 +57,7 @@ TEST(Game, isEatFoodTrue) {
     game.setFood(std::move(regularFood));
     snake.setPositions({{5, 5}});
     game.setSnake(snake);
-    EXPECT_EQ(true, game.isEatFood());
+    EXPECT_EQ(true, game.isEatRegularFood());
 }
 
 TEST(Game, isEatFoodFalse) {
@@ -68,7 +68,7 @@ TEST(Game, isEatFoodFalse) {
     game.setFood(std::move(regularFood));
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
-    EXPECT_EQ(false, game.isEatFood());
+    EXPECT_EQ(false, game.isEatRegularFood());
 }
 
 TEST(Game, isSnakeInMap) {
@@ -155,7 +155,7 @@ TEST(Game, saveAndLoad) {
     EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
     EXPECT_EQ(Direction::UP, snake.getDirection());
     EXPECT_EQ(positionsRegularFood, game2.getFood().getPosition());
-    EXPECT_EQ(true, game2.isEatFood());
+    EXPECT_EQ(true, game2.isEatRegularFood());
     if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
         std::filesystem::remove_all(directoryName);// Remove the empty directory
     }
