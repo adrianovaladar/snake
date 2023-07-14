@@ -12,15 +12,17 @@ void SuperFood::setMovesLeft(int moves) {
 
 void SuperFood::decreaseMovesLeft() {
     movesLeft--;
-    if (movesLeft == 0)
+    if (movesLeft == 0) {
         enabled = false;
+        position = {-1, -1};
+    }
 }
 
 void SuperFood::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake, const std::pair<int, int> &otherFoodPosition) {
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_real_distribution<double> dis(0.0, 1.0);
-    double probability = 0.3;
+    double probability = 0.2;
     if (dis(rng) <= probability) {
         std::pair<int, int> superFoodPosition;
         std::vector<std::pair<int, int>> posSnake = positionsSnake;

@@ -52,7 +52,8 @@ public:
     void print();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
-    void setFood(std::unique_ptr<Food> f);
+    void setRegularFood(std::unique_ptr<Food> f);
+    void setSuperFood(std::unique_ptr<Food> f);
     bool isEatRegularFood();
     bool isEatSuperFood();
     void run();

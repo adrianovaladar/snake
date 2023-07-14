@@ -120,13 +120,14 @@ bool Game::logic() {
             superFood->setPosition(size, snake.getPositions(), regularFood->getPosition());
             if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
                 int biggerSide = size.first > size.second ? size.first : size.second;
-                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(biggerSide);
+                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(biggerSide * 0.7);
             }
         }
     }
     if (isEatSuperFood()) {
-        snake.increase();
+        ++snake;
         score += 3;
+        dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
         superFood->setPosition({-1, -1});
     }
     if (isGameOver()) {
@@ -161,11 +162,7 @@ bool Game::isEatRegularFood() {
 }
 
 bool Game::isEatSuperFood() {
-    if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && snake.getPositions().at(0) == superFood->getPosition()) {
-        dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
-        return true;
-    }
-    return false;
+    return dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && snake.getPositions().at(0) == superFood->getPosition();
 }
 
 void Game::setSnake(const Snake &s) {
@@ -175,8 +172,12 @@ void Game::setSnake(const Snake &s) {
 const std::pair<int, int> &Game::getSize() const {
     return size;
 }
-void Game::setFood(std::unique_ptr<Food> f) {
+void Game::setRegularFood(std::unique_ptr<Food> f) {
     regularFood = std::move(f);
+}
+
+void Game::setSuperFood(std::unique_ptr<Food> f) {
+    superFood = std::move(f);
 }
 
 Game::~Game() = default;

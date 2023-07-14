@@ -54,7 +54,7 @@ TEST(Game, isEatFoodTrue) {
     Snake snake;
     std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
     regularFood->setPosition({5, 5});
-    game.setFood(std::move(regularFood));
+    game.setRegularFood(std::move(regularFood));
     snake.setPositions({{5, 5}});
     game.setSnake(snake);
     EXPECT_EQ(true, game.isEatRegularFood());
@@ -65,7 +65,7 @@ TEST(Game, isEatFoodFalse) {
     Snake snake;
     std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
     regularFood->setPosition({5, 5});
-    game.setFood(std::move(regularFood));
+    game.setRegularFood(std::move(regularFood));
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
     EXPECT_EQ(false, game.isEatRegularFood());
@@ -139,7 +139,11 @@ TEST(Game, saveAndLoad) {
     std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
     regularFood->setPosition({5, 5});
     std::pair<int, int> positionsRegularFood = regularFood->getPosition();
-    game.setFood(std::move(regularFood));
+    game.setRegularFood(std::move(regularFood));
+    std::unique_ptr<Food> superFood = std::make_unique<SuperFood>();
+    dynamic_cast<SuperFood *>(superFood.get())->setEnabled(true);
+    superFood->setPosition({5, 5});
+    game.setSuperFood(std::move(superFood));
     snake.setPositions({{5, 5}});
     snake.validateDirection(Direction::UP);
     game.setSnake(snake);
@@ -156,6 +160,7 @@ TEST(Game, saveAndLoad) {
     EXPECT_EQ(Direction::UP, snake.getDirection());
     EXPECT_EQ(positionsRegularFood, game2.getFood().getPosition());
     EXPECT_EQ(true, game2.isEatRegularFood());
+    EXPECT_EQ(true, game2.isEatSuperFood());
     if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
         std::filesystem::remove_all(directoryName);// Remove the empty directory
     }
