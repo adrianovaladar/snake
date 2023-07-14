@@ -1,6 +1,5 @@
 #include "Player.h"
 #include <iostream>
-
 #include <utility>
 
 Player::Player() = default;

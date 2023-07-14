@@ -19,7 +19,7 @@ void BestScores::read() {
     Player player;
     int numberPlayers{};
     while (myFile >> player) {
-        players.emplace_back(player.getScore(), player.getName());
+        players.emplace_back(player);
         numberPlayers++;
         if (numberPlayers == 5)
             break;
@@ -27,7 +27,6 @@ void BestScores::read() {
     log("Number of players read: " + std::to_string(numberPlayers), LOGLEVEL::Info);
     myFile.close();
 }
-
 
 void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int score) {
     std::ofstream myFile;
