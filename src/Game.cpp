@@ -102,7 +102,7 @@ bool Game::logic() {
     if (readDirectionAndMoveSnake())
         return true;
     if (isEatFood()) {
-        snake.increase();
+        ++snake;
         score++;
         food.setPosition(this->size, snake.getPositions());
     }
