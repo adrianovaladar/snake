@@ -52,23 +52,23 @@ TEST(Game, isNotGameOver) {
 TEST(Game, isEatFoodTrue) {
     Game game;
     Snake snake;
-    Food food;
-    food.setPosition({5, 5});
-    game.setFood(food);
+    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
+    regularFood->setPosition({5, 5});
+    game.setRegularFood(std::move(regularFood));
     snake.setPositions({{5, 5}});
     game.setSnake(snake);
-    EXPECT_EQ(true, game.isEatFood());
+    EXPECT_EQ(true, game.isEatRegularFood());
 }
 
 TEST(Game, isEatFoodFalse) {
     Game game;
     Snake snake;
-    Food food;
-    food.setPosition({5, 5});
-    game.setFood(food);
+    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
+    regularFood->setPosition({5, 5});
+    game.setRegularFood(std::move(regularFood));
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
-    EXPECT_EQ(false, game.isEatFood());
+    EXPECT_EQ(false, game.isEatRegularFood());
 }
 
 TEST(Game, isSnakeInMap) {
@@ -136,9 +136,15 @@ TEST(Game, saveAndLoad) {
     }
     Game game;
     Snake snake;
-    Food food;
-    food.setPosition({5, 5});
-    game.setFood(food);
+    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
+    regularFood->setPosition({5, 5});
+    std::pair<int, int> positionsRegularFood = regularFood->getPosition();
+    game.setRegularFood(std::move(regularFood));
+    std::unique_ptr<Food> superFood = std::make_unique<SuperFood>();
+    dynamic_cast<SuperFood *>(superFood.get())->setEnabled(true);
+    superFood->setPosition({5, 5});
+    std::pair<int, int> positionsSuperFood = superFood->getPosition();
+    game.setSuperFood(std::move(superFood));
     snake.setPositions({{5, 5}});
     snake.validateDirection(Direction::UP);
     game.setSnake(snake);
@@ -153,8 +159,10 @@ TEST(Game, saveAndLoad) {
     }
     EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
     EXPECT_EQ(Direction::UP, snake.getDirection());
-    EXPECT_EQ(food.getPosition(), game2.getFood().getPosition());
-    EXPECT_EQ(true, game2.isEatFood());
+    EXPECT_EQ(positionsRegularFood, game2.getRegularFood().getPosition());
+    EXPECT_EQ(positionsSuperFood, game2.getSuperFood().getPosition());
+    EXPECT_EQ(true, game2.isEatRegularFood());
+    EXPECT_EQ(true, game2.isEatSuperFood());
     if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
         std::filesystem::remove_all(directoryName);// Remove the empty directory
     }

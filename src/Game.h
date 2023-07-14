@@ -2,9 +2,11 @@
 #define SNAKE_MAP_H
 
 #include "BestScores.h"
-#include "Food.h"
 #include "Player.h"
+#include "RegularFood.h"
 #include "Snake.h"
+#include "SuperFood.h"
+#include <memory>
 
 #define DEFAULT_LENGTH 80
 #define DEFAULT_WIDTH 20
@@ -22,7 +24,8 @@
 class Game {
 private:
     std::pair<int, int> size;
-    Food food;
+    std::unique_ptr<Food> regularFood;
+    std::unique_ptr<Food> superFood;
     Snake snake;
     BestScores bestScores;
     char symbol;
@@ -42,15 +45,17 @@ private:
     void removeIfExists();
 
 public:
-    Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false){};
+    Game();
     virtual ~Game();
     bool isGameOver();
     bool logic();
     void print();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
-    void setFood(const Food &f);
-    bool isEatFood();
+    void setRegularFood(std::unique_ptr<Food> f);
+    void setSuperFood(std::unique_ptr<Food> f);
+    bool isEatRegularFood();
+    bool isEatSuperFood();
     void run();
     void start();
     void settings(std::istream &input, std::ostream &output);
@@ -60,7 +65,8 @@ public:
     void load();
     [[nodiscard]] int getScore() const;
     [[nodiscard]] const Snake &getSnake() const;
-    [[nodiscard]] const Food &getFood() const;
+    [[nodiscard]] const Food &getRegularFood() const;
+    [[nodiscard]] const Food &getSuperFood() const;
     void updateGameFileName();
 };
 
