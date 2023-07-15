@@ -26,20 +26,27 @@ void printExitScreen() {
               << "Press enter to exit this screen ";
 }
 
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false) {
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(false) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
 }
 
 void Game::printHorizontalFence() const {
     for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
-        std::cout << symbol;
+        if (borders) {
+            std::cout << symbol;
+        } else {
+            std::cout << ".";
+        }
     }
     std::cout << std::endl;
 }
 
 void Game::printVerticalFenceAndPlayableArea(int j) {
-    std::cout << symbol;
+    if (borders) {
+        std::cout << symbol;
+    } else
+        std::cout << ".";
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
     for (int i{}; i < size.first; i++) {
@@ -54,7 +61,11 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
         else
             std::cout << " ";
     }
-    std::cout << symbol;
+    if (borders) {
+        std::cout << symbol;
+    } else
+        std::cout << ".";
+
     std::cout << std::endl;
 }
 
@@ -149,6 +160,8 @@ void Game::print() {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
+    std::string B = (borders == true) ? "On" : "Off";
+    std::cout << "Border " << B << std::endl;
     std::cout << "Score: " << score << std::endl;
     if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled())
         std::cout << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
@@ -278,6 +291,8 @@ void Game::showMenu() const {
 
 void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
+    output << "Change Map size" << std::endl;
+    output << "Borders on/off" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
     output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << std::endl;
     output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
@@ -446,4 +461,10 @@ const Food &Game::getRegularFood() const {
 
 const Food &Game::getSuperFood() const {
     return *superFood;
+}
+bool Game::isBorders() const {
+    return borders;
+}
+void Game::setBorders(bool borders) {
+    Game::borders = borders;
 }

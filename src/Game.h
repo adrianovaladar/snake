@@ -43,6 +43,7 @@ private:
     void play();
     static void showKeys();
     void removeIfExists();
+    bool borders;
 
 public:
     Game();
@@ -68,6 +69,8 @@ public:
     [[nodiscard]] const Food &getRegularFood() const;
     [[nodiscard]] const Food &getSuperFood() const;
     void updateGameFileName();
+    bool isBorders() const;
+    void setBorders(bool borders);
 };
 
 #endif//SNAKE_MAP_H
