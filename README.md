@@ -15,7 +15,7 @@ permissions are crucial for the game's settings, best scores files, and the abil
 will be stored in the "files" directory.
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
-![image](https://github.com/adrianovaladar/snake/assets/60299267/97a9edd8-d547-456a-b5a3-f565d525307b)
+![image](https://github.com/adrianovaladar/snake/assets/60299267/a1ccb51c-bf44-4653-b6da-51be6b6514d6)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
 increase its length and score. Additionally, there are superfood items that provide bonus points when eaten.
