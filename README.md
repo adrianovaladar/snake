@@ -17,9 +17,34 @@ will be stored in the "files" directory.
 Upon launching the game, a menu will be displayed, similar to the example image provided.
 ![image](https://github.com/adrianovaladar/snake/assets/60299267/97a9edd8-d547-456a-b5a3-f565d525307b)
 
-The game features regular food, superfood power-ups, a progressively increasing velocity based on the amount of food
-consumed, the ability to enable or disable the border, pause functionality, and the option to save the game for later
-continuation.
+The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
+increase its length and score. Additionally, there are superfood items that provide bonus points when eaten.
+
+It includes a velocity mechanic. As the snake consumes more food, its velocity gradually increases, making the game more
+challenging and exciting. Players need to navigate the snake effectively to avoid colliding with walls (if the borders
+are on) or its own body.
+
+The project includes options to enable or disable the borders. Enabling the border restricts the snake's movement within
+the playable area, while disabling it allows the snake to wrap around the screen edges. This customizable feature allows
+players to tailor the game's difficulty and mechanics to their preference.
+
+The game also provides a pause functionality, allowing players to take breaks during gameplay without losing progress.
+Additionally, players have the option to save the game at any point, enabling them to continue from where they left off
+at a later time. Saved games, settings, and best scores are stored in files located in the designated "files" directory.
+
+One unique aspect of the Snake game project is the option to change the size of the game map. The game allows players to
+adjust the dimensions of the playable area, providing flexibility in gameplay and accommodating different preferences.
+
+By allowing players to change the map size, they can customize the difficulty level and adapt the gameplay experience to
+their liking. A larger map size may introduce additional challenges as the snake needs to navigate through a more
+extensive area. On the other hand, a smaller map size may create a more intense and fast-paced gameplay environment.
+
+This feature adds an extra layer of versatility to the game, allowing players to tailor their experience based on their
+skill level, personal preferences, or desire for different levels of challenge.
+
+Players can modify the map size through the game's settings, providing an intuitive and accessible way to adjust the
+gameplay environment to their desired dimensions. Whether they prefer a spacious playing field or a more compact and
+intense space, the option to change the map size offers a customizable experience for players to enjoy.
 
 A preview of the game:
 
