@@ -15,24 +15,21 @@ permissions are crucial for the game's settings, best scores files, and the abil
 will be stored in the "files" directory.
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
+
 ![image](https://github.com/adrianovaladar/snake/assets/60299267/a1ccb51c-bf44-4653-b6da-51be6b6514d6)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
-increase its length and score. Additionally, there are superfood items that provide bonus points when eaten.
+increase its length and score by 1. Additionally, there are superfood items that provide 3 points when eaten.
 
 It includes a velocity mechanic. As the snake consumes more food, its velocity gradually increases, making the game more
 challenging and exciting. Players need to navigate the snake effectively to avoid colliding with walls (if the borders
 are on) or its own body.
 
-The project includes options to enable or disable the borders. Enabling the border restricts the snake's movement within
-the playable area, while disabling it allows the snake to wrap around the screen edges. This customizable feature allows
-players to tailor the game's difficulty and mechanics to their preference.
-
 The game also provides a pause functionality, allowing players to take breaks during gameplay without losing progress.
 Additionally, players have the option to save the game at any point, enabling them to continue from where they left off
-at a later time. Saved games, settings, and best scores are stored in files located in the designated "files" directory.
+at a later time. When a saved game is available, an option to continue the game will be presented in the menu.
 
-One unique aspect of the Snake game project is the option to change the size of the game map. The game allows players to
+One unique aspect of the Snake project is the option to change the size of the game map. The game allows players to
 adjust the dimensions of the playable area, providing flexibility in gameplay and accommodating different preferences.
 
 By allowing players to change the map size, they can customize the difficulty level and adapt the gameplay experience to
@@ -46,7 +43,18 @@ Players can modify the map size through the game's settings, providing an intuit
 gameplay environment to their desired dimensions. Whether they prefer a spacious playing field or a more compact and
 intense space, the option to change the map size offers a customizable experience for players to enjoy.
 
-A preview of the game:
+Players also have the option to customize the status of the borders. They can choose to enable or disable the borders
+based on their preference.
+Enabling the borders restricts the snake's movement within the playable area, while disabling them allows the snake to
+wrap around the screen edges.
+This customizable feature allows
+players to tailor the game's difficulty and mechanics to their preference.
+
+The game includes a "Best Scores" feature that displays the top five players' scores for a given map size, taking into
+account the status of the borders (on/off). Players can strive to achieve high scores and compete with others to secure
+a place among the top performers in the game.
+
+The following image showcases a preview of the game.
 
 ![preview](https://user-images.githubusercontent.com/60299267/196003941-0192f5d9-f290-4d01-bfe5-30344d8beda6.png)
 
