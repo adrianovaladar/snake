@@ -26,7 +26,7 @@ TEST(Snake, moveRight) {
     // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first++;
-    snake.move();
+    snake.move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
@@ -36,7 +36,7 @@ TEST(Snake, moveLeft) {
     snake.setDirection(Direction::LEFT);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first--;
-    snake.move();
+    snake.move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
@@ -46,7 +46,7 @@ TEST(Snake, moveUp) {
     snake.setDirection(Direction::UP);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second--;
-    snake.move();
+    snake.move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
@@ -56,7 +56,7 @@ TEST(Snake, moveDown) {
     snake.setDirection(Direction::DOWN);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second++;
-    snake.move();
+    snake.move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 

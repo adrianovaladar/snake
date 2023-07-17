@@ -74,8 +74,10 @@ bool Game::isGameOver() {
     bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
     bool fenceCollision{};
     std::pair<int, int> positionHead = snake.getPositions().at(0);
-    if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
-        fenceCollision = true;
+    if (borders) {
+        if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
+            fenceCollision = true;
+        }
     }
     return selfCollision || fenceCollision;
 }
@@ -111,7 +113,7 @@ bool Game::readDirectionAndMoveSnake() {
         else if (tolower(c) == KEY_MOVE_RIGHT)
             d = Direction::RIGHT;
         snake.validateDirection(d);
-        snake.move();
+        snake.move(size, borders);
         if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
             dynamic_cast<SuperFood *>(superFood.get())->decreaseMovesLeft();
         }

@@ -16,6 +16,7 @@ TEST(Game, fenceCollisionDown) {
     Snake snake;
     snake.setPositions({{game.getSize().first / 2, game.getSize().second}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -24,6 +25,7 @@ TEST(Game, fenceCollisionUp) {
     Snake snake;
     snake.setPositions({{game.getSize().first / 2, -1}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -32,6 +34,7 @@ TEST(Game, fenceCollisionLeft) {
     Snake snake;
     snake.setPositions({{-1, game.getSize().first / 2}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -40,6 +43,7 @@ TEST(Game, fenceCollisionRight) {
     Snake snake;
     snake.setPositions({{game.getSize().first, game.getSize().second / 2}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 

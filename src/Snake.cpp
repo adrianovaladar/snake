@@ -11,17 +11,26 @@ const std::vector<std::pair<int, int>> &Snake::getPositions() const {
     return positions;
 }
 
-void Snake::move() {
+void Snake::move(const std::pair<int, int> &sizeMap, bool border) {
     std::pair<int, int> previousPosition = positions.at(0);
     auto it = positions.begin();
-    if (direction == Direction::RIGHT)
+    if (direction == Direction::RIGHT) {
+        if (!border && positions.at(0).first > sizeMap.first - 1)
+            positions.at(0).first = 1;
         positions.at(0).first++;
-    else if (direction == Direction::LEFT)
+    } else if (direction == Direction::LEFT) {
+        if (!border && positions.at(0).first < 0)
+            positions.at(0).first = sizeMap.first - 1;
         positions.at(0).first--;
-    else if (direction == Direction::UP)
+    } else if (direction == Direction::UP) {
+        if (!border && positions.at(0).second < 0)
+            positions.at(0).second = sizeMap.second - 1;
         positions.at(0).second--;
-    else if (direction == Direction::DOWN)
+    } else if (direction == Direction::DOWN) {
+        if (!border && positions.at(0).second > sizeMap.second - 1)
+            positions.at(0).second = 0;
         positions.at(0).second++;
+    }
     while (it != positions.end()) {
         if (it == positions.begin()) {
             it++;
