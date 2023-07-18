@@ -1,7 +1,5 @@
 #include "Snake.h"
-#include <string>
 #include <vector>
-
 
 Snake::Snake() : symbol{'o'}, direction{Direction::RIGHT}, positions{} {}
 

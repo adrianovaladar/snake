@@ -31,6 +31,17 @@ std::string boolToAlpha(bool status) {
     return text;
 }
 
+bool validateInput(std::istream &input) {
+    if (std::cin.fail()) {
+        // Clear input buffer and ignore invalid input
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input. Please enter a valid value." << std::endl;
+        return false;
+    }
+    return true;
+}
+
 Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
@@ -66,14 +77,11 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
 bool Game::isGameOver() {
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
-    bool fenceCollision{};
+    bool borderCollision{};
     std::pair<int, int> positionHead = snake.getPositions().at(0);
-    if (borders) {
-        if (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1) {
-            fenceCollision = true;
-        }
-    }
-    return selfCollision || fenceCollision;
+    if (borders && (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1))
+        borderCollision = true;
+    return selfCollision || borderCollision;
 }
 
 void Game::start() {
@@ -143,7 +151,7 @@ bool Game::logic() {
         if (bestScores.isBestScore(score)) {
             bestScores.updateAndWrite(std::cin, std::cout, score);
         }
-        bestScores.print(size, hasBorders());
+        bestScores.print(size, borders);
     }
     return false;
 }
@@ -224,10 +232,14 @@ void Game::load() {
     }
     std::pair<int, int> sizeMap;
     file.read(reinterpret_cast<char *>(&sizeMap), sizeof(sizeMap));
+    if (sizeMap != size) {
+        log("Different map size found in the file", LOGLEVEL::Warning);
+        return;
+    }
     bool b;
     file.read(reinterpret_cast<char *>(&b), sizeof(b));
-    if (sizeMap != size || b != borders) {
-        log("Different map size found in the file", LOGLEVEL::Warning);
+    if (b != borders) {
+        log("Different border status found in the file", LOGLEVEL::Warning);
         return;
     }
     size_t size1;
@@ -288,7 +300,6 @@ void Game::showMenu() const {
 
 void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
-    output << "1 - Change Map size" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
     output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << std::endl;
     output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
@@ -296,36 +307,42 @@ void Game::settings(std::istream &input, std::ostream &output) {
     do {
         output << "Length (current value is " << size.first << "): ";
         input >> tmpSize.first;
+        if (!validateInput(input))
+            continue;
         output << "Width (current value is " << size.second << "): ";
         input >> tmpSize.second;
+        if (!validateInput(input))
+            continue;
     } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
     bool changed{};
     if (tmpSize != size) {
         changed = true;
     }
     size = tmpSize;
-    if (changed) {
+    output << "Change borders (On/Off) (Current value is " << boolToAlpha(borders) << ")" << std::endl;
+    int status{};
+    do {
+        output << "Type " << !borders << " to change, " << borders << " to keep: ";
+        input >> status;
+        if (!validateInput(input)) {
+            status = -1;
+            continue;
+        }
+        if (status == !borders) {
+            setBorders(!borders);
+            output << "Borders are now set to " << boolToAlpha(borders);
+            symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
+            changed = true;
+        }
+    } while (status != 0 && status != 1);
+    if (changed)
         updateBestScores();
-    }
-    output << "Change borders (On/Off)" << std::endl;
-    char op;
-    output << "Borders are " << boolToAlpha(borders) << std::endl;
-    output << "Type y to change, any other key to refuse" << std::endl;
-    input >> op;
-    if (tolower(op) != 'y') {
-        return;
-    } else {
-        setBorders(!borders);
-        output << "Borders are now set to " << boolToAlpha(borders) << std::endl;
-        symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
-        updateBestScores();
-    }
     writeSettings();
     updateGameFileName();
 }
 
 void Game::updateBestScores() {
-    bestScores.setNameFile(size, directoryName, hasBorders());
+    bestScores.setNameFile(size, directoryName, borders);
     bestScores.read();
 }
 
@@ -428,7 +445,7 @@ void Game::run() {
                 break;
             }
             case '2': {
-                bestScores.print(size, hasBorders());
+                bestScores.print(size, borders);
                 printExitScreen();
                 break;
             }
