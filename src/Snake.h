@@ -22,8 +22,7 @@ public:
     [[nodiscard]] Direction getDirection() const;
     void setDirection(Direction d);
     [[nodiscard]] char getSymbol() const;
-    void move();
-    void increase();
+    void move(const std::pair<int, int> &sizeMap, bool border);
     void setSymbol(char s);
     void validateDirection(Direction d);
     void setPositions(const std::vector<std::pair<int, int>> &pS);

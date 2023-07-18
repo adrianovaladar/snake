@@ -6,9 +6,10 @@
 
 BestScores::~BestScores() = default;
 
-void BestScores::setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName) {
+void BestScores::setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName, const bool &hasBorders) {
     std::stringstream nf;
-    nf << directoryName << "/best_scores_" << sizeGame.first << "_" << sizeGame.second << ".txt";
+    std::string b = (hasBorders) ? "on" : "off";
+    nf << directoryName << "/best_scores_" << sizeGame.first << "_" << sizeGame.second << "_" << b << ".txt";
     this->nameFile = nf.str();
 }
 
@@ -64,7 +65,6 @@ void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int s
 }
 
 bool BestScores::isBestScore(int score) {
-
     if (players.size() < size) {
         return true;
     }
@@ -74,9 +74,12 @@ bool BestScores::isBestScore(int score) {
     return false;
 }
 
-void BestScores::print(const std::pair<int, int> &sizeGame) {
+void BestScores::print(const std::pair<int, int> &sizeGame, const bool borders) {
     std::cout << std::endl;
-    std::cout << std::setw(25) << "BEST SCORES " << sizeGame.first << "X" << sizeGame.second << std::endl
+    std::cout << std::setw(25) << "BEST SCORES " << sizeGame.first << "X" << sizeGame.second
+              << std::endl;
+    std::string b = (borders) ? "ON" : "OFF";
+    std::cout << std::setw(25) << "BORDERS " << b << std::endl
               << std::endl;
     if (players.empty()) {
         std::cout << "Currently there are no best scores for the current map" << std::endl;
