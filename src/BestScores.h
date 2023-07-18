@@ -13,11 +13,11 @@ class BestScores {
 public:
     explicit BestScores() : size(5){};
     virtual ~BestScores();
-    void setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName);
+    void setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName, const bool hasBorders);
     void read();
     void updateAndWrite(std::istream &input, std::ostream &output, int score);
     bool isBestScore(int score);
-    void print(const std::pair<int, int> &sizeGame);
+    void print(const std::pair<int, int> &sizeGame, const bool borders);
     [[nodiscard]] const std::vector<Player> &getPlayers() const;
 };
 #endif//SNAKE_BESTSCORES_H

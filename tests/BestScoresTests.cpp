@@ -4,12 +4,19 @@
 #include <fstream>
 
 std::string directoryName = "bestscorestests";
-std::string fileName = "bestscorestests/best_scores_-1_-1.txt";
+std::string fileName = "bestscorestests/best_scores_-1_-1_On.txt";
 std::pair testSize = {-1, -1};
 
-TEST(BestScores, readEmptyFile) {
+TEST(BestScores, readEmptyFileBordersOn) {
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
+    bs.read();
+    EXPECT_EQ(0, bs.getPlayers().size());
+}
+
+TEST(BestScores, readEmptyFileBordersOff) {
+    BestScores bs;
+    bs.setNameFile(testSize, directoryName, false);
     bs.read();
     EXPECT_EQ(0, bs.getPlayers().size());
 }
@@ -19,7 +26,7 @@ TEST(BestScores, readFileWith1Player) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile({-1, -1}, directoryName);
+    bs.setNameFile({-1, -1}, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     myFile << 1 << " test" << std::endl;
@@ -35,7 +42,7 @@ TEST(BestScores, readFileWithMaxPlayers) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
@@ -54,7 +61,7 @@ TEST(BestScores, readBiggerFileThanExpected) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     for (int i{}; i < 6; i++) {
@@ -72,7 +79,7 @@ TEST(BestScores, write1Player) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -84,7 +91,7 @@ TEST(BestScores, write1Player) {
     bs.updateAndWrite(ifs, output, 1);
     ifs.close();
     BestScores bs2;
-    bs2.setNameFile(testSize, directoryName);
+    bs2.setNameFile(testSize, directoryName, true);
     bs2.read();
     EXPECT_EQ(1, bs2.getPlayers().size());
     remove(fileName.c_str());
@@ -97,7 +104,7 @@ TEST(BestScores, write5Players) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -111,7 +118,7 @@ TEST(BestScores, write5Players) {
     }
     ifs.close();
     BestScores bs2;
-    bs2.setNameFile(testSize, directoryName);
+    bs2.setNameFile(testSize, directoryName, true);
     bs2.read();
     EXPECT_EQ(5, bs2.getPlayers().size());
     remove(fileName.c_str());
@@ -124,7 +131,7 @@ TEST(BestScores, writeMoreThan5Players) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -139,7 +146,7 @@ TEST(BestScores, writeMoreThan5Players) {
     }
     ifs.close();
     BestScores bs2;
-    bs2.setNameFile(testSize, directoryName);
+    bs2.setNameFile(testSize, directoryName, true);
     bs2.read();
     EXPECT_EQ(5, bs2.getPlayers().size());
     remove(fileName.c_str());
@@ -152,7 +159,7 @@ TEST(BestScores, write5UnsortedPlayers) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -170,7 +177,7 @@ TEST(BestScores, write5UnsortedPlayers) {
     ifs.close();
     std::sort(scoresToCompare.rbegin(), scoresToCompare.rend());
     BestScores bs2;
-    bs2.setNameFile(testSize, directoryName);
+    bs2.setNameFile(testSize, directoryName, true);
     bs2.read();
     std::vector<int> scores;
     for (const auto &p: bs2.getPlayers()) {
@@ -187,7 +194,7 @@ TEST(BestScores, isBestScoresWithLessThan5Players) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 2 positions filled
@@ -206,7 +213,7 @@ TEST(BestScores, isBestScoresWith5Players) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
@@ -225,7 +232,7 @@ TEST(BestScores, isBestScoresWith5PlayersWithHigherScore) {
         std::filesystem::create_directory(directoryName);
     }
     BestScores bs;
-    bs.setNameFile(testSize, directoryName);
+    bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
