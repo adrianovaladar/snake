@@ -21,6 +21,9 @@
 #define KEY_PAUSE 'p'
 #define KEY_SAVE 'm'
 
+#define SYMBOL_BORDERS_ON '#'
+#define SYMBOL_BORDERS_OFF '.'
+
 class Game {
 private:
     std::pair<int, int> size;
@@ -69,8 +72,8 @@ public:
     [[nodiscard]] const Food &getRegularFood() const;
     [[nodiscard]] const Food &getSuperFood() const;
     void updateGameFileName();
-    bool isBorders() const;
-    void setBorders(bool borders);
+    bool hasBorders() const;
+    void setBorders(bool b);
 };
 
 #endif//SNAKE_MAP_H

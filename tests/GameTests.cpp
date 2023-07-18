@@ -133,12 +133,13 @@ TEST(Game, readSettings) {
 
 TEST(Game, saveAndLoad) {
     std::string directoryName = "files";
-    std::string fileName = "game_80_20";
+    std::string fileName = "game_80_20_On";
     std::string fileString = directoryName + "/" + fileName;
     if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
         std::filesystem::create_directory(directoryName);
     }
     Game game;
+    //mudar para OFF
     Snake snake;
     std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
     regularFood->setPosition({5, 5});
@@ -155,6 +156,7 @@ TEST(Game, saveAndLoad) {
     game.updateGameFileName();
     game.save();
     Game game2;
+    //verificar se mudou pra OFF
     game2.updateGameFileName();
     game2.load();
     std::ifstream file(fileString, std::ios::binary);

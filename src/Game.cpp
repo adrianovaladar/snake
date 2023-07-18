@@ -26,27 +26,20 @@ void printExitScreen() {
               << "Press enter to exit this screen ";
 }
 
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol('#'), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(false) {
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
 }
 
 void Game::printHorizontalFence() const {
     for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
-        if (borders) {
-            std::cout << symbol;
-        } else {
-            std::cout << ".";
-        }
+        std::cout << symbol;
     }
     std::cout << std::endl;
 }
 
 void Game::printVerticalFenceAndPlayableArea(int j) {
-    if (borders) {
-        std::cout << symbol;
-    } else
-        std::cout << ".";
+    std::cout << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
     for (int i{}; i < size.first; i++) {
@@ -61,11 +54,7 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
         else
             std::cout << " ";
     }
-    if (borders) {
-        std::cout << symbol;
-    } else
-        std::cout << ".";
-
+    std::cout << symbol;
     std::cout << std::endl;
 }
 
@@ -149,7 +138,7 @@ bool Game::logic() {
         if (bestScores.isBestScore(score)) {
             bestScores.updateAndWrite(std::cin, std::cout, score);
         }
-        bestScores.print(size);
+        bestScores.print(size, hasBorders());
     }
     return false;
 }
@@ -162,8 +151,6 @@ void Game::print() {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
-    std::string B = (borders == true) ? "On" : "Off";
-    std::cout << "Border " << B << std::endl;
     std::cout << "Score: " << score << std::endl;
     if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled())
         std::cout << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
@@ -204,6 +191,7 @@ void Game::save() {
         return;
     }
     file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    file.write(reinterpret_cast<const char *>(&borders), sizeof(borders));
     size_t positionsSize = snake.getPositions().size();
     file.write(reinterpret_cast<const char *>(&positionsSize), sizeof(positionsSize));
     file.write(reinterpret_cast<const char *>(snake.getPositions().data()), static_cast<std::streamsize>(positionsSize * sizeof(std::pair<int, int>)));
@@ -231,7 +219,9 @@ void Game::load() {
     }
     std::pair<int, int> sizeMap;
     file.read(reinterpret_cast<char *>(&sizeMap), sizeof(sizeMap));
-    if (sizeMap != size) {
+    bool b;
+    file.read(reinterpret_cast<char *>(&b), sizeof(b));
+    if (sizeMap != size || b != borders) {
         log("Different map size found in the file", LOGLEVEL::Warning);
         return;
     }
@@ -267,7 +257,7 @@ void Game::removeIfExists() {
 }
 
 void Game::showMenu() const {
-
+    std::string b = (borders) ? "On" : "Off";
     std::cout << std::endl
               << "            _____             _                    " << std::endl
               << "           / ____|           | |                                    " << std::endl
@@ -278,7 +268,10 @@ void Game::showMenu() const {
               << "                                          __/ |" << std::endl
               << "                                         |___/" << std::endl
               << std::endl
-              << "Info: Map size " << size.first << "x" << size.second << std::endl;
+              << "Info:" << std::endl
+              << "Map size " << size.first << "x" << size.second << std::endl
+              << "Borders " << b << std::endl;
+
     if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
         std::cout << "0 - Continue game" << std::endl;
     }
@@ -293,8 +286,7 @@ void Game::showMenu() const {
 
 void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
-    output << "Change Map size" << std::endl;
-    output << "Borders on/off" << std::endl;
+    output << "1 - Change Map size" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
     output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << std::endl;
     output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
@@ -306,10 +298,26 @@ void Game::settings(std::istream &input, std::ostream &output) {
         input >> tmpSize.second;
     } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
     bool changed{};
-    if (tmpSize != size)
+    if (tmpSize != size) {
         changed = true;
+    }
     size = tmpSize;
     if (changed) {
+        updateBestScores();
+    }
+    output << "Change borders (On/Off)" << std::endl;
+    char op;
+    std::string b = (borders) ? "On" : "Off";
+    output << "Borders are " << b << std::endl;
+    output << "Type y to change, any other key to refuse" << std::endl;
+    input >> op;
+    if (tolower(op) != 'y') {
+        return;
+    } else {
+        setBorders(!borders);
+        b = (borders) ? "On" : "Off";
+        output << "Borders are now set to " << b << std::endl;
+        symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
         updateBestScores();
     }
     writeSettings();
@@ -317,7 +325,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
 }
 
 void Game::updateBestScores() {
-    bestScores.setNameFile(size, directoryName);
+    bestScores.setNameFile(size, directoryName, hasBorders());
     bestScores.read();
 }
 
@@ -334,6 +342,8 @@ void Game::readSettings() {
         return;
     }
     file.read(reinterpret_cast<char *>(&size), sizeof(size));
+    file.read(reinterpret_cast<char *>(&borders), sizeof(borders));
+    symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
     file.close();
 }
 
@@ -344,6 +354,7 @@ void Game::writeSettings() const {
         return;
     }
     file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    file.write(reinterpret_cast<const char *>(&borders), sizeof(borders));
     file.close();
     if (!file.good()) {
         log("Error occurred at writing time", LOGLEVEL::Warning);
@@ -375,7 +386,8 @@ void Game::showKeys() {
 }
 
 void Game::updateGameFileName() {
-    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second);
+    std::string b = (borders) ? "On" : "Off";
+    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + b;
 }
 
 void Game::run() {
@@ -417,7 +429,7 @@ void Game::run() {
                 break;
             }
             case '2': {
-                bestScores.print(size);
+                bestScores.print(size, hasBorders());
                 printExitScreen();
                 break;
             }
@@ -464,9 +476,9 @@ const Food &Game::getRegularFood() const {
 const Food &Game::getSuperFood() const {
     return *superFood;
 }
-bool Game::isBorders() const {
+bool Game::hasBorders() const {
     return borders;
 }
-void Game::setBorders(bool borders) {
-    Game::borders = borders;
+void Game::setBorders(bool b) {
+    Game::borders = b;
 }
