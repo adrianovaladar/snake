@@ -26,6 +26,11 @@ void printExitScreen() {
               << "Press enter to exit this screen ";
 }
 
+std::string boolToAlpha(bool status) {
+    std::string text = status ? "on" : "off";
+    return text;
+}
+
 Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
@@ -257,7 +262,6 @@ void Game::removeIfExists() {
 }
 
 void Game::showMenu() const {
-    std::string b = (borders) ? "On" : "Off";
     std::cout << std::endl
               << "            _____             _                    " << std::endl
               << "           / ____|           | |                                    " << std::endl
@@ -268,9 +272,7 @@ void Game::showMenu() const {
               << "                                          __/ |" << std::endl
               << "                                         |___/" << std::endl
               << std::endl
-              << "Info:" << std::endl
-              << "Map size " << size.first << "x" << size.second << std::endl
-              << "Borders " << b << std::endl;
+              << "Info: Map size " << size.first << "x" << size.second << ", Borders " << boolToAlpha(borders) << std::endl;
 
     if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
         std::cout << "0 - Continue game" << std::endl;
@@ -307,16 +309,14 @@ void Game::settings(std::istream &input, std::ostream &output) {
     }
     output << "Change borders (On/Off)" << std::endl;
     char op;
-    std::string b = (borders) ? "On" : "Off";
-    output << "Borders are " << b << std::endl;
+    output << "Borders are " << boolToAlpha(borders) << std::endl;
     output << "Type y to change, any other key to refuse" << std::endl;
     input >> op;
     if (tolower(op) != 'y') {
         return;
     } else {
         setBorders(!borders);
-        b = (borders) ? "On" : "Off";
-        output << "Borders are now set to " << b << std::endl;
+        output << "Borders are now set to " << boolToAlpha(borders) << std::endl;
         symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
         updateBestScores();
     }
@@ -386,8 +386,7 @@ void Game::showKeys() {
 }
 
 void Game::updateGameFileName() {
-    std::string b = (borders) ? "On" : "Off";
-    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + b;
+    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + boolToAlpha(borders);
 }
 
 void Game::run() {

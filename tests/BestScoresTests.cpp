@@ -4,7 +4,7 @@
 #include <fstream>
 
 std::string directoryName = "bestscorestests";
-std::string fileName = "bestscorestests/best_scores_-1_-1_On.txt";
+std::string fileName = "bestscorestests/best_scores_-1_-1_on.txt";
 std::pair testSize = {-1, -1};
 
 TEST(BestScores, readEmptyFileBordersOn) {
