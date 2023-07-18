@@ -16,6 +16,7 @@ TEST(Game, fenceCollisionDown) {
     Snake snake;
     snake.setPositions({{game.getSize().first / 2, game.getSize().second}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -24,6 +25,7 @@ TEST(Game, fenceCollisionUp) {
     Snake snake;
     snake.setPositions({{game.getSize().first / 2, -1}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -32,6 +34,7 @@ TEST(Game, fenceCollisionLeft) {
     Snake snake;
     snake.setPositions({{-1, game.getSize().first / 2}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -40,6 +43,7 @@ TEST(Game, fenceCollisionRight) {
     Snake snake;
     snake.setPositions({{game.getSize().first, game.getSize().second / 2}});
     game.setSnake(snake);
+    game.setBorders(true);
     EXPECT_EQ(true, game.isGameOver());
 }
 
@@ -129,7 +133,7 @@ TEST(Game, readSettings) {
 
 TEST(Game, saveAndLoad) {
     std::string directoryName = "files";
-    std::string fileName = "game_80_20";
+    std::string fileName = "game_80_20_off";
     std::string fileString = directoryName + "/" + fileName;
     if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
         std::filesystem::create_directory(directoryName);
@@ -148,22 +152,26 @@ TEST(Game, saveAndLoad) {
     snake.setPositions({{5, 5}});
     snake.validateDirection(Direction::UP);
     game.setSnake(snake);
+    game.setBorders(false);
     game.updateGameFileName();
     game.save();
     Game game2;
+    game2.setBorders(false);
     game2.updateGameFileName();
     game2.load();
     std::ifstream file(fileString, std::ios::binary);
     if (!file) {
-        EXPECT_EQ(3, game.getSnake().getPositions().size());
-    }
-    EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
-    EXPECT_EQ(Direction::UP, snake.getDirection());
-    EXPECT_EQ(positionsRegularFood, game2.getRegularFood().getPosition());
-    EXPECT_EQ(positionsSuperFood, game2.getSuperFood().getPosition());
-    EXPECT_EQ(true, game2.isEatRegularFood());
-    EXPECT_EQ(true, game2.isEatSuperFood());
-    if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
-        std::filesystem::remove_all(directoryName);// Remove the empty directory
+        EXPECT_EQ(1, game2.getSnake().getPositions().size());
+    } else {
+        EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
+        EXPECT_EQ(Direction::UP, snake.getDirection());
+        EXPECT_EQ(positionsRegularFood, game2.getRegularFood().getPosition());
+        EXPECT_EQ(positionsSuperFood, game2.getSuperFood().getPosition());
+        EXPECT_EQ(true, game2.isEatRegularFood());
+        EXPECT_EQ(true, game2.isEatSuperFood());
+        EXPECT_EQ(false, game2.hasBorders());
+        if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
+            std::filesystem::remove_all(directoryName);// Remove the empty directory
+        }
     }
 }
