@@ -1,4 +1,7 @@
 # snake
+
+[![CMake](https://github.com/adrianovaladar/snake/actions/workflows/cmake.yml/badge.svg)](https://github.com/adrianovaladar/snake/actions/workflows/cmake.yml)
+
 The Snake game project is a classic and popular game implemented in C++23 specifically for Linux terminals. It offers a
 fun and engaging gaming experience directly within the terminal environment.
 
