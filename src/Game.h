@@ -7,6 +7,7 @@
 #include "Snake.h"
 #include "SuperFood.h"
 #include <memory>
+#include <sstream>
 
 #define DEFAULT_LENGTH 80
 #define DEFAULT_WIDTH 20
@@ -38,7 +39,7 @@ private:
     std::string gameFileName;
     bool pause;
     void printVerticalFenceAndPlayableArea(int y);
-    void printHorizontalFence() const;
+    void printHorizontalFence();
     bool readDirectionAndMoveSnake();
     void showMenu() const;
     static void about();
@@ -47,6 +48,9 @@ private:
     static void showKeys();
     void removeIfExists();
     bool borders;
+    std::stringstream ss;
+    int numFoodEaten;
+    float velocity;
 
 public:
     Game();
@@ -74,6 +78,7 @@ public:
     void updateGameFileName();
     bool hasBorders() const;
     void setBorders(bool b);
+    void changeVelocity();
 };
 
 #endif//SNAKE_MAP_H

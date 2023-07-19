@@ -42,36 +42,36 @@ bool validateInput(std::istream &input) {
     return true;
 }
 
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true) {
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), numFoodEaten(0), velocity(100000000) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
 }
 
-void Game::printHorizontalFence() const {
+void Game::printHorizontalFence() {
     for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
-        std::cout << symbol;
+        ss << symbol;
     }
-    std::cout << std::endl;
+    ss << std::endl;
 }
 
 void Game::printVerticalFenceAndPlayableArea(int j) {
-    std::cout << symbol;
+    ss << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
     for (int i{}; i < size.first; i++) {
         std::pair<int, int> pos = std::make_pair(i, j);
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
-            std::cout << snake.getSymbol();
+            ss << snake.getSymbol();
         else if (regularFood->getPosition() == pos)
-            std::cout << regularFood->getSymbol();
+            ss << regularFood->getSymbol();
         else if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && superFood->getPosition() == pos)
-            std::cout << superFood->getSymbol();
+            ss << superFood->getSymbol();
         else
-            std::cout << " ";
+            ss << " ";
     }
-    std::cout << symbol;
-    std::cout << std::endl;
+    ss << symbol;
+    ss << std::endl;
 }
 
 bool Game::isGameOver() {
@@ -86,6 +86,8 @@ bool Game::isGameOver() {
 
 void Game::start() {
     score = 0;
+    numFoodEaten = 0;
+    velocity = 100000000;
     snake.setDirection(Direction::RIGHT);
     snake.setPositions(size);
     log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
@@ -124,12 +126,15 @@ bool Game::readDirectionAndMoveSnake() {
 }
 
 bool Game::logic() {
-    std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));
     if (readDirectionAndMoveSnake())
         return true;
     if (isEatRegularFood()) {
         ++snake;
         score++;
+        numFoodEaten++;
+        changeVelocity();
+        log("numFoodEaten: " + std::to_string(numFoodEaten), LOGLEVEL::Info);
+        log("Velocity: " + std::to_string(velocity), LOGLEVEL::Info);
         regularFood->setPosition(this->size, snake.getPositions(), superFood->getPosition());
         if (!dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
             superFood->setPosition(size, snake.getPositions(), regularFood->getPosition());
@@ -142,6 +147,10 @@ bool Game::logic() {
     if (isEatSuperFood()) {
         ++snake;
         score += 3;
+        numFoodEaten++;
+        changeVelocity();
+        log("numFoodEaten: " + std::to_string(numFoodEaten), LOGLEVEL::Info);
+        log("Velocity: " + std::to_string(velocity), LOGLEVEL::Info);
         dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
         superFood->setPosition({-1, -1});
     }
@@ -158,17 +167,19 @@ bool Game::logic() {
 
 void Game::print() {
     clearScreen();
-    std::cout << "Snake game" << std::endl;
+    ss.clear();
+    ss.str("");
+    ss << "Snake game" << std::endl;
     printHorizontalFence();
     for (int j{}; j < this->size.second; j++) {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
-    std::cout << "Score: " << score << std::endl;
+    ss << "Score: " << score << std::endl;
     if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled())
-        std::cout << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
+        ss << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
     if (pause)
-        std::cout << "Game paused" << std::endl;
+        ss << "Game paused" << std::endl;
 }
 
 bool Game::isEatRegularFood() {
@@ -275,14 +286,14 @@ void Game::removeIfExists() {
 
 void Game::showMenu() const {
     std::cout << std::endl
-              << "            _____             _                    " << std::endl
-              << "           / ____|           | |                                    " << std::endl
-              << "          | (___  _ __   __ _| | _____    __ _  __ _ _ __ ___   ___ " << std::endl
-              << R"(           \___ \| '_ \ / _` | |/ / _ \  / _` |/ _` | '_ ` _ \ / _ \ )" << std::endl
-              << "           ____) | | | | (_| |   <  __/ | (_| | (_| | | | | | |  __/" << std::endl
-              << R"(          |_____/|_| |_|\__,_|_|\_\___|  \__, |\__,_|_| |_| |_|\___|)" << std::endl
-              << "                                          __/ |" << std::endl
-              << "                                         |___/" << std::endl
+              << "   _____             _                    " << std::endl
+              << "  / ____|           | |                                    " << std::endl
+              << " | (___  _ __   __ _| | _____    __ _  __ _ _ __ ___   ___ " << std::endl
+              << R"(  \___ \| '_ \ / _` | |/ / _ \  / _` |/ _` | '_ ` _ \ / _ \ )" << std::endl
+              << "  ____) | | | | (_| |   <  __/ | (_| | (_| | | | | | |  __/" << std::endl
+              << R"( |_____/|_| |_|\__,_|_|\_\___|  \__, |\__,_|_| |_| |_|\___|)" << std::endl
+              << "                                 __/ |" << std::endl
+              << "                                |___/" << std::endl
               << std::endl
               << "Info: Map size " << size.first << "x" << size.second << ", Borders " << boolToAlpha(borders) << std::endl;
 
@@ -383,6 +394,8 @@ void Game::play() {
     Input::enableRawMode();
     while (!isGameOver()) {
         print();
+        std::this_thread::sleep_for(std::chrono::nanoseconds(static_cast<int32_t>(velocity)));
+        std::cout << ss.str();
         if (logic()) {
             save();
             Input::disableRawMode();
@@ -497,4 +510,18 @@ bool Game::hasBorders() const {
 }
 void Game::setBorders(bool b) {
     Game::borders = b;
+}
+
+void Game::changeVelocity() {
+    int transition = 10;
+    float linearIncrease = 10000;
+    float exponentialIncrease = 1.045;
+    float exponentialIncrease_2 = 1.01;
+    if (numFoodEaten < transition) {
+        velocity -= linearIncrease;
+    } else if (numFoodEaten > transition && numFoodEaten < transition * 3) {
+        velocity /= exponentialIncrease;
+    } else {
+        velocity /= exponentialIncrease_2;
+    }
 }
