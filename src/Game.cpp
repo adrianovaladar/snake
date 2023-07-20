@@ -35,7 +35,7 @@ bool validateInput(std::istream &input) {
     return true;
 }
 
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), numFoodEaten(0), velocity(100000000) {
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
 }
@@ -79,7 +79,7 @@ bool Game::isGameOver() {
 
 void Game::start() {
     score = 0;
-    numFoodEaten = 0;
+    foodsEaten = 0;
     velocity = 100000000;
     snake.setDirection(Direction::RIGHT);
     snake.setPositions(size);
@@ -124,9 +124,9 @@ bool Game::logic() {
     if (isEatRegularFood()) {
         ++snake;
         score++;
-        numFoodEaten++;
+        foodsEaten++;
         changeVelocity();
-        log("numFoodEaten: " + std::to_string(numFoodEaten), LOGLEVEL::Info);
+        log("foodsEaten: " + std::to_string(foodsEaten), LOGLEVEL::Info);
         log("Velocity: " + std::to_string(velocity), LOGLEVEL::Info);
         regularFood->setPosition(this->size, snake.getPositions(), superFood->getPosition());
         if (!dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
@@ -140,9 +140,9 @@ bool Game::logic() {
     if (isEatSuperFood()) {
         ++snake;
         score += 3;
-        numFoodEaten++;
+        foodsEaten++;
         changeVelocity();
-        log("numFoodEaten: " + std::to_string(numFoodEaten), LOGLEVEL::Info);
+        log("foodsEaten: " + std::to_string(foodsEaten), LOGLEVEL::Info);
         log("Velocity: " + std::to_string(velocity), LOGLEVEL::Info);
         dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
         superFood->setPosition({-1, -1});
@@ -509,11 +509,11 @@ void Game::changeVelocity() {
     if (velocity < 20000000) return;
     int transition = 10;
     float exponentialIncrease = 1.01;
-    if (numFoodEaten > transition && numFoodEaten < transition * 2) {
+    if (foodsEaten > transition && foodsEaten < transition * 2) {
         exponentialIncrease = 1.05;
     }
     int linearIncrease = 10000;
-    if (numFoodEaten < transition) {
+    if (foodsEaten < transition) {
         velocity -= linearIncrease;
     } else {
         velocity /= exponentialIncrease;

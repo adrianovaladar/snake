@@ -49,7 +49,7 @@ private:
     void removeIfExists();
     bool borders;
     std::stringstream bufferScreen;
-    int numFoodEaten;
+    int foodsEaten;
     int velocity;
 
 public:
