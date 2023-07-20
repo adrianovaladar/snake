@@ -7,15 +7,8 @@
 #include <string>
 #include <vector>
 
-void clearScreen() {
-    // Position cursor in the top-left corner
-    std::cout << "\033[1;1H";
-    // Clear the screen
-    std::cout << "\033[2J";
-}
-
 void signalHandler(int signal) {
-    clearScreen();
+    system("clear");
     system("clear");
     Input::disableRawMode();
     exit(signal);
@@ -49,29 +42,29 @@ Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), s
 
 void Game::printHorizontalFence() {
     for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
-        ss << symbol;
+        bufferScreen << symbol;
     }
-    ss << std::endl;
+    bufferScreen << std::endl;
 }
 
 void Game::printVerticalFenceAndPlayableArea(int j) {
-    ss << symbol;
+    bufferScreen << symbol;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     std::sort(snakePositions.begin(), snakePositions.end());
     for (int i{}; i < size.first; i++) {
         std::pair<int, int> pos = std::make_pair(i, j);
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
-            ss << snake.getSymbol();
+            bufferScreen << snake.getSymbol();
         else if (regularFood->getPosition() == pos)
-            ss << regularFood->getSymbol();
+            bufferScreen << regularFood->getSymbol();
         else if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && superFood->getPosition() == pos)
-            ss << superFood->getSymbol();
+            bufferScreen << superFood->getSymbol();
         else
-            ss << " ";
+            bufferScreen << " ";
     }
-    ss << symbol;
-    ss << std::endl;
+    bufferScreen << symbol;
+    bufferScreen << std::endl;
 }
 
 bool Game::isGameOver() {
@@ -165,21 +158,20 @@ bool Game::logic() {
     return false;
 }
 
-void Game::print() {
-    clearScreen();
-    ss.clear();
-    ss.str("");
-    ss << "Snake game" << std::endl;
+void Game::printToBufferScreen() {
+    bufferScreen.clear();
+    bufferScreen.str("");
+    bufferScreen << "Snake game" << std::endl;
     printHorizontalFence();
     for (int j{}; j < this->size.second; j++) {
         printVerticalFenceAndPlayableArea(j);
     }
     printHorizontalFence();
-    ss << "Score: " << score << std::endl;
+    bufferScreen << "Score: " << score << std::endl;
     if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled())
-        ss << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
+        bufferScreen << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
     if (pause)
-        ss << "Game paused" << std::endl;
+        bufferScreen << "Game paused" << std::endl;
 }
 
 bool Game::isEatRegularFood() {
@@ -393,9 +385,10 @@ void Game::play() {
     removeIfExists();
     Input::enableRawMode();
     while (!isGameOver()) {
-        print();
-        std::this_thread::sleep_for(std::chrono::nanoseconds(static_cast<int32_t>(velocity)));
-        std::cout << ss.str();
+        printToBufferScreen();
+        std::this_thread::sleep_for(std::chrono::nanoseconds(velocity));
+        system("clear");
+        std::cout << bufferScreen.str();
         if (logic()) {
             save();
             Input::disableRawMode();
@@ -430,7 +423,7 @@ void Game::run() {
     updateBestScores();
     char choice;
     do {
-        clearScreen();
+        system("clear");
         showMenu();
         std::cin >> choice;
         switch (choice) {
@@ -486,7 +479,7 @@ void Game::run() {
             std::cin.get();
         }
     } while (choice != '9');
-    clearScreen();
+    system("clear");
     system("clear");
 }
 
@@ -513,15 +506,16 @@ void Game::setBorders(bool b) {
 }
 
 void Game::changeVelocity() {
+    if (velocity < 20000000) return;
     int transition = 10;
-    float linearIncrease = 10000;
-    float exponentialIncrease = 1.045;
-    float exponentialIncrease_2 = 1.01;
+    float exponentialIncrease = 1.01;
+    if (numFoodEaten > transition && numFoodEaten < transition * 2) {
+        exponentialIncrease = 1.05;
+    }
+    int linearIncrease = 10000;
     if (numFoodEaten < transition) {
         velocity -= linearIncrease;
-    } else if (numFoodEaten > transition && numFoodEaten < transition * 3) {
-        velocity /= exponentialIncrease;
     } else {
-        velocity /= exponentialIncrease_2;
+        velocity /= exponentialIncrease;
     }
 }

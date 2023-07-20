@@ -48,16 +48,16 @@ private:
     static void showKeys();
     void removeIfExists();
     bool borders;
-    std::stringstream ss;
+    std::stringstream bufferScreen;
     int numFoodEaten;
-    float velocity;
+    int velocity;
 
 public:
     Game();
     virtual ~Game();
     bool isGameOver();
     bool logic();
-    void print();
+    void printToBufferScreen();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setRegularFood(std::unique_ptr<Food> f);
