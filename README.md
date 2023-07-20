@@ -64,6 +64,12 @@ The following image showcases a preview of the game.
 
 ![preview](https://user-images.githubusercontent.com/60299267/196003941-0192f5d9-f290-4d01-bfe5-30344d8beda6.png)
 
+## Important note
+
+The code includes a command to clear the terminal for a better gaming experience. If you have any important data or
+output in the current terminal session, it is recommended to open a new terminal window or to save your work before
+running the game to avoid unintended data loss.
+
 ## Creators
 
 This project was created by [**Adriano Valadar**](https://adrianovaladar.github.io) and [**Rogério
