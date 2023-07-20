@@ -9,7 +9,6 @@
 
 void signalHandler(int signal) {
     system("clear");
-    system("clear");
     Input::disableRawMode();
     exit(signal);
 }
