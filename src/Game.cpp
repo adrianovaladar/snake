@@ -126,8 +126,6 @@ bool Game::logic() {
         score++;
         foodsEaten++;
         changeVelocity();
-        log("foodsEaten: " + std::to_string(foodsEaten), LOGLEVEL::Info);
-        log("Velocity: " + std::to_string(velocity), LOGLEVEL::Info);
         regularFood->setPosition(this->size, snake.getPositions(), superFood->getPosition());
         if (!dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
             superFood->setPosition(size, snake.getPositions(), regularFood->getPosition());
@@ -142,8 +140,6 @@ bool Game::logic() {
         score += 3;
         foodsEaten++;
         changeVelocity();
-        log("foodsEaten: " + std::to_string(foodsEaten), LOGLEVEL::Info);
-        log("Velocity: " + std::to_string(velocity), LOGLEVEL::Info);
         dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
         superFood->setPosition({-1, -1});
     }
