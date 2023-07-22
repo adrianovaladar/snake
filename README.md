@@ -11,8 +11,8 @@ fun and engaging gaming experience directly within the terminal environment.
 
 To compile the project, navigate to the root directory and execute the following commands:
 
-    $ cmake .
-    $ make
+    cmake .
+    make
 
 After the compilation is complete, a file named "snake" will appear in the directory. To run the game, simply execute
 the command "./snake" without any parameters.
@@ -22,6 +22,7 @@ permissions are crucial for the game's settings, best scores files, and the abil
 will be stored in the "files" directory.
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
+
 ![image](https://github.com/adrianovaladar/snake/assets/60299267/a1ccb51c-bf44-4653-b6da-51be6b6514d6)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
@@ -60,7 +61,10 @@ The game includes a "Best Scores" feature that displays the top five players' sc
 account the status of the borders (on/off). Players can strive to achieve high scores and compete with others to secure
 a place among the top performers in the game.
 
-A preview of the game can be seen in the following video: [Youtube video](https://www.youtube.com/watch?v=advztiHTyrs)
+## Preview of the game
+
+A preview of the game can be watched in the following
+video: [Snake game preview](https://www.youtube.com/watch?v=advztiHTyrs)
 
 ## Important notes
 
