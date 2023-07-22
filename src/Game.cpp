@@ -1,27 +1,12 @@
 #include "Game.h"
 #include "Input.h"
 #include "Logger.h"
+#include "Utils.h"
 #include <bits/stdc++.h>
 #include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
-
-void signalHandler(int signal) {
-    system("clear");
-    Input::disableRawMode();
-    exit(signal);
-}
-
-void printExitScreen() {
-    std::cout << std::endl
-              << "Press enter to exit this screen ";
-}
-
-std::string boolToAlpha(bool status) {
-    std::string text = status ? "on" : "off";
-    return text;
-}
 
 bool validateInput(std::istream &input) {
     if (std::cin.fail()) {
@@ -282,7 +267,7 @@ void Game::showMenu() const {
               << "                                 __/ |" << std::endl
               << "                                |___/" << std::endl
               << std::endl
-              << "Info: Map size " << size.first << "x" << size.second << ", Borders " << boolToAlpha(borders) << std::endl;
+              << "Info: Map size " << size.first << "x" << size.second << ", Borders " << Utils::Utils::boolToAlpha(borders) << std::endl;
 
     if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
         std::cout << "0 - Continue game" << std::endl;
@@ -317,7 +302,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         changed = true;
     }
     size = tmpSize;
-    output << "Change borders (On/Off) (Current value is " << boolToAlpha(borders) << ")" << std::endl;
+    output << "Change borders (On/Off) (Current value is " << Utils::Utils::boolToAlpha(borders) << ")" << std::endl;
     int status{};
     do {
         output << "Type " << !borders << " to change, " << borders << " to keep: ";
@@ -328,7 +313,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         }
         if (status == !borders) {
             setBorders(!borders);
-            output << "Borders are now set to " << boolToAlpha(borders);
+            output << "Borders are now set to " << Utils::boolToAlpha(borders);
             symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
             changed = true;
         }
@@ -404,15 +389,15 @@ void Game::showKeys() {
 }
 
 void Game::updateGameFileName() {
-    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + boolToAlpha(borders);
+    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + Utils::boolToAlpha(borders);
 }
 
 void Game::run() {
     if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
         std::filesystem::create_directory(directoryName);
     }
-    std::signal(SIGINT, signalHandler);
-    std::signal(SIGTSTP, signalHandler);
+    std::signal(SIGINT, Utils::signalHandler);
+    std::signal(SIGTSTP, Utils::signalHandler);
     readSettings();
     updateGameFileName();
     updateBestScores();
@@ -427,7 +412,7 @@ void Game::run() {
                     load();
                     play();
                 }
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '1': {
@@ -436,33 +421,33 @@ void Game::run() {
                     std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. Do you want to proceed? Type a to accept, any other key to refuse ";
                     std::cin >> option;
                     if (tolower(option) != 'a') {
-                        printExitScreen();
+                        Utils::printExitScreen();
                         break;
                     }
                 }
                 start();
                 play();
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '2': {
                 bestScores.print(size, borders);
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '3': {
                 settings(std::cin, std::cout);
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '4': {
                 showKeys();
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '5': {
                 about();
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             default: {
