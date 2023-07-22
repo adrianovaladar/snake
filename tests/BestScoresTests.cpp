@@ -4,7 +4,7 @@
 #include <fstream>
 
 std::string directoryName = "bestscorestests";
-std::string fileName = "bestscorestests/best_scores_-1_-1_on.txt";
+std::string fileName = "bestscorestests/best_scores_-1_-1_on";
 std::pair testSize = {-1, -1};
 
 TEST(BestScores, readEmptyFileBordersOn) {
@@ -27,12 +27,18 @@ TEST(BestScores, readFileWith1Player) {
     }
     BestScores bs;
     bs.setNameFile({-1, -1}, directoryName, true);
-    std::ofstream myFile;
-    myFile.open(fileName, std::ios::out);
-    myFile << 1 << " test" << std::endl;
+    std::ofstream myFile(fileName, std::ios::binary);
+    size_t tempSize = 1;
+    myFile.write(reinterpret_cast<const char *>(&tempSize), sizeof(tempSize));
+    int tempScore = 1;
+    std::string tempName = "test";
+    myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+    std::string::size_type tempSizeName = tempName.size();
+    myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+    myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
+    myFile.close();
     bs.read();
     EXPECT_EQ(1, bs.getPlayers().size());
-    myFile.close();
     remove(fileName.c_str());
     std::filesystem::remove(directoryName);
 }
@@ -46,12 +52,19 @@ TEST(BestScores, readFileWithMaxPlayers) {
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
     // test with all 5 positions filled
-    for (int i{}; i < 5; i++) {
-        myFile << 1 << " test" << std::endl;
+    size_t tempSize = 5;
+    myFile.write(reinterpret_cast<const char *>(&tempSize), sizeof(tempSize));
+    for (int i{}; i < tempSize; i++) {
+        int tempScore = 1;
+        std::string tempName = "test";
+        myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName = tempName.size();
+        myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+        myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
     }
+    myFile.close();
     bs.read();
     EXPECT_EQ(5, bs.getPlayers().size());
-    myFile.close();
     remove(fileName.c_str());
     std::filesystem::remove(directoryName);
 }
@@ -64,12 +77,19 @@ TEST(BestScores, readBiggerFileThanExpected) {
     bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
     myFile.open(fileName, std::ios::out);
-    for (int i{}; i < 6; i++) {
-        myFile << 1 << " test" << std::endl;
+    size_t tempSize = 6;
+    myFile.write(reinterpret_cast<const char *>(&tempSize), sizeof(tempSize));
+    for (int i{}; i < tempSize; i++) {
+        int tempScore = 1;
+        std::string tempName = "test";
+        myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName = tempName.size();
+        myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+        myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
     }
+    myFile.close();
     bs.read();
     EXPECT_EQ(5, bs.getPlayers().size());
-    myFile.close();
     remove(fileName.c_str());
     std::filesystem::remove(directoryName);
 }
@@ -196,10 +216,17 @@ TEST(BestScores, isBestScoresWithLessThan5Players) {
     BestScores bs;
     bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
-    myFile.open(fileName, std::ios::out);
+    myFile.open(fileName, std::ios::binary);
     // test with all 2 positions filled
-    for (int i{2}; i > 0; i--) {
-        myFile << i << " test" << std::endl;
+    size_t tempSize = 2;
+    myFile.write(reinterpret_cast<const char *>(&tempSize), sizeof(tempSize));
+    for (auto i{tempSize}; i > 0; i--) {
+        int tempScore = static_cast<int>(i);
+        std::string tempName = "test";
+        myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName = tempName.size();
+        myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+        myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
     }
     myFile.close();
     bs.read();
@@ -215,10 +242,17 @@ TEST(BestScores, isBestScoresWith5Players) {
     BestScores bs;
     bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
-    myFile.open(fileName, std::ios::out);
+    myFile.open(fileName, std::ios::binary);
     // test with all 5 positions filled
-    for (int i{5}; i > 0; i--) {
-        myFile << i << " test" << std::endl;
+    size_t tempSize = 5;
+    myFile.write(reinterpret_cast<const char *>(&tempSize), sizeof(tempSize));
+    for (auto i{tempSize}; i > 0; i--) {
+        int tempScore = static_cast<int>(i);
+        std::string tempName = "test";
+        myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName = tempName.size();
+        myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+        myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
     }
     myFile.close();
     bs.read();
@@ -234,10 +268,17 @@ TEST(BestScores, isBestScoresWith5PlayersWithHigherScore) {
     BestScores bs;
     bs.setNameFile(testSize, directoryName, true);
     std::ofstream myFile;
-    myFile.open(fileName, std::ios::out);
+    myFile.open(fileName, std::ios::binary);
     // test with all 5 positions filled
-    for (int i{5}; i > 0; i--) {
-        myFile << i << " test" << std::endl;
+    size_t tempSize = 5;
+    myFile.write(reinterpret_cast<const char *>(&tempSize), sizeof(tempSize));
+    for (auto i{tempSize}; i > 0; i--) {
+        int tempScore = static_cast<int>(i);
+        std::string tempName = "test";
+        myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName = tempName.size();
+        myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+        myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
     }
     myFile.close();
     bs.read();
