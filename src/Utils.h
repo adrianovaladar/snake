@@ -12,6 +12,7 @@ public:
     static void signalHandler(int signal);
     static void printExitScreen();
     static std::string boolToAlpha(bool status);
+    static bool validateInput(std::istream &input);
 };
 
 

@@ -1,6 +1,7 @@
 #include "Utils.h"
 #include "Input.h"
 #include <iostream>
+#include <limits>
 #include <string>
 
 void Utils::signalHandler(int signal) {
@@ -17,4 +18,15 @@ void Utils::printExitScreen() {
 std::string Utils::boolToAlpha(bool status) {
     std::string text = status ? "on" : "off";
     return text;
+}
+
+bool Utils::validateInput(std::istream &input) {
+    if (std::cin.fail()) {
+        // Clear input buffer and ignore invalid input
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input. Please enter a valid value." << std::endl;
+        return false;
+    }
+    return true;
 }

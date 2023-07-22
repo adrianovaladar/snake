@@ -8,17 +8,6 @@
 #include <string>
 #include <vector>
 
-bool validateInput(std::istream &input) {
-    if (std::cin.fail()) {
-        // Clear input buffer and ignore invalid input
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid input. Please enter a valid value." << std::endl;
-        return false;
-    }
-    return true;
-}
-
 Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
@@ -290,11 +279,11 @@ void Game::settings(std::istream &input, std::ostream &output) {
     do {
         output << "Length (current value is " << size.first << "): ";
         input >> tmpSize.first;
-        if (!validateInput(input))
+        if (!Utils::validateInput(input))
             continue;
         output << "Width (current value is " << size.second << "): ";
         input >> tmpSize.second;
-        if (!validateInput(input))
+        if (!Utils::validateInput(input))
             continue;
     } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
     bool changed{};
@@ -307,7 +296,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
     do {
         output << "Type " << !borders << " to change, " << borders << " to keep: ";
         input >> status;
-        if (!validateInput(input)) {
+        if (!Utils::validateInput(input)) {
             status = -1;
             continue;
         }
