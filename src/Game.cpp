@@ -485,7 +485,7 @@ void Game::changeVelocity() {
     int transition = 10;
     float exponentialIncrease = 1.01;
     if (foodsEaten >= transition && foodsEaten < transition * 2) {
-        exponentialIncrease = 1.05;
+        exponentialIncrease = 1.02;
     }
     int linearIncrease = 10000;
     if (foodsEaten < transition) {
