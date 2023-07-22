@@ -64,7 +64,7 @@ void Game::start() {
     dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
 }
 
-bool Game::readDirectionAndMoveSnake() {
+bool Game::readKey() {
     int c{};
     if (Input::kbHit())
         c = getchar();
@@ -94,7 +94,7 @@ bool Game::readDirectionAndMoveSnake() {
 }
 
 bool Game::logic() {
-    if (readDirectionAndMoveSnake())
+    if (readKey())
         return true;
     if (isEatRegularFood()) {
         ++snake;

@@ -40,7 +40,7 @@ private:
     bool pause;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence();
-    bool readDirectionAndMoveSnake();
+    bool readKey();
     void showMenu() const;
     static void about();
     void updateBestScores();
