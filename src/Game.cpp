@@ -281,11 +281,11 @@ void Game::settings(std::istream &input, std::ostream &output) {
     do {
         output << "Length (current value is " << size.first << "): ";
         input >> tmpSize.first;
-        if (!Utils::validateInput(input))
+        if (!Utils::validateInput())
             continue;
         output << "Width (current value is " << size.second << "): ";
         input >> tmpSize.second;
-        if (!Utils::validateInput(input))
+        if (!Utils::validateInput())
             continue;
     } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
     bool changed{};
@@ -298,7 +298,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
     do {
         output << "Type " << !borders << " to change, " << borders << " to keep: ";
         input >> status;
-        if (!Utils::validateInput(input)) {
+        if (!Utils::validateInput()) {
             status = -1;
             continue;
         }

@@ -20,7 +20,7 @@ std::string Utils::boolToAlpha(bool status) {
     return text;
 }
 
-bool Utils::validateInput(std::istream &input) {
+bool Utils::validateInput() {
     if (std::cin.fail()) {
         // Clear input buffer and ignore invalid input
         std::cin.clear();
