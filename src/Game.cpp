@@ -452,10 +452,6 @@ void Game::run() {
     system("clear");
 }
 
-int Game::getScore() const {
-    return score;
-}
-
 const Snake &Game::getSnake() const {
     return snake;
 }
@@ -478,13 +474,14 @@ void Game::changeVelocity() {
     if (velocity < 20000000) return;
     int transition = 10;
     float exponentialIncrease = 1.01;
-    if (foodsEaten > transition && foodsEaten < transition * 2) {
+    if (foodsEaten >= transition && foodsEaten < transition * 2) {
         exponentialIncrease = 1.05;
     }
     int linearIncrease = 10000;
     if (foodsEaten < transition) {
         velocity -= linearIncrease;
     } else {
-        velocity /= exponentialIncrease;
+        float tempVelocity = static_cast<float>(velocity) / exponentialIncrease;
+        velocity = static_cast<int>(tempVelocity);
     }
 }

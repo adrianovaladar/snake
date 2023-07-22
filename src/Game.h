@@ -71,7 +71,6 @@ public:
     void writeSettings() const;
     void save();
     void load();
-    [[nodiscard]] int getScore() const;
     [[nodiscard]] const Snake &getSnake() const;
     [[nodiscard]] const Food &getRegularFood() const;
     [[nodiscard]] const Food &getSuperFood() const;
