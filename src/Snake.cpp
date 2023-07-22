@@ -51,10 +51,6 @@ void Snake::move(const std::pair<int, int> &sizeMap, bool border) {
     }
 }
 
-void Snake::setSymbol(char s) {
-    Snake::symbol = s;
-}
-
 Direction Snake::getDirection() const {
     return direction;
 }
