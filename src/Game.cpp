@@ -104,7 +104,7 @@ bool Game::logic() {
             superFood->setPosition(size, snake.getPositions(), regularFood->getPosition());
             if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
                 int biggerSide = size.first > size.second ? size.first : size.second;
-                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(biggerSide * 0.7);
+                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
             }
         }
     }
