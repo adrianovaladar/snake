@@ -104,7 +104,7 @@ void Snake::setPositions(const std::vector<std::pair<int, int>> &pS) {
 
 void Snake::setPositions(const std::pair<int, int> &sizeMap) {
     positions.clear();
-    positions.emplace_back(sizeMap.first / 2.5, sizeMap.second / 2.5);
-    positions.emplace_back(sizeMap.first / 2.5 - 1, sizeMap.second / 2.5);
-    positions.emplace_back(sizeMap.first / 2.5 - 2, sizeMap.second / 2.5);
+    positions.emplace_back(sizeMap.first / 2, sizeMap.second / 2);
+    positions.emplace_back(sizeMap.first / 2 - 1, sizeMap.second / 2);
+    positions.emplace_back(sizeMap.first / 2 - 2, sizeMap.second / 2);
 }
