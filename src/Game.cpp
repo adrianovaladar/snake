@@ -239,6 +239,7 @@ void Game::load() {
     dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(movesLeft);
     file.read(reinterpret_cast<char *>(&score), sizeof(score));
     file.close();
+    pause = true;
 }
 
 void Game::removeIfExists() {
@@ -358,7 +359,7 @@ void Game::play() {
     while (!isGameOver()) {
         printToBufferScreen();
         std::this_thread::sleep_for(std::chrono::nanoseconds(velocity));
-        system("clear");
+        Utils::clearScreen();
         std::cout << bufferScreen.str();
         if (logic()) {
             save();
@@ -402,7 +403,7 @@ void Game::run() {
     updateBestScores();
     char choice;
     do {
-        system("clear");
+        Utils::clearScreen();
         showMenu();
         std::cin >> choice;
         switch (choice) {
@@ -458,8 +459,7 @@ void Game::run() {
             std::cin.get();
         }
     } while (choice != '9');
-    system("clear");
-    system("clear");
+    Utils::clearScreen();
 }
 
 const Snake &Game::getSnake() const {

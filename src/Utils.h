@@ -9,6 +9,7 @@ public:
     static void printExitScreen();
     static std::string boolToAlpha(bool status);
     static bool validateInput();
+    static void clearScreen();
 };
 
 

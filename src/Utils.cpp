@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include "Input.h"
+#include "Logger.h"
 #include <iostream>
 #include <limits>
 #include <string>
@@ -29,4 +30,11 @@ bool Utils::validateInput() {
         return false;
     }
     return true;
+}
+
+void Utils::clearScreen() {
+    int code = system("clear");
+    if (code != 0) {
+        log("Error code: " + std::to_string(code), LOGLEVEL::Error);
+    }
 }
