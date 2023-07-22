@@ -41,6 +41,8 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
 }
 
 bool Game::isGameOver() {
+    if (score == std::numeric_limits<int>::max())
+        return true;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
     bool borderCollision{};
