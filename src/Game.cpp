@@ -256,7 +256,7 @@ void Game::showMenu() const {
               << "                                 __/ |" << std::endl
               << "                                |___/" << std::endl
               << std::endl
-              << "Info: Map size " << size.first << "x" << size.second << ", Borders " << Utils::Utils::boolToAlpha(borders) << std::endl;
+              << "Info: map size " << size.first << "x" << size.second << ", borders " << Utils::Utils::boolToAlpha(borders) << std::endl;
 
     if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
         std::cout << "0 - Continue game" << std::endl;
@@ -264,7 +264,7 @@ void Game::showMenu() const {
     std::cout << "1 - New game" << std::endl
               << "2 - Best scores" << std::endl
               << "3 - Settings" << std::endl
-              << "4 - Show keys" << std::endl
+              << "4 - Show keys and symbols" << std::endl
               << "5 - About" << std::endl
               << "9 - Exit" << std::endl
               << "Insert option: ";
@@ -366,15 +366,23 @@ void Game::play() {
     }
 }
 
-void Game::showKeys() {
-    std::cout << "Show keys" << std::endl;
-    std::cout << KEY_MOVE_UP << " - Move up" << std::endl;
-    std::cout << KEY_MOVE_DOWN << " - Move down" << std::endl;
-    std::cout << KEY_MOVE_LEFT << " - Move left" << std::endl;
-    std::cout << KEY_MOVE_RIGHT << " - Move right" << std::endl;
-    std::cout << KEY_PAUSE << " - Pause/Resume" << std::endl;
-    std::cout << KEY_SAVE
-              << " - Save and go back to menu" << std::endl;
+void Game::showKeysAndSymbols() {
+    std::cout << "Show keys and symbols" << std::endl
+              << "Keys:" << std::endl
+              << KEY_MOVE_UP << " - Move up" << std::endl
+              << KEY_MOVE_DOWN << " - Move down" << std::endl
+              << KEY_MOVE_LEFT << " - Move left" << std::endl
+              << KEY_MOVE_RIGHT << " - Move right" << std::endl
+              << KEY_PAUSE << " - Pause/Resume" << std::endl
+              << KEY_SAVE
+              << " - Save and go back to menu" << std::endl
+              << std::endl
+              << "Symbols:" << std::endl
+              << snake.getSymbol() << " - Snake symbol" << std::endl
+              << regularFood->getSymbol() << " - Regular food symbol" << std::endl
+              << superFood->getSymbol() << " - Super food symbol" << std::endl
+              << SYMBOL_BORDERS_OFF << " - Borders off" << std::endl
+              << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
 }
 
 void Game::updateGameFileName() {
@@ -430,7 +438,7 @@ void Game::run() {
                 break;
             }
             case '4': {
-                showKeys();
+                showKeysAndSymbols();
                 Utils::printExitScreen();
                 break;
             }

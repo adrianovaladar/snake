@@ -45,7 +45,7 @@ private:
     static void about();
     void updateBestScores();
     void play();
-    static void showKeys();
+    void showKeysAndSymbols();
     void removeIfExists();
     bool borders;
     std::stringstream bufferScreen;
