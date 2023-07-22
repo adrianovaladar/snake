@@ -3,7 +3,8 @@
 
 #include <vector>
 
-enum class Direction { RIGHT,
+enum class Direction { NONE,
+                       RIGHT,
                        LEFT,
                        UP,
                        DOWN };

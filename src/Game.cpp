@@ -73,7 +73,7 @@ bool Game::readDirectionAndMoveSnake() {
         pause = !pause;
     }
     if (!pause) {
-        Direction d;
+        Direction d = Direction::NONE;
         if (tolower(c) == KEY_MOVE_UP)
             d = Direction::UP;
         else if (tolower(c) == KEY_MOVE_LEFT)
