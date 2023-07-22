@@ -9,42 +9,56 @@ BestScores::~BestScores() = default;
 void BestScores::setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName, const bool &hasBorders) {
     std::stringstream nf;
     std::string b = (hasBorders) ? "on" : "off";
-    nf << directoryName << "/best_scores_" << sizeGame.first << "_" << sizeGame.second << "_" << b << ".txt";
+    nf << directoryName << "/best_scores_" << sizeGame.first << "_" << sizeGame.second << "_" << b;
     this->nameFile = nf.str();
 }
 
 void BestScores::read() {
     players.clear();
-    std::ifstream myFile;
-    myFile.open(nameFile, std::ios::in);
-    Player player;
-    int numberPlayers{};
-    while (myFile >> player) {
-        players.emplace_back(player);
-        numberPlayers++;
-        if (numberPlayers == 5)
-            break;
+    std::ifstream myFile(nameFile, std::ios::binary);
+    if (!myFile) {
+        log("Error opening file for reading", LOGLEVEL::Warning);
+        return;
     }
-    log("Number of players read: " + std::to_string(numberPlayers), LOGLEVEL::Info);
+    size_t playersSize;
+    myFile.read(reinterpret_cast<char *>(&playersSize), sizeof(playersSize));
+    if (playersSize > size) {
+        log("Number of players in file is " + std::to_string(playersSize) + ", only " + std::to_string(size) + "will be read", LOGLEVEL::Warning);
+        playersSize = 5;
+    }
+    players.resize(playersSize);
+    for (auto &player: players) {
+        int tempScore;
+        std::string tempName;
+        myFile.read(reinterpret_cast<char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName;
+        myFile.read(reinterpret_cast<char *>(&tempSizeName), sizeof(std::string::size_type));
+        tempName.resize(tempSizeName);
+        myFile.read(tempName.data(), static_cast<std::streamsize>(tempSizeName));
+        player.setScore(tempScore);
+        player.setName(tempName);
+    }
+    log("Number of players read: " + std::to_string(playersSize), LOGLEVEL::Info);
     myFile.close();
 }
 
 void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int score) {
-    std::ofstream myFile;
     std::string n{};
     std::string name{};
     output << "Congratulations, you are one of the best scores!!" << std::endl;
     output << "Please insert your name (max 15 characters and only alphanumerical): ";
     input >> n;
     for (auto c: n) {
-        if (std::isalnum(c))
+        if (std::isalnum(c)) {
             name += c;
+        }
     }
-    if (name.empty())
+    if (name.empty()) {
         name = "guest";
+    }
     log("New best score. Name: " + name + " Score: " + std::to_string(score), LOGLEVEL::Info);
     Player p{score, name.substr(0, 15)};
-    myFile.open(nameFile, std::ios::out);
+    std::ofstream myFile(nameFile, std::ios::binary);
     bool inserted = false;
     for (int k{}; k < players.size(); k++) {
         if (p.getScore() > players.at(k).getScore()) {
@@ -58,8 +72,15 @@ void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int s
     } else if (players.size() > this->size) {
         players.pop_back();
     }
-    for (const auto &r: players) {
-        myFile << r.getScore() << " " << r.getName() << std::endl;
+    size_t playersSize = players.size();
+    myFile.write(reinterpret_cast<const char *>(&playersSize), sizeof(playersSize));
+    for (const auto &player: players) {
+        auto tempScore = player.getScore();
+        auto tempName = player.getName();
+        myFile.write(reinterpret_cast<const char *>(&tempScore), sizeof(tempScore));
+        std::string::size_type tempSizeName = tempName.size();
+        myFile.write(reinterpret_cast<const char *>(&tempSizeName), sizeof(std::string::size_type));
+        myFile.write(tempName.data(), static_cast<std::streamsize>(tempName.size()));
     }
     myFile.close();
 }

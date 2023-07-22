@@ -15,6 +15,8 @@ public:
     [[maybe_unused]] [[nodiscard]] int getScore() const;
     [[nodiscard]] const std::string &getName() const;
     friend std::istream &operator>>(std::istream &is, Player &p);
+    void setScore(int s);
+    void setName(const std::string &n);
 };
 
 #endif//SNAKE_PLAYER_H
