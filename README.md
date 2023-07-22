@@ -60,15 +60,16 @@ The game includes a "Best Scores" feature that displays the top five players' sc
 account the status of the borders (on/off). Players can strive to achieve high scores and compete with others to secure
 a place among the top performers in the game.
 
-The following image showcases a preview of the game.
+A preview of the game can be seen in the following video: [Youtube video](https://www.youtube.com/watch?v=advztiHTyrs)
 
-![preview](https://user-images.githubusercontent.com/60299267/196003941-0192f5d9-f290-4d01-bfe5-30344d8beda6.png)
-
-## Important note
+## Important notes
 
 The code includes a command to clear the terminal for a better gaming experience. If you have any important data or
 output in the current terminal session, it is recommended to open a new terminal window or to save your work before
 running the game to avoid unintended data loss.
+
+Additionally, please note that in some terminal screens, it might be needed to press the "Enter" key twice instead of
+only once when interacting with the game.
 
 ## Creators
 
