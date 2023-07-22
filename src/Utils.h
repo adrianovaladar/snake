@@ -1,7 +1,3 @@
-//
-// Created by adrianovaladar on 22-07-2023.
-//
-
 #ifndef SNAKE_UTILS_H
 #define SNAKE_UTILS_H
 

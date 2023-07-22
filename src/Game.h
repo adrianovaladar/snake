@@ -51,13 +51,14 @@ private:
     std::stringstream bufferScreen;
     int foodsEaten;
     int velocity;
+    bool logic();
+    void printToBufferScreen();
+    void changeVelocity();
 
 public:
     Game();
     virtual ~Game();
     bool isGameOver();
-    bool logic();
-    void printToBufferScreen();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setRegularFood(std::unique_ptr<Food> f);
@@ -77,7 +78,6 @@ public:
     void updateGameFileName();
     bool hasBorders() const;
     void setBorders(bool b);
-    void changeVelocity();
 };
 
 #endif//SNAKE_MAP_H
