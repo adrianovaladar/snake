@@ -385,9 +385,9 @@ void Game::showKeysAndSymbols() {
               << " - Save and go back to menu" << std::endl
               << std::endl
               << "Symbols:" << std::endl
-              << snake.getSymbol() << " - Snake symbol" << std::endl
-              << regularFood->getSymbol() << " - Regular food symbol" << std::endl
-              << superFood->getSymbol() << " - Super food symbol" << std::endl
+              << snake.getSymbol() << " - Snake" << std::endl
+              << regularFood->getSymbol() << " - Regular food" << std::endl
+              << superFood->getSymbol() << " - Super food" << std::endl
               << SYMBOL_BORDERS_OFF << " - Borders off" << std::endl
               << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
 }
