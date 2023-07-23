@@ -38,6 +38,7 @@ private:
     std::string directoryName;
     std::string gameFileName;
     bool pause;
+    bool kbHit;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence();
     bool readKey();

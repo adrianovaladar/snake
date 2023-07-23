@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000) {
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000), kbHit(false) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
 }
@@ -66,8 +66,11 @@ void Game::start() {
 
 bool Game::readKey() {
     int c{};
-    if (Input::kbHit())
+    if (Input::kbHit()) {
+        if (!kbHit)
+            kbHit = true;
         c = getchar();
+    }
     if (tolower(c) == KEY_SAVE) {
         return true;
     }
@@ -122,6 +125,7 @@ bool Game::logic() {
         log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
         Input::disableRawMode();
         if (bestScores.isBestScore(score)) {
+            kbHit = false;
             bestScores.updateAndWrite(std::cin, std::cout, score);
         }
         bestScores.print(size, borders);
@@ -404,6 +408,7 @@ void Game::run() {
     char choice;
     do {
         Utils::clearScreen();
+        kbHit = false;
         showMenu();
         std::cin >> choice;
         switch (choice) {
@@ -455,7 +460,9 @@ void Game::run() {
             }
         }
         if (choice == '0' || choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (!kbHit) {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
             std::cin.get();
         }
     } while (choice != '9');

@@ -72,9 +72,6 @@ The code includes a command to clear the terminal for a better gaming experience
 output in the current terminal session, it is recommended to open a new terminal window or to save your work before
 running the game to avoid unintended data loss.
 
-Additionally, please note that in some terminal screens, it might be needed to press the "Enter" key twice instead of
-only once when interacting with the game.
-
 ## Creators
 
 This project was created by [**Adriano Valadar**](https://adrianovaladar.github.io) and [**Rogério
