@@ -280,7 +280,7 @@ void Game::showMenu() const {
 void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
-    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << std::endl;
+    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << " and maximum size is " << MAX_LENGTH << "x" << MAX_WIDTH << std::endl;
     output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
     std::pair<int, int> tmpSize{};
     do {
@@ -292,7 +292,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         input >> tmpSize.second;
         if (!Utils::validateInput())
             continue;
-    } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
+    } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH || tmpSize.first > MAX_LENGTH || tmpSize.second > MAX_WIDTH);
     bool changed{};
     if (tmpSize != size) {
         changed = true;

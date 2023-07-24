@@ -14,6 +14,8 @@
 
 #define MIN_LENGTH 10
 #define MIN_WIDTH 5
+#define MAX_LENGTH 1000
+#define MAX_WIDTH 1000
 
 #define KEY_MOVE_UP 'w'
 #define KEY_MOVE_LEFT 'a'
