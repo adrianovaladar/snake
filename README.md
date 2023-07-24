@@ -20,12 +20,12 @@ the following command:
     ./snake
 
 Ensure that the logged-in user has the necessary permissions (read, write, and execute) for the project directory. These
-permissions are crucial for the game's settings, best scores files, and the ability to load saved games. These files
-will be stored in the files directory.
+permissions are crucial for the game's settings, best scores files, and the ability to save and load games. These files
+will be stored in the files' directory.
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
 
-![image](https://github.com/adrianovaladar/snake/assets/60299267/97455976-434d-4fd4-9572-fb89bc0cecd9)
+![image](https://github.com/adrianovaladar/snake/assets/60299267/1622bc1a-3fd7-4a9c-938b-ab42a0b6f1c3)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
 increase its length and score by 1. Additionally, there are superfood items that provide 3 points when eaten.
@@ -59,7 +59,7 @@ wrap around the screen edges.
 This customizable feature allows
 players to tailor the game's difficulty and mechanics to their preference.
 
-The game includes a best scores feature that displays the top five players' scores for a given map size, taking into
+The game includes the best scores feature that displays the top five players' scores for a given map size, taking into
 account the status of the borders (on/off). Players can strive to achieve high scores and compete with others to secure
 a place among the top performers in the game.
 
