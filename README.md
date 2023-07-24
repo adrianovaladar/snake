@@ -66,7 +66,7 @@ a place among the top performers in the game.
 ## Preview of the game
 
 A preview of the game can be watched in the following
-video: [Snake game preview](https://www.youtube.com/watch?v=advztiHTyrs).
+video: [Snake game preview](https://www.youtube.com/watch?v=1JRSfNTa7Eg).
 
 ## Download and Support on itch.io
 
