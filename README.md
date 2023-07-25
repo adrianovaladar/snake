@@ -11,18 +11,21 @@ fun and engaging gaming experience directly within the terminal environment.
 
 To compile the project, navigate to the root directory and execute the following commands:
 
-    $ cmake .
-    $ make
+    cmake .
+    make
 
-After the compilation is complete, a file named "snake" will appear in the directory. To run the game, simply execute
-the command "./snake" without any parameters.
+After the compilation is complete, a file named snake will appear in the directory. To run the game, simply execute
+the following command:
+
+    ./snake
 
 Ensure that the logged-in user has the necessary permissions (read, write, and execute) for the project directory. These
-permissions are crucial for the game's settings, best scores files, and the ability to load saved games. These files
-will be stored in the "files" directory.
+permissions are crucial for the game's settings, best scores files, and the ability to save and load games. These files
+will be stored in the files' directory.
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
-![image](https://github.com/adrianovaladar/snake/assets/60299267/a1ccb51c-bf44-4653-b6da-51be6b6514d6)
+
+![image](https://github.com/adrianovaladar/snake/assets/60299267/1622bc1a-3fd7-4a9c-938b-ab42a0b6f1c3)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
 increase its length and score by 1. Additionally, there are superfood items that provide 3 points when eaten.
@@ -56,20 +59,25 @@ wrap around the screen edges.
 This customizable feature allows
 players to tailor the game's difficulty and mechanics to their preference.
 
-The game includes a "Best Scores" feature that displays the top five players' scores for a given map size, taking into
+The game includes the best scores feature that displays the top five players' scores for a given map size, taking into
 account the status of the borders (on/off). Players can strive to achieve high scores and compete with others to secure
 a place among the top performers in the game.
 
-A preview of the game can be seen in the following video: [Youtube video](https://www.youtube.com/watch?v=advztiHTyrs)
+## Preview of the game
 
-## Important notes
+A preview of the game can be watched in the following
+video: [Snake game preview](https://www.youtube.com/watch?v=1JRSfNTa7Eg).
+
+## Download and Support on itch.io
+
+The game is available for download and support on itch.io. Access the following link to download the game and show
+support for the project: [Snake game](https://adrianovaladar.itch.io/snake-game).
+
+## Important note
 
 The code includes a command to clear the terminal for a better gaming experience. If you have any important data or
 output in the current terminal session, it is recommended to open a new terminal window or to save your work before
 running the game to avoid unintended data loss.
-
-Additionally, please note that in some terminal screens, it might be needed to press the "Enter" key twice instead of
-only once when interacting with the game.
 
 ## Creators
 

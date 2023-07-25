@@ -14,6 +14,8 @@
 
 #define MIN_LENGTH 10
 #define MIN_WIDTH 5
+#define MAX_LENGTH 1000
+#define MAX_WIDTH 1000
 
 #define KEY_MOVE_UP 'w'
 #define KEY_MOVE_LEFT 'a'
@@ -38,26 +40,28 @@ private:
     std::string directoryName;
     std::string gameFileName;
     bool pause;
+    bool kbHit;
     void printVerticalFenceAndPlayableArea(int y);
     void printHorizontalFence();
-    bool readDirectionAndMoveSnake();
+    bool readKey();
     void showMenu() const;
     static void about();
     void updateBestScores();
     void play();
-    static void showKeys();
+    void showKeysAndSymbols();
     void removeIfExists();
     bool borders;
     std::stringstream bufferScreen;
     int foodsEaten;
     int velocity;
+    bool logic();
+    void printToBufferScreen();
+    void changeVelocity();
 
 public:
     Game();
     virtual ~Game();
     bool isGameOver();
-    bool logic();
-    void printToBufferScreen();
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setRegularFood(std::unique_ptr<Food> f);
@@ -71,14 +75,12 @@ public:
     void writeSettings() const;
     void save();
     void load();
-    [[nodiscard]] int getScore() const;
     [[nodiscard]] const Snake &getSnake() const;
     [[nodiscard]] const Food &getRegularFood() const;
     [[nodiscard]] const Food &getSuperFood() const;
     void updateGameFileName();
     bool hasBorders() const;
     void setBorders(bool b);
-    void changeVelocity();
 };
 
 #endif//SNAKE_MAP_H

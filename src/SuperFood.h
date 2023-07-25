@@ -1,7 +1,3 @@
-//
-// Created by adrianovaladar on 13-07-2023.
-//
-
 #ifndef SNAKE_SUPERFOOD_H
 #define SNAKE_SUPERFOOD_H
 

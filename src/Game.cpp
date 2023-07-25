@@ -1,40 +1,14 @@
 #include "Game.h"
 #include "Input.h"
 #include "Logger.h"
+#include "Utils.h"
 #include <bits/stdc++.h>
 #include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
 
-void signalHandler(int signal) {
-    system("clear");
-    Input::disableRawMode();
-    exit(signal);
-}
-
-void printExitScreen() {
-    std::cout << std::endl
-              << "Press enter to exit this screen ";
-}
-
-std::string boolToAlpha(bool status) {
-    std::string text = status ? "on" : "off";
-    return text;
-}
-
-bool validateInput(std::istream &input) {
-    if (std::cin.fail()) {
-        // Clear input buffer and ignore invalid input
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid input. Please enter a valid value." << std::endl;
-        return false;
-    }
-    return true;
-}
-
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000) {
+Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000), kbHit(false) {
     regularFood = std::make_unique<RegularFood>();
     superFood = std::make_unique<SuperFood>();
 }
@@ -67,6 +41,8 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
 }
 
 bool Game::isGameOver() {
+    if (score == std::numeric_limits<int>::max())
+        return true;
     std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
     bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
     bool borderCollision{};
@@ -88,10 +64,13 @@ void Game::start() {
     dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
 }
 
-bool Game::readDirectionAndMoveSnake() {
+bool Game::readKey() {
     int c{};
-    if (Input::kbHit())
+    if (Input::kbHit()) {
+        if (!kbHit)
+            kbHit = true;
         c = getchar();
+    }
     if (tolower(c) == KEY_SAVE) {
         return true;
     }
@@ -99,7 +78,7 @@ bool Game::readDirectionAndMoveSnake() {
         pause = !pause;
     }
     if (!pause) {
-        Direction d;
+        Direction d = Direction::NONE;
         if (tolower(c) == KEY_MOVE_UP)
             d = Direction::UP;
         else if (tolower(c) == KEY_MOVE_LEFT)
@@ -118,7 +97,7 @@ bool Game::readDirectionAndMoveSnake() {
 }
 
 bool Game::logic() {
-    if (readDirectionAndMoveSnake())
+    if (readKey())
         return true;
     if (isEatRegularFood()) {
         ++snake;
@@ -130,7 +109,7 @@ bool Game::logic() {
             superFood->setPosition(size, snake.getPositions(), regularFood->getPosition());
             if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
                 int biggerSide = size.first > size.second ? size.first : size.second;
-                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(biggerSide * 0.7);
+                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
             }
         }
     }
@@ -146,6 +125,7 @@ bool Game::logic() {
         log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
         Input::disableRawMode();
         if (bestScores.isBestScore(score)) {
+            kbHit = false;
             bestScores.updateAndWrite(std::cin, std::cout, score);
         }
         bestScores.print(size, borders);
@@ -263,6 +243,7 @@ void Game::load() {
     dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(movesLeft);
     file.read(reinterpret_cast<char *>(&score), sizeof(score));
     file.close();
+    pause = true;
 }
 
 void Game::removeIfExists() {
@@ -282,7 +263,7 @@ void Game::showMenu() const {
               << "                                 __/ |" << std::endl
               << "                                |___/" << std::endl
               << std::endl
-              << "Info: Map size " << size.first << "x" << size.second << ", Borders " << boolToAlpha(borders) << std::endl;
+              << "Info: map size " << size.first << "x" << size.second << ", borders " << Utils::Utils::boolToAlpha(borders) << std::endl;
 
     if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
         std::cout << "0 - Continue game" << std::endl;
@@ -290,7 +271,7 @@ void Game::showMenu() const {
     std::cout << "1 - New game" << std::endl
               << "2 - Best scores" << std::endl
               << "3 - Settings" << std::endl
-              << "4 - Show keys" << std::endl
+              << "4 - Show keys and symbols" << std::endl
               << "5 - About" << std::endl
               << "9 - Exit" << std::endl
               << "Insert option: ";
@@ -299,36 +280,36 @@ void Game::showMenu() const {
 void Game::settings(std::istream &input, std::ostream &output) {
     output << "Settings" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
-    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << std::endl;
+    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << " and maximum size is " << MAX_LENGTH << "x" << MAX_WIDTH << std::endl;
     output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
     std::pair<int, int> tmpSize{};
     do {
         output << "Length (current value is " << size.first << "): ";
         input >> tmpSize.first;
-        if (!validateInput(input))
+        if (!Utils::validateInput())
             continue;
         output << "Width (current value is " << size.second << "): ";
         input >> tmpSize.second;
-        if (!validateInput(input))
+        if (!Utils::validateInput())
             continue;
-    } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH);
+    } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH || tmpSize.first > MAX_LENGTH || tmpSize.second > MAX_WIDTH);
     bool changed{};
     if (tmpSize != size) {
         changed = true;
     }
     size = tmpSize;
-    output << "Change borders (On/Off) (Current value is " << boolToAlpha(borders) << ")" << std::endl;
+    output << "Change borders (On/Off) (Current value is " << Utils::Utils::boolToAlpha(borders) << ")" << std::endl;
     int status{};
     do {
         output << "Type " << !borders << " to change, " << borders << " to keep: ";
         input >> status;
-        if (!validateInput(input)) {
+        if (!Utils::validateInput()) {
             status = -1;
             continue;
         }
         if (status == !borders) {
             setBorders(!borders);
-            output << "Borders are now set to " << boolToAlpha(borders);
+            output << "Borders are now set to " << Utils::boolToAlpha(borders);
             symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
             changed = true;
         }
@@ -382,7 +363,7 @@ void Game::play() {
     while (!isGameOver()) {
         printToBufferScreen();
         std::this_thread::sleep_for(std::chrono::nanoseconds(velocity));
-        system("clear");
+        Utils::clearScreen();
         std::cout << bufferScreen.str();
         if (logic()) {
             save();
@@ -392,33 +373,42 @@ void Game::play() {
     }
 }
 
-void Game::showKeys() {
-    std::cout << "Show keys" << std::endl;
-    std::cout << KEY_MOVE_UP << " - Move up" << std::endl;
-    std::cout << KEY_MOVE_DOWN << " - Move down" << std::endl;
-    std::cout << KEY_MOVE_LEFT << " - Move left" << std::endl;
-    std::cout << KEY_MOVE_RIGHT << " - Move right" << std::endl;
-    std::cout << KEY_PAUSE << " - Pause/Resume" << std::endl;
-    std::cout << KEY_SAVE
-              << " - Save and go back to menu" << std::endl;
+void Game::showKeysAndSymbols() {
+    std::cout << "Show keys and symbols" << std::endl
+              << "Keys:" << std::endl
+              << KEY_MOVE_UP << " - Move up" << std::endl
+              << KEY_MOVE_DOWN << " - Move down" << std::endl
+              << KEY_MOVE_LEFT << " - Move left" << std::endl
+              << KEY_MOVE_RIGHT << " - Move right" << std::endl
+              << KEY_PAUSE << " - Pause/Resume" << std::endl
+              << KEY_SAVE
+              << " - Save and go back to menu" << std::endl
+              << std::endl
+              << "Symbols:" << std::endl
+              << snake.getSymbol() << " - Snake" << std::endl
+              << regularFood->getSymbol() << " - Regular food" << std::endl
+              << superFood->getSymbol() << " - Super food" << std::endl
+              << SYMBOL_BORDERS_OFF << " - Borders off" << std::endl
+              << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
 }
 
 void Game::updateGameFileName() {
-    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + boolToAlpha(borders);
+    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + Utils::boolToAlpha(borders);
 }
 
 void Game::run() {
     if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
         std::filesystem::create_directory(directoryName);
     }
-    std::signal(SIGINT, signalHandler);
-    std::signal(SIGTSTP, signalHandler);
+    std::signal(SIGINT, Utils::signalHandler);
+    std::signal(SIGTSTP, Utils::signalHandler);
     readSettings();
     updateGameFileName();
     updateBestScores();
     char choice;
     do {
-        system("clear");
+        Utils::clearScreen();
+        kbHit = false;
         showMenu();
         std::cin >> choice;
         switch (choice) {
@@ -427,7 +417,7 @@ void Game::run() {
                     load();
                     play();
                 }
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '1': {
@@ -436,33 +426,33 @@ void Game::run() {
                     std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. Do you want to proceed? Type a to accept, any other key to refuse ";
                     std::cin >> option;
                     if (tolower(option) != 'a') {
-                        printExitScreen();
+                        Utils::printExitScreen();
                         break;
                     }
                 }
                 start();
                 play();
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '2': {
                 bestScores.print(size, borders);
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '3': {
                 settings(std::cin, std::cout);
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             case '4': {
-                showKeys();
-                printExitScreen();
+                showKeysAndSymbols();
+                Utils::printExitScreen();
                 break;
             }
             case '5': {
                 about();
-                printExitScreen();
+                Utils::printExitScreen();
                 break;
             }
             default: {
@@ -470,16 +460,13 @@ void Game::run() {
             }
         }
         if (choice == '0' || choice == '1' || choice == '2' || choice == '3' || choice == '4' || choice == '5') {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (!kbHit) {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
             std::cin.get();
         }
     } while (choice != '9');
-    system("clear");
-    system("clear");
-}
-
-int Game::getScore() const {
-    return score;
+    Utils::clearScreen();
 }
 
 const Snake &Game::getSnake() const {
@@ -504,13 +491,14 @@ void Game::changeVelocity() {
     if (velocity < 20000000) return;
     int transition = 10;
     float exponentialIncrease = 1.01;
-    if (foodsEaten > transition && foodsEaten < transition * 2) {
-        exponentialIncrease = 1.05;
+    if (foodsEaten >= transition && foodsEaten < transition * 2) {
+        exponentialIncrease = 1.02;
     }
     int linearIncrease = 10000;
     if (foodsEaten < transition) {
         velocity -= linearIncrease;
     } else {
-        velocity /= exponentialIncrease;
+        float tempVelocity = static_cast<float>(velocity) / exponentialIncrease;
+        velocity = static_cast<int>(tempVelocity);
     }
 }
