@@ -81,5 +81,5 @@ running the game to avoid unintended data loss.
 
 ## Creators
 
-This project was created by [**Adriano Valadar**](https://adrianovaladar.github.io) and [**Rogério
+This project was created by [**Adriano Valadar**](https://github.com/adrianovaladar) and [**Rogério
 Lopes**](https://github.com/ro-g-er).
