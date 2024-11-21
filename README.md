@@ -11,13 +11,13 @@ fun and engaging gaming experience directly within the terminal environment.
 
 To compile the project, navigate to the root directory and execute the following commands:
 
-    cmake .
-    make
+    $ cmake .
+    $ make
 
 After the compilation is complete, a file named snake will appear in the directory. To run the game, simply execute
 the following command:
 
-    ./snake
+    $ ./snake
 
 Ensure that the logged-in user has the necessary permissions (read, write, and execute) for the project directory. These
 permissions are crucial for the game's settings, best scores files, and the ability to save and load games. These files
