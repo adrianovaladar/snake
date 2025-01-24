@@ -13,6 +13,9 @@ protected:
     void TearDown() override {
     }
 
+    void setPositions(const std::vector<std::pair<int, int>> &pS) {
+        snake.setPositions(pS);
+    }
 };
 
 #endif//SNAKE_SNAKETESTS_H

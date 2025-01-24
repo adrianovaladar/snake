@@ -20,7 +20,7 @@ TEST_F(SnakeTests, constructor) {
 
 
 TEST_F(SnakeTests, moveRightBorderOn) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first++;
@@ -29,7 +29,7 @@ TEST_F(SnakeTests, moveRightBorderOn) {
 }
 
 TEST_F(SnakeTests, moveRightBorderOff) {
-    snake.setPositions({{79, 5}});
+    setPositions({{79, 5}});
     // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first = 0;
@@ -38,7 +38,7 @@ TEST_F(SnakeTests, moveRightBorderOff) {
 }
 
 TEST_F(SnakeTests, moveLeftBorderOn) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     snake.setDirection(Direction::LEFT);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first--;
@@ -47,7 +47,7 @@ TEST_F(SnakeTests, moveLeftBorderOn) {
 }
 
 TEST_F(SnakeTests, moveLeftBorderOff) {
-    snake.setPositions({{0, 2}});
+    setPositions({{0, 2}});
     snake.setDirection(Direction::LEFT);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first = 79;
@@ -56,7 +56,7 @@ TEST_F(SnakeTests, moveLeftBorderOff) {
 }
 
 TEST_F(SnakeTests, moveUpBorderOn) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     snake.setDirection(Direction::UP);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second--;
@@ -65,7 +65,7 @@ TEST_F(SnakeTests, moveUpBorderOn) {
 }
 
 TEST_F(SnakeTests, moveUpBorderOff) {
-    snake.setPositions({{2, 0}});
+    setPositions({{2, 0}});
     snake.setDirection(Direction::UP);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second = 19;
@@ -74,7 +74,7 @@ TEST_F(SnakeTests, moveUpBorderOff) {
 }
 
 TEST_F(SnakeTests, moveDownBorderOn) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     snake.setDirection(Direction::DOWN);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second++;
@@ -83,7 +83,7 @@ TEST_F(SnakeTests, moveDownBorderOn) {
 }
 
 TEST_F(SnakeTests, moveDownBorderOff) {
-    snake.setPositions({{2, 19}});
+    setPositions({{2, 19}});
     snake.setDirection(Direction::DOWN);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second = 0;
@@ -92,7 +92,7 @@ TEST_F(SnakeTests, moveDownBorderOff) {
 }
 
 TEST_F(SnakeTests, validateRightDirection) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
     snake.validateDirection(Direction::RIGHT);
@@ -105,7 +105,7 @@ TEST_F(SnakeTests, validateRightDirection) {
 }
 
 TEST_F(SnakeTests, validateLeftDirection) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     snake.setDirection(Direction::LEFT);
     snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
@@ -118,7 +118,7 @@ TEST_F(SnakeTests, validateLeftDirection) {
     EXPECT_EQ(Direction::DOWN, snake.getDirection());
 }
 TEST_F(SnakeTests, validateUpDirection) {
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     snake.setDirection(Direction::UP);
     snake.validateDirection(Direction::LEFT);
     EXPECT_EQ(Direction::LEFT, snake.getDirection());
@@ -131,7 +131,7 @@ TEST_F(SnakeTests, validateUpDirection) {
     EXPECT_EQ(Direction::UP, snake.getDirection());
 }
 TEST_F(SnakeTests, validateDownDirection) {    
-    snake.setPositions({{2, 2}});
+    setPositions({{2, 2}});
     // test down direction
     snake.setDirection(Direction::DOWN);
     snake.validateDirection(Direction::LEFT);
