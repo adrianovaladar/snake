@@ -1,9 +1,10 @@
 #include "../src/Game.h"
+#include "GameTests.h"
 #include "gtest/gtest.h"
 #include <filesystem>
 #include <fstream>
 
-TEST(Game, selfCollision) {
+TEST_F(GameTests, selfCollision) {
     Game game;
     Snake snake;
     snake.setPositions({{4, 4}, {4, 4}});
@@ -11,7 +12,7 @@ TEST(Game, selfCollision) {
     EXPECT_EQ(true, game.isGameOver());
 }
 
-TEST(Game, fenceCollisionDown) {
+TEST_F(GameTests, fenceCollisionDown) {
     Game game;
     Snake snake;
     snake.setPositions({{game.getSize().first / 2, game.getSize().second}});
@@ -20,7 +21,7 @@ TEST(Game, fenceCollisionDown) {
     EXPECT_EQ(true, game.isGameOver());
 }
 
-TEST(Game, fenceCollisionUp) {
+TEST_F(GameTests, fenceCollisionUp) {
     Game game;
     Snake snake;
     snake.setPositions({{game.getSize().first / 2, -1}});
@@ -29,7 +30,7 @@ TEST(Game, fenceCollisionUp) {
     EXPECT_EQ(true, game.isGameOver());
 }
 
-TEST(Game, fenceCollisionLeft) {
+TEST_F(GameTests, fenceCollisionLeft) {
     Game game;
     Snake snake;
     snake.setPositions({{-1, game.getSize().first / 2}});
@@ -38,7 +39,7 @@ TEST(Game, fenceCollisionLeft) {
     EXPECT_EQ(true, game.isGameOver());
 }
 
-TEST(Game, fenceCollisionRight) {
+TEST_F(GameTests, fenceCollisionRight) {
     Game game;
     Snake snake;
     snake.setPositions({{game.getSize().first, game.getSize().second / 2}});
@@ -47,13 +48,13 @@ TEST(Game, fenceCollisionRight) {
     EXPECT_EQ(true, game.isGameOver());
 }
 
-TEST(Game, isNotGameOver) {
+TEST_F(GameTests, isNotGameOver) {
     Game game;
     game.start();
     EXPECT_EQ(false, game.isGameOver());
 }
 
-TEST(Game, isEatFoodTrue) {
+TEST_F(GameTests, isEatFoodTrue) {
     Game game;
     Snake snake;
     std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
@@ -64,7 +65,7 @@ TEST(Game, isEatFoodTrue) {
     EXPECT_EQ(true, game.isEatRegularFood());
 }
 
-TEST(Game, isEatFoodFalse) {
+TEST_F(GameTests, isEatFoodFalse) {
     Game game;
     Snake snake;
     std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
@@ -75,7 +76,7 @@ TEST(Game, isEatFoodFalse) {
     EXPECT_EQ(false, game.isEatRegularFood());
 }
 
-TEST(Game, isSnakeInMap) {
+TEST_F(GameTests, isSnakeInMap) {
     Game game;
     game.start();
     Snake snake;
@@ -85,7 +86,7 @@ TEST(Game, isSnakeInMap) {
     }
 }
 
-TEST(Game, writeSettings) {
+TEST_F(GameTests, writeSettings) {
     Game game;
     game.writeSettings();
     std::ifstream file("settings", std::ios::binary);
@@ -105,7 +106,7 @@ TEST(Game, writeSettings) {
     }
 }
 
-TEST(Game, readSettings) {
+TEST_F(GameTests, readSettings) {
     Game game;
     game.writeSettings();
     std::string fileNameTest = "test";
@@ -131,7 +132,7 @@ TEST(Game, readSettings) {
     }
 }
 
-TEST(Game, saveAndLoad) {
+TEST_F(GameTests, saveAndLoad) {
     std::string directoryName = "files";
     std::string fileName = "game_80_20_off";
     std::string fileString = directoryName + "/" + fileName;
@@ -150,7 +151,7 @@ TEST(Game, saveAndLoad) {
     std::pair<int, int> positionsSuperFood = superFood->getPosition();
     game.setSuperFood(std::move(superFood));
     snake.setPositions({{5, 5}});
-    snake.validateDirection(Direction::UP);
+    validateDirectionSnake(snake, Direction::UP);
     game.setSnake(snake);
     game.setBorders(false);
     game.updateGameFileName();

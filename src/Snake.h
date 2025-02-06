@@ -15,8 +15,11 @@ private:
     std::vector<std::pair<int, int>> positions;
     char symbol{};
     Direction direction;
-    void setPositions(const std::vector<std::pair<int, int>> &pS);
+    void move(const std::pair<int, int> &sizeMap, bool border);
+    void validateDirection(Direction d);
     friend class SnakeTests;
+    friend class Game;
+    friend class GameTests;
 
 public:
     explicit Snake();
@@ -25,9 +28,8 @@ public:
     [[nodiscard]] Direction getDirection() const;
     void setDirection(Direction d);
     [[nodiscard]] char getSymbol() const;
-    void move(const std::pair<int, int> &sizeMap, bool border);
-    void validateDirection(Direction d);
     void setPositions(const std::pair<int, int> &sizeMap);
+    void setPositions(const std::vector<std::pair<int, int>> &pS);
     Snake &operator++();
 };
 

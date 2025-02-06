@@ -1,6 +1,7 @@
 #include "SuperFood.h"
 #include <random>
 #include <vector>
+#include <algorithm>
 
 SuperFood::SuperFood() : enabled(false), movesLeft(0) {
     this->symbol = 'F';
