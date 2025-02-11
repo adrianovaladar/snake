@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-class SuperFood : public Food {
+class SuperFood final : public Food {
 private:
     bool enabled;
     int movesLeft;
