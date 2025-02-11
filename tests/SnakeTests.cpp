@@ -90,7 +90,6 @@ TEST_F(SnakeTests, moveDownBorderOff) {
 
 TEST_F(SnakeTests, validateRightDirection) {
     runDirectionValidationTest(
-            snake,
             Direction::RIGHT,  // Initial direction
             {Direction::LEFT, Direction::RIGHT, Direction::UP, Direction::RIGHT, Direction::DOWN},  // Sequence of changes
             {
@@ -104,7 +103,6 @@ TEST_F(SnakeTests, validateRightDirection) {
 
 TEST_F(SnakeTests, validateLeftDirection) {
     runDirectionValidationTest(
-            snake,
             Direction::LEFT,
             {Direction::LEFT, Direction::RIGHT, Direction::UP, Direction::LEFT, Direction::DOWN},
             {
@@ -118,7 +116,6 @@ TEST_F(SnakeTests, validateLeftDirection) {
 
 TEST_F(SnakeTests, validateUpDirection) {
     runDirectionValidationTest(
-            snake,
             Direction::UP,
             {Direction::LEFT, Direction::UP, Direction::RIGHT, Direction::UP, Direction::DOWN},
             {
@@ -132,7 +129,6 @@ TEST_F(SnakeTests, validateUpDirection) {
 
 TEST_F(SnakeTests, validateDownDirection) {
     runDirectionValidationTest(
-            snake,
             Direction::DOWN,
             {Direction::LEFT, Direction::DOWN, Direction::RIGHT, Direction::DOWN, Direction::UP, Direction::DOWN},
             {

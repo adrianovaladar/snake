@@ -26,16 +26,13 @@ protected:
         EXPECT_EQ(expectedPosition, snake.getPositions().front());
     }
 
-    void runDirectionValidationTest(Snake& snake, Direction initialDirection,
+    void runDirectionValidationTest(Direction initialDirection,
                                     const std::vector<Direction>& directionChanges,
                                     const std::vector<std::pair<int, Direction>>& expectedOutcomes) {
         snake.setPositions({{2, 2}});
         snake.setDirection(initialDirection);
-
         for (size_t i = 0; i < directionChanges.size(); ++i) {
             validateDirection(directionChanges[i]);
-
-            // Check if there is an expected outcome at this step
             for (const auto& outcome : expectedOutcomes) {
                 if (outcome.first == i) {
                     EXPECT_EQ(outcome.second, snake.getDirection())
