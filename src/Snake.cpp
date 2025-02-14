@@ -1,8 +1,10 @@
 #include "Snake.h"
 #include <vector>
 
+using enum Direction;
+
 Snake::Snake() : symbol{'o'}  {
-  direction = Direction::RIGHT;
+  direction = RIGHT;
 }
 
 char Snake::getSymbol() const {
@@ -15,19 +17,19 @@ const std::vector<std::pair<int, int>> &Snake::getPositions() const {
 
 void updateHeadPosition(std::pair<int, int>& position, Direction direction, std::pair<int, int> sizeMap, bool border) {
     switch (direction) {
-        case Direction::RIGHT:
+        case RIGHT:
             position.first = (!border && position.first > sizeMap.first - 2) ? 0 : position.first + 1;
             break;
-        case Direction::LEFT:
+        case LEFT:
             position.first = (!border && position.first < 1) ? sizeMap.first - 1 : position.first - 1;
             break;
-        case Direction::UP:
+        case UP:
             position.second = (!border && position.second < 1) ? sizeMap.second - 1 : position.second - 1;
             break;
-        case Direction::DOWN:
+        case DOWN:
             position.second = (!border && position.second > sizeMap.second - 2) ? 0 : position.second + 1;
             break;
-        case Direction::NONE:
+        case NONE:
         default:
             break;
     }
@@ -63,24 +65,24 @@ Snake::~Snake() = default;
 
 void Snake::validateDirection(Direction d) {
     switch (d) {
-        case Direction::UP: {
-            if (direction != Direction::DOWN)
-                direction = Direction::UP;
+        case UP: {
+            if (direction != DOWN)
+                direction = UP;
             break;
         }
-        case Direction::LEFT: {
-            if (direction != Direction::RIGHT)
-                direction = Direction::LEFT;
+        case LEFT: {
+            if (direction != RIGHT)
+                direction = LEFT;
             break;
         }
-        case Direction::DOWN: {
-            if (direction != Direction::UP)
-                direction = Direction::DOWN;
+        case DOWN: {
+            if (direction != UP)
+                direction = DOWN;
             break;
         }
-        case Direction::RIGHT: {
-            if (direction != Direction::LEFT)
-                direction = Direction::RIGHT;
+        case RIGHT: {
+            if (direction != LEFT)
+                direction = RIGHT;
             break;
         }
         default: {
