@@ -1,9 +1,9 @@
 #include "../src/Snake.h"
 #include "gtest/gtest.h"
 #include <vector>
+#include "SnakeTests.h"
 
-TEST(Snake, increase) {
-    Snake snake;
+TEST_F(SnakeTests, increase) {
     size_t sizeBefore{snake.getPositions().size()};
     ++snake;
     EXPECT_EQ(sizeBefore + 1, snake.getPositions().size());
@@ -12,148 +12,130 @@ TEST(Snake, increase) {
     EXPECT_EQ(expectedPosition, snake.getPositions().back());
 }
 
-TEST(Snake, constructor) {
-    Snake snake;
+TEST_F(SnakeTests, constructor) {
     EXPECT_EQ('o', snake.getSymbol());
     EXPECT_EQ(Direction::RIGHT, snake.getDirection());
     EXPECT_EQ(0, snake.getPositions().size());
 }
 
-
-TEST(Snake, moveRightBorderOn) {
-    Snake snake;
+TEST_F(SnakeTests, moveRightBorderOn) {
     snake.setPositions({{2, 2}});
     // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first++;
-    snake.move({80, 20}, true);
+    move({80, 20}, true);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, moveRightBorderOff) {
-    Snake snake;
+TEST_F(SnakeTests, moveRightBorderOff) {
     snake.setPositions({{79, 5}});
     // default direction is right
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first = 0;
-    snake.move({80, 20}, false);
+    move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, moveLeftBorderOn) {
-    Snake snake;
+TEST_F(SnakeTests, moveLeftBorderOn) {
     snake.setPositions({{2, 2}});
     snake.setDirection(Direction::LEFT);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first--;
-    snake.move({80, 20}, true);
+    move({80, 20}, true);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, moveLeftBorderOff) {
-    Snake snake;
+TEST_F(SnakeTests, moveLeftBorderOff) {
     snake.setPositions({{0, 2}});
     snake.setDirection(Direction::LEFT);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.first = 79;
-    snake.move({80, 20}, false);
+    move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, moveUpBorderOn) {
-    Snake snake;
+TEST_F(SnakeTests, moveUpBorderOn) {
     snake.setPositions({{2, 2}});
     snake.setDirection(Direction::UP);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second--;
-    snake.move({80, 20}, true);
+    move({80, 20}, true);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, moveUpBorderOff) {
-    Snake snake;
+TEST_F(SnakeTests, moveUpBorderOff) {
     snake.setPositions({{2, 0}});
     snake.setDirection(Direction::UP);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second = 19;
-    snake.move({80, 20}, false);
+    move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, moveDownBorderOn) {
-    Snake snake;
-    snake.setPositions({{2, 2}});
-    snake.setDirection(Direction::DOWN);
+TEST_F(SnakeTests, moveDownBorderOn) {
+    snake.setPositions({2,2});
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second++;
-    snake.move({80, 20}, true);
-    EXPECT_EQ(expectedPosition, snake.getPositions().front());
+    moveTests(Direction::DOWN, expectedPosition, true);
 }
 
-TEST(Snake, moveDownBorderOff) {
-    Snake snake;
+TEST_F(SnakeTests, moveDownBorderOff) {
     snake.setPositions({{2, 19}});
     snake.setDirection(Direction::DOWN);
     auto expectedPosition = snake.getPositions().front();
     expectedPosition.second = 0;
-    snake.move({80, 20}, false);
+    move({80, 20}, false);
     EXPECT_EQ(expectedPosition, snake.getPositions().front());
 }
 
-TEST(Snake, validateRightDirection) {
-    Snake snake;
-    snake.setPositions({{2, 2}});
-    snake.validateDirection(Direction::LEFT);
-    EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection(Direction::RIGHT);
-    EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection(Direction::UP);
-    EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection(Direction::RIGHT);
-    snake.validateDirection(Direction::DOWN);
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
+TEST_F(SnakeTests, validateRightDirection) {
+    runDirectionValidationTest(
+            Direction::RIGHT,  // Initial direction
+            {Direction::LEFT, Direction::RIGHT, Direction::UP, Direction::RIGHT, Direction::DOWN},  // Sequence of changes
+            {
+                    {0, Direction::RIGHT},  // After 1st change, direction should remain RIGHT
+                    {1, Direction::RIGHT},  // After 2nd change, still RIGHT
+                    {2, Direction::UP},     // After 3rd change, direction changes to UP
+                    {4, Direction::DOWN}    // After 5th change, direction changes to DOWN
+            }
+    );
 }
-TEST(Snake, validateLeftDirection) {
-    Snake snake;
-    snake.setPositions({{2, 2}});
-    snake.setDirection(Direction::LEFT);
-    snake.validateDirection(Direction::LEFT);
-    EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection(Direction::RIGHT);
-    EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection(Direction::UP);
-    EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection(Direction::LEFT);
-    snake.validateDirection(Direction::DOWN);
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
+
+TEST_F(SnakeTests, validateLeftDirection) {
+    runDirectionValidationTest(
+            Direction::LEFT,
+            {Direction::LEFT, Direction::RIGHT, Direction::UP, Direction::LEFT, Direction::DOWN},
+            {
+                    {0, Direction::LEFT},
+                    {1, Direction::LEFT},
+                    {2, Direction::UP},
+                    {4, Direction::DOWN}
+            }
+    );
 }
-TEST(Snake, validateUpDirection) {
-    Snake snake;
-    snake.setPositions({{2, 2}});
-    snake.setDirection(Direction::UP);
-    snake.validateDirection(Direction::LEFT);
-    EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection(Direction::UP);
-    snake.validateDirection(Direction::RIGHT);
-    EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection(Direction::UP);
-    EXPECT_EQ(Direction::UP, snake.getDirection());
-    snake.validateDirection(Direction::DOWN);
-    EXPECT_EQ(Direction::UP, snake.getDirection());
+
+TEST_F(SnakeTests, validateUpDirection) {
+    runDirectionValidationTest(
+            Direction::UP,
+            {Direction::LEFT, Direction::UP, Direction::RIGHT, Direction::UP, Direction::DOWN},
+            {
+                    {0, Direction::LEFT},
+                    {2, Direction::RIGHT},
+                    {3, Direction::UP},
+                    {4, Direction::UP}
+            }
+    );
 }
-TEST(Snake, validateDownDirection) {
-    Snake snake;
-    snake.setPositions({{2, 2}});
-    // test down direction
-    snake.setDirection(Direction::DOWN);
-    snake.validateDirection(Direction::LEFT);
-    EXPECT_EQ(Direction::LEFT, snake.getDirection());
-    snake.validateDirection(Direction::DOWN);
-    snake.validateDirection(Direction::RIGHT);
-    EXPECT_EQ(Direction::RIGHT, snake.getDirection());
-    snake.validateDirection(Direction::DOWN);
-    snake.validateDirection(Direction::UP);
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
-    snake.validateDirection(Direction::DOWN);
-    EXPECT_EQ(Direction::DOWN, snake.getDirection());
+
+TEST_F(SnakeTests, validateDownDirection) {
+    runDirectionValidationTest(
+            Direction::DOWN,
+            {Direction::LEFT, Direction::DOWN, Direction::RIGHT, Direction::DOWN, Direction::UP, Direction::DOWN},
+            {
+                    {0, Direction::LEFT},
+                    {2, Direction::RIGHT},
+                    {4, Direction::DOWN},
+                    {5, Direction::DOWN}
+            }
+    );
 }

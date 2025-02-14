@@ -1,7 +1,11 @@
 #include "Snake.h"
 #include <vector>
 
-Snake::Snake() : symbol{'o'}, direction{Direction::RIGHT}, positions{} {}
+using enum Direction;
+
+Snake::Snake() : symbol{'o'}  {
+  direction = RIGHT;
+}
 
 char Snake::getSymbol() const {
     return symbol;
@@ -11,44 +15,37 @@ const std::vector<std::pair<int, int>> &Snake::getPositions() const {
     return positions;
 }
 
+void updateHeadPosition(std::pair<int, int>& position, Direction direction, std::pair<int, int> sizeMap, bool border) {
+    switch (direction) {
+        case RIGHT:
+            position.first = (!border && position.first > sizeMap.first - 2) ? 0 : position.first + 1;
+            break;
+        case LEFT:
+            position.first = (!border && position.first < 1) ? sizeMap.first - 1 : position.first - 1;
+            break;
+        case UP:
+            position.second = (!border && position.second < 1) ? sizeMap.second - 1 : position.second - 1;
+            break;
+        case DOWN:
+            position.second = (!border && position.second > sizeMap.second - 2) ? 0 : position.second + 1;
+            break;
+        case NONE:
+        default:
+            break;
+    }
+}
+
+void updateBodyPositions(std::pair<int,int> previousHeadPosition, std::vector<std::pair<int, int>>& positions) {
+    std::pair<int, int> previousPosition = previousHeadPosition;
+    for (auto it = positions.begin() + 1; it != positions.end(); ++it) {
+        std::swap(*it, previousPosition);
+    }
+}
+
 void Snake::move(const std::pair<int, int> &sizeMap, bool border) {
     std::pair<int, int> previousPosition = positions.at(0);
-    auto it = positions.begin();
-    if (direction == Direction::RIGHT) {
-        if (!border && positions.at(0).first > sizeMap.first - 2) {
-            positions.at(0).first = 0;
-        } else {
-            positions.at(0).first++;
-        }
-    } else if (direction == Direction::LEFT) {
-        if (!border && positions.at(0).first < 1) {
-            positions.at(0).first = sizeMap.first - 1;
-        } else {
-            positions.at(0).first--;
-        }
-    } else if (direction == Direction::UP) {
-        if (!border && positions.at(0).second < 1) {
-            positions.at(0).second = sizeMap.second - 1;
-        } else {
-            positions.at(0).second--;
-        }
-    } else if (direction == Direction::DOWN) {
-        if (!border && positions.at(0).second > sizeMap.second - 2) {
-            positions.at(0).second = 0;
-        } else {
-            positions.at(0).second++;
-        }
-    }
-    while (it != positions.end()) {
-        if (it == positions.begin()) {
-            it++;
-            continue;
-        }
-        std::pair<int, int> tmp = *it;
-        *it = previousPosition;
-        previousPosition = tmp;
-        it++;
-    }
+    updateHeadPosition(positions.at(0), direction, sizeMap, border);
+    updateBodyPositions(previousPosition, positions);
 }
 
 Direction Snake::getDirection() const {
@@ -68,24 +65,24 @@ Snake::~Snake() = default;
 
 void Snake::validateDirection(Direction d) {
     switch (d) {
-        case Direction::UP: {
-            if (direction != Direction::DOWN)
-                direction = Direction::UP;
+        case UP: {
+            if (direction != DOWN)
+                direction = UP;
             break;
         }
-        case Direction::LEFT: {
-            if (direction != Direction::RIGHT)
-                direction = Direction::LEFT;
+        case LEFT: {
+            if (direction != RIGHT)
+                direction = LEFT;
             break;
         }
-        case Direction::DOWN: {
-            if (direction != Direction::UP)
-                direction = Direction::DOWN;
+        case DOWN: {
+            if (direction != UP)
+                direction = DOWN;
             break;
         }
-        case Direction::RIGHT: {
-            if (direction != Direction::LEFT)
-                direction = Direction::RIGHT;
+        case RIGHT: {
+            if (direction != LEFT)
+                direction = RIGHT;
             break;
         }
         default: {

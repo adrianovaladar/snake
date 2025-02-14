@@ -1,6 +1,7 @@
 #include "RegularFood.h"
 #include <random>
 #include <vector>
+#include <algorithm>
 
 RegularFood::RegularFood() {
     this->symbol = 'f';
