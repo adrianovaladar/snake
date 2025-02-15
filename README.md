@@ -1,7 +1,7 @@
 # snake
 
 [![CMake](https://github.com/adrianovaladar/snake/actions/workflows/cmake.yml/badge.svg)](https://github.com/adrianovaladar/snake/actions/workflows/cmake.yml)
-[![CodeQL](https://github.com/adrianovaladar/snake/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/adrianovaladar/snake/actions/workflows/github-code-scanning/codeql)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adrianovaladar_snake&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=adrianovaladar_snake)
 ![GitHub contributors](https://img.shields.io/github/contributors/adrianovaladar/snake)
 ![GitHub release](https://img.shields.io/github/v/release/adrianovaladar/snake)
 ![GitHub license](https://img.shields.io/github/license/adrianovaladar/snake)
