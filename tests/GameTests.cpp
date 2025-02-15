@@ -57,9 +57,9 @@ TEST_F(GameTests, isNotGameOver) {
 TEST_F(GameTests, isEatFoodTrue) {
     Game game;
     Snake snake;
-    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
-    regularFood->setPosition({5, 5});
-    game.setRegularFood(std::move(regularFood));
+    std::unique_ptr<Food> food = std::make_unique<Food>();
+    food->setPosition({5, 5});
+    game.setRegularFood(std::move(food));
     snake.setPositions({{5, 5}});
     game.setSnake(snake);
     EXPECT_EQ(true, game.isEatRegularFood());
@@ -68,9 +68,9 @@ TEST_F(GameTests, isEatFoodTrue) {
 TEST_F(GameTests, isEatFoodFalse) {
     Game game;
     Snake snake;
-    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
-    regularFood->setPosition({5, 5});
-    game.setRegularFood(std::move(regularFood));
+    std::unique_ptr<Food> food = std::make_unique<Food>();
+    food->setPosition({5, 5});
+    game.setRegularFood(std::move(food));
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
     EXPECT_EQ(false, game.isEatRegularFood());
@@ -141,10 +141,10 @@ TEST_F(GameTests, saveAndLoad) {
     }
     Game game;
     Snake snake;
-    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
-    regularFood->setPosition({5, 5});
-    std::pair<int, int> positionsRegularFood = regularFood->getPosition();
-    game.setRegularFood(std::move(regularFood));
+    std::unique_ptr<Food> food = std::make_unique<Food>();
+    food->setPosition({5, 5});
+    std::pair<int, int> positionsRegularFood = food->getPosition();
+    game.setRegularFood(std::move(food));
     std::unique_ptr<Food> superFood = std::make_unique<SuperFood>();
     dynamic_cast<SuperFood *>(superFood.get())->setEnabled(true);
     superFood->setPosition({5, 5});

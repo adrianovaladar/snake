@@ -7,9 +7,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000), kbHit(false) {
-    regularFood = std::make_unique<RegularFood>();
+    food = std::make_unique<Food>();
     superFood = std::make_unique<SuperFood>();
 }
 
@@ -29,8 +30,8 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
         bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
         if (positionSnake)
             bufferScreen << snake.getSymbol();
-        else if (regularFood->getPosition() == pos)
-            bufferScreen << regularFood->getSymbol();
+        else if (food->getPosition() == pos)
+            bufferScreen << food->getSymbol();
         else if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && superFood->getPosition() == pos)
             bufferScreen << superFood->getSymbol();
         else
@@ -60,7 +61,7 @@ void Game::start() {
     snake.setPositions(size);
     log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
     log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
-    regularFood->setPosition(size, snake.getPositions(), superFood->getPosition());
+    food->setPosition(size, snake.getPositions(), superFood->getPosition());
     dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
 }
 
@@ -104,9 +105,9 @@ bool Game::logic() {
         score++;
         foodsEaten++;
         changeVelocity();
-        regularFood->setPosition(this->size, snake.getPositions(), superFood->getPosition());
+        food->setPosition(this->size, snake.getPositions(), superFood->getPosition());
         if (!dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
-            superFood->setPosition(size, snake.getPositions(), regularFood->getPosition());
+            superFood->setPosition(size, snake.getPositions(), food->getPosition());
             if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
                 int biggerSide = size.first > size.second ? size.first : size.second;
                 dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
@@ -150,7 +151,7 @@ void Game::printToBufferScreen() {
 }
 
 bool Game::isEatRegularFood() {
-    bool isEatFood = snake.getPositions().at(0) == regularFood->getPosition();
+    bool isEatFood = snake.getPositions().at(0) == food->getPosition();
     return isEatFood;
 }
 
@@ -166,7 +167,7 @@ const std::pair<int, int> &Game::getSize() const {
     return size;
 }
 void Game::setRegularFood(std::unique_ptr<Food> f) {
-    regularFood = std::move(f);
+    food = std::move(f);
 }
 
 void Game::setSuperFood(std::unique_ptr<Food> f) {
@@ -188,7 +189,7 @@ void Game::save() {
     file.write(reinterpret_cast<const char *>(snake.getPositions().data()), static_cast<std::streamsize>(positionsSize * sizeof(std::pair<int, int>)));
     Direction d = snake.getDirection();
     file.write(reinterpret_cast<const char *>(&d), sizeof(d));
-    file.write(reinterpret_cast<const char *>(&regularFood->getPosition()), sizeof(regularFood->getPosition()));
+    file.write(reinterpret_cast<const char *>(&food->getPosition()), sizeof(food->getPosition()));
     file.write(reinterpret_cast<const char *>(&superFood->getPosition()), sizeof(superFood->getPosition()));
     bool enabled = dynamic_cast<SuperFood *>(superFood.get())->isEnabled();
     file.write(reinterpret_cast<const char *>(&enabled), sizeof(enabled));
@@ -231,7 +232,7 @@ void Game::load() {
     snake.validateDirection(d);
     std::pair<int, int> positionRegularFood;
     file.read(reinterpret_cast<char *>(&positionRegularFood), sizeof(positionRegularFood));
-    regularFood->setPosition(positionRegularFood);
+    food->setPosition(positionRegularFood);
     std::pair<int, int> positionSuperFood;
     file.read(reinterpret_cast<char *>(&positionSuperFood), sizeof(positionSuperFood));
     superFood->setPosition(positionSuperFood);
@@ -386,7 +387,7 @@ void Game::showKeysAndSymbols() {
               << std::endl
               << "Symbols:" << std::endl
               << snake.getSymbol() << " - Snake" << std::endl
-              << regularFood->getSymbol() << " - Regular food" << std::endl
+              << food->getSymbol() << " - Regular food" << std::endl
               << superFood->getSymbol() << " - Super food" << std::endl
               << SYMBOL_BORDERS_OFF << " - Borders off" << std::endl
               << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
@@ -474,7 +475,7 @@ const Snake &Game::getSnake() const {
 }
 
 const Food &Game::getRegularFood() const {
-    return *regularFood;
+    return *food;
 }
 
 const Food &Game::getSuperFood() const {

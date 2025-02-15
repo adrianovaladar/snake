@@ -1,9 +1,9 @@
-#include "../src/RegularFood.h"
+#include "../src/Food.h"
 #include "../src/SuperFood.h"
 #include "gtest/gtest.h"
 
-TEST(RegularFood, setPosition) {
-    std::unique_ptr<Food> regularFood = std::make_unique<RegularFood>();
+TEST(Food, setPosition) {
+    std::unique_ptr<Food> food = std::make_unique<Food>();
     std::pair<int, int> sizeMap = {10, 15};
     std::vector<std::pair<int, int>> positionsSnake;
     positionsSnake.emplace_back(4, 4);
@@ -13,19 +13,19 @@ TEST(RegularFood, setPosition) {
     bool isSnakePosition;
     std::pair<int, int> otherFoodPosition{1, 1};
     for (int i = 0; i < 100; i++) {
-        regularFood->setPosition(sizeMap, positionsSnake, otherFoodPosition);
-        isSnakePosition = std::binary_search(positionsSnake.begin(), positionsSnake.end(), regularFood->getPosition());
+        food->setPosition(sizeMap, positionsSnake, otherFoodPosition);
+        isSnakePosition = std::binary_search(positionsSnake.begin(), positionsSnake.end(), food->getPosition());
         EXPECT_EQ(false, isSnakePosition);
-        EXPECT_NE(regularFood->getPosition(), otherFoodPosition);
-        EXPECT_LT(regularFood->getPosition().first, sizeMap.first);
-        EXPECT_GE(regularFood->getPosition().first, 0);
-        EXPECT_LT(regularFood->getPosition().second, sizeMap.second);
-        EXPECT_GE(regularFood->getPosition().second, 0);
+        EXPECT_NE(food->getPosition(), otherFoodPosition);
+        EXPECT_LT(food->getPosition().first, sizeMap.first);
+        EXPECT_GE(food->getPosition().first, 0);
+        EXPECT_LT(food->getPosition().second, sizeMap.second);
+        EXPECT_GE(food->getPosition().second, 0);
     }
 }
 
-TEST(SuperFood, setPosition) {
-    std::unique_ptr<Food> superFood = std::make_unique<RegularFood>();
+TEST(SuperFood, setPosition) { // review this test when refactoring food
+    std::unique_ptr<Food> superFood = std::make_unique<Food>();
     std::pair<int, int> sizeMap = {10, 15};
     std::vector<std::pair<int, int>> positionsSnake;
     positionsSnake.emplace_back(4, 4);
