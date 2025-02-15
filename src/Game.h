@@ -3,9 +3,9 @@
 
 #include "BestScores.h"
 #include "Player.h"
-#include "RegularFood.h"
 #include "Snake.h"
 #include "SuperFood.h"
+#include "Food.h"
 #include <memory>
 #include <sstream>
 
@@ -30,7 +30,7 @@
 class Game {
 private:
     std::pair<int, int> size;
-    std::unique_ptr<Food> regularFood;
+    std::unique_ptr<Food> food;
     std::unique_ptr<Food> superFood;
     Snake snake;
     BestScores bestScores;

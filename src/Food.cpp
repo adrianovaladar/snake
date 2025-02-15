@@ -1,6 +1,7 @@
 #include "Food.h"
 #include <random>
 #include <vector>
+#include <algorithm>
 
 Food::Food() : symbol('f'), position(std::make_pair(-1, -1)) {}
 
