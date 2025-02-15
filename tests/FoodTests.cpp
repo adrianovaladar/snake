@@ -24,8 +24,8 @@ TEST(Food, setPosition) {
     }
 }
 
-TEST(SuperFood, setPosition) {
-    std::unique_ptr<Food> superFood = std::make_unique<SuperFood>();
+TEST(SuperFood, setPosition) { // review this test when refactoring food
+    std::unique_ptr<Food> superFood = std::make_unique<Food>();
     std::pair<int, int> sizeMap = {10, 15};
     std::vector<std::pair<int, int>> positionsSnake;
     positionsSnake.emplace_back(4, 4);
