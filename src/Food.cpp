@@ -18,17 +18,15 @@ void Food::setPosition(const std::pair<int, int> &p) {
 }
 
 bool binarySearch (const std::vector<std::pair<int, int>> &posSnake, const std::pair<int, int> &foodPosition) {
-    size_t begin = 0;
-    size_t end = posSnake.size()-1;
+    int begin = 0;
+    auto end = static_cast<int>(posSnake.size()) - 1;
 
     while (begin <= end) {
-        size_t middle = begin + (end - begin)/2;
+        auto middle = begin + (end - begin) / 2;
         if (foodPosition == posSnake.at(middle)) {
             return  true;
         }
         if (foodPosition < posSnake.at(middle)) {
-            if (middle == 0)
-                break;
             end = middle-1;
         } else {
             begin = middle+1;
