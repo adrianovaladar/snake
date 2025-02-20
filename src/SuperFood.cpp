@@ -7,7 +7,7 @@ SuperFood::SuperFood() : enabled(false), movesLeft(0) {
     this->symbol = 'F';
 }
 
-void SuperFood::setMovesLeft(int moves) {
+void SuperFood::setMovesLeft(const int moves) {
     movesLeft = moves;
 }
 
@@ -22,7 +22,7 @@ void SuperFood::decreaseMovesLeft() {
 void SuperFood::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake, const std::pair<int, int> &otherFoodPosition) {
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_real_distribution<double> dis(0.0, 1.0);
+    std::uniform_real_distribution dis(0.0, 1.0);
     double probability = 0.2;
     if (dis(rng) <= probability) {
         Food::setPosition(sizeMap, positionsSnake, otherFoodPosition);
@@ -35,7 +35,7 @@ bool SuperFood::isEnabled() const {
 }
 
 void SuperFood::setEnabled(bool status) {
-    SuperFood::enabled = status;
+    enabled = status;
 }
 
 int SuperFood::getMovesLeft() const {

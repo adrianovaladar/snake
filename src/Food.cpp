@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 
-Food::Food() : symbol('f'), position(std::make_pair(-1, -1)) {}
+Food::Food() : position(std::make_pair(-1, -1)), symbol('f') {}
 
 char Food::getSymbol() const {
     return symbol;
@@ -22,7 +22,7 @@ bool binarySearch (const std::vector<std::pair<int, int>> &posSnake, const std::
     auto end = static_cast<int>(posSnake.size()) - 1;
 
     while (begin <= end) {
-        auto middle = begin + (end - begin) / 2;
+        const auto middle = std::midpoint(begin, end);// begin + (end - begin) / 2;
         if (foodPosition == posSnake.at(middle)) {
             return  true;
         }
@@ -38,13 +38,13 @@ bool binarySearch (const std::vector<std::pair<int, int>> &posSnake, const std::
 void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake, const std::pair<int, int> &otherFoodPosition) {
     std::pair<int, int> foodPosition;
     std::vector<std::pair<int, int>> posSnake = positionsSnake;
-    std::sort(posSnake.begin(), posSnake.end());
+    std::ranges::sort(posSnake);
     bool isSnakePosition;
     std::random_device dev;
     std::mt19937 rng(dev());
     do {
-        std::uniform_int_distribution<int> distX(0, sizeMap.first - 1);
-        std::uniform_int_distribution<int> distY(0, sizeMap.second - 1);
+        std::uniform_int_distribution distX(0, sizeMap.first - 1);
+        std::uniform_int_distribution distY(0, sizeMap.second - 1);
         foodPosition.first = distX(rng);
         foodPosition.second = distY(rng);
         isSnakePosition = binarySearch(posSnake, foodPosition);
