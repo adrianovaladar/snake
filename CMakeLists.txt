@@ -5,10 +5,20 @@ set(CMAKE_CXX_STANDARD 23)            # Enable c++23 standard
 set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} --coverage")
 
 # Add source files
-set(SOURCE_FILES src/main.cpp src/BestScores.h src/BestScores.cpp src/Game.h src/Game.cpp src/Input.h src/Input.cpp src/Player.h src/Player.cpp src/Snake.h src/Snake.cpp src/Logger.cpp src/Logger.h src/Food.cpp src/Food.h src/SuperFood.cpp src/SuperFood.h src/Utils.cpp src/Utils.h)
+set(SOURCE_FILES src/main.cpp src/BestScores.h src/BestScores.cpp src/Game.h src/Game.cpp src/Input.h src/Input.cpp src/Player.h src/Player.cpp src/Snake.h src/Snake.cpp src/Food.cpp src/Food.h src/SuperFood.cpp src/SuperFood.h src/Utils.cpp src/Utils.h)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(snake ${SOURCE_FILES})
+
+include(FetchContent)
+
+FetchContent_Declare(
+        LOGorithm
+        GIT_REPOSITORY https://github.com/adrianovaladar/LOGorithm.git
+        GIT_TAG 1.0
+)
+FetchContent_MakeAvailable(LOGorithm)
+target_link_libraries(snake PRIVATE LOGorithm)
 
 # Add tests
 add_subdirectory(tests)

@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Input.h"
-#include "Logger.h"
+#include <logorithm/Logger.h>
 #include "Utils.h"
 #include <bits/stdc++.h>
 #include <chrono>
@@ -59,8 +59,8 @@ void Game::start() {
     velocity = 100000000;
     snake.setDirection(Direction::RIGHT);
     snake.setPositions(size);
-    log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
-    log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
+    logger.log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
+    logger.log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
     food->setPosition(size, snake.getPositions(), superFood->getPosition());
     dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
 }
@@ -123,7 +123,7 @@ bool Game::logic() {
         superFood->setPosition({-1, -1});
     }
     if (isGameOver()) {
-        log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
+        logger.log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
         Input::disableRawMode();
         if (bestScores.isBestScore(score)) {
             kbHit = false;
@@ -179,7 +179,7 @@ Game::~Game() = default;
 void Game::save() {
     std::ofstream file(directoryName + "/" + gameFileName, std::ios::binary);
     if (!file || !file.good()) {
-        log("Error opening file for writing", LOGLEVEL::Warning);
+        logger.log("Error opening file for writing", LOGLEVEL::Warning);
         return;
     }
     file.write(reinterpret_cast<const char *>(&size), sizeof(size));
@@ -199,26 +199,26 @@ void Game::save() {
 
     file.close();
     if (!file.good()) {
-        log("Error occurred at writing time", LOGLEVEL::Warning);
+        logger.log("Error occurred at writing time", LOGLEVEL::Warning);
     }
 }
 
 void Game::load() {
     std::ifstream file(directoryName + "/" + gameFileName, std::ios::binary);
     if (!file) {
-        log("Error opening file for reading", LOGLEVEL::Warning);
+        logger.log("Error opening file for reading", LOGLEVEL::Warning);
         return;
     }
     std::pair<int, int> sizeMap;
     file.read(reinterpret_cast<char *>(&sizeMap), sizeof(sizeMap));
     if (sizeMap != size) {
-        log("Different map size found in the file", LOGLEVEL::Warning);
+        logger.log("Different map size found in the file", LOGLEVEL::Warning);
         return;
     }
     bool b;
     file.read(reinterpret_cast<char *>(&b), sizeof(b));
     if (b != borders) {
-        log("Different border status found in the file", LOGLEVEL::Warning);
+        logger.log("Different border status found in the file", LOGLEVEL::Warning);
         return;
     }
     size_t size1;
@@ -335,7 +335,7 @@ void Game::about() {
 void Game::readSettings() {
     std::ifstream file(directoryName + "/" + settingsFileName, std::ios::binary);
     if (!file) {
-        log("Error opening file for reading", LOGLEVEL::Warning);
+        logger.log("Error opening file for reading", LOGLEVEL::Warning);
         return;
     }
     file.read(reinterpret_cast<char *>(&size), sizeof(size));
@@ -347,14 +347,14 @@ void Game::readSettings() {
 void Game::writeSettings() const {
     std::ofstream file(directoryName + "/" + settingsFileName, std::ios::binary);
     if (!file || !file.good()) {
-        log("Error opening file for writing", LOGLEVEL::Warning);
+        logger.log("Error opening file for writing", LOGLEVEL::Warning);
         return;
     }
     file.write(reinterpret_cast<const char *>(&size), sizeof(size));
     file.write(reinterpret_cast<const char *>(&borders), sizeof(borders));
     file.close();
     if (!file.good()) {
-        log("Error occurred at writing time", LOGLEVEL::Warning);
+        logger.log("Error occurred at writing time", LOGLEVEL::Warning);
     }
 }
 

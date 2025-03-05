@@ -1,6 +1,6 @@
 #include "Utils.h"
 #include "Input.h"
-#include "Logger.h"
+#include <logorithm/Logger.h>
 #include <iostream>
 #include <limits>
 #include <numeric>
@@ -36,7 +36,7 @@ bool Utils::validateInput() {
 void Utils::clearScreen() {
     int code = system("clear");
     if (code != 0) {
-        log("Error code: " + std::to_string(code), LOGLEVEL::Error);
+        logger.log("Error code: " + std::to_string(code), LOGLEVEL::Error);
     }
 }
 

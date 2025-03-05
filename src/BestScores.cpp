@@ -1,5 +1,5 @@
 #include "BestScores.h"
-#include "Logger.h"
+#include <logorithm/Logger.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -17,13 +17,13 @@ void BestScores::read() {
     players.clear();
     std::ifstream myFile(nameFile, std::ios::binary);
     if (!myFile) {
-        log("Error opening file for reading", LOGLEVEL::Warning);
+        logger.log("Error opening file for reading", LOGLEVEL::Warning);
         return;
     }
     size_t playersSize;
     myFile.read(reinterpret_cast<char *>(&playersSize), sizeof(playersSize));
     if (playersSize > size) {
-        log("Number of players in file is " + std::to_string(playersSize) + ", only " + std::to_string(size) + "will be read", LOGLEVEL::Warning);
+        logger.log("Number of players in file is " + std::to_string(playersSize) + ", only " + std::to_string(size) + "will be read", LOGLEVEL::Warning);
         playersSize = 5;
     }
     players.resize(playersSize);
@@ -38,7 +38,7 @@ void BestScores::read() {
         player.setScore(tempScore);
         player.setName(tempName);
     }
-    log("Number of players read: " + std::to_string(playersSize), LOGLEVEL::Info);
+    logger.log("Number of players read: " + std::to_string(playersSize), LOGLEVEL::Info);
     myFile.close();
 }
 
@@ -56,7 +56,7 @@ void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int s
     if (name.empty()) {
         name = "guest";
     }
-    log("New best score. Name: " + name + " Score: " + std::to_string(score), LOGLEVEL::Info);
+    logger.log("New best score. Name: " + name + " Score: " + std::to_string(score), LOGLEVEL::Info);
     Player p{score, name.substr(0, 15)};
     std::ofstream myFile(nameFile, std::ios::binary);
     bool inserted = false;
