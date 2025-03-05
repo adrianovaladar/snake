@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include <iostream>
 #include <limits>
+#include <numeric>
 #include <string>
 
 void Utils::signalHandler(int signal) {
@@ -37,4 +38,22 @@ void Utils::clearScreen() {
     if (code != 0) {
         log("Error code: " + std::to_string(code), LOGLEVEL::Error);
     }
+}
+
+bool Utils::binarySearch(const std::vector<std::pair<int, int>> &position, const std::pair<int, int> &target) {
+    int begin = 0;
+    auto end = static_cast<int>(position.size()) - 1;
+
+    while (begin <= end) {
+        const auto middle = std::midpoint(begin, end);// begin + (end - begin) / 2;
+        if (target == position.at(middle)) {
+            return true;
+        }
+        if (target < position.at(middle)) {
+            end = middle - 1;
+        } else {
+            begin = middle + 1;
+        }
+    }
+    return false;
 }

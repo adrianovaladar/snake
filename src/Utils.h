@@ -2,6 +2,7 @@
 #define SNAKE_UTILS_H
 
 #include <string>
+#include <vector>
 
 class Utils {
 public:
@@ -10,6 +11,7 @@ public:
     static std::string boolToAlpha(bool status);
     static bool validateInput();
     static void clearScreen();
+    static bool binarySearch(const std::vector<std::pair<int, int>> &position, const std::pair<int, int> &target);
 };
 
 

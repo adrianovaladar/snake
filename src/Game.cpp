@@ -27,7 +27,7 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
     std::sort(snakePositions.begin(), snakePositions.end());
     for (int i{}; i < size.first; i++) {
         std::pair<int, int> pos = std::make_pair(i, j);
-        bool positionSnake = std::binary_search(snakePositions.begin(), snakePositions.end(), pos);
+        bool positionSnake = Utils::binarySearch(snakePositions, pos);
         if (positionSnake)
             bufferScreen << snake.getSymbol();
         else if (food->getPosition() == pos)
