@@ -11,7 +11,7 @@
 
 Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000), kbHit(false) {
     food = std::make_unique<Food>();
-    superFood = std::make_unique<SuperFood>();
+    superFood = std::make_shared<SuperFood>();
 }
 
 void Game::printHorizontalFence() {
@@ -32,7 +32,7 @@ void Game::printVerticalFenceAndPlayableArea(int j) {
             bufferScreen << snake.getSymbol();
         else if (food->getPosition() == pos)
             bufferScreen << food->getSymbol();
-        else if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && superFood->getPosition() == pos)
+        else if (superFood->isEnabled() && superFood->getPosition() == pos)
             bufferScreen << superFood->getSymbol();
         else
             bufferScreen << " ";
@@ -62,7 +62,7 @@ void Game::start() {
     logger.log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
     logger.log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
     food->setPosition(size, snake.getPositions(), superFood->getPosition());
-    dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
+    superFood->setEnabled(false);
 }
 
 bool Game::readKey() {
@@ -90,8 +90,8 @@ bool Game::readKey() {
             d = Direction::RIGHT;
         snake.validateDirection(d);
         snake.move(size, borders);
-        if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
-            dynamic_cast<SuperFood *>(superFood.get())->decreaseMovesLeft();
+        if (superFood->isEnabled()) {
+            superFood->decreaseMovesLeft();
         }
     }
     return false;
@@ -106,11 +106,11 @@ bool Game::logic() {
         foodsEaten++;
         changeVelocity();
         food->setPosition(this->size, snake.getPositions(), superFood->getPosition());
-        if (!dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
+        if (!superFood->isEnabled()) {
             superFood->setPosition(size, snake.getPositions(), food->getPosition());
-            if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled()) {
+            if (superFood->isEnabled()) {
                 int biggerSide = size.first > size.second ? size.first : size.second;
-                dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
+                superFood->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
             }
         }
     }
@@ -119,8 +119,8 @@ bool Game::logic() {
         score += 3;
         foodsEaten++;
         changeVelocity();
-        dynamic_cast<SuperFood *>(superFood.get())->setEnabled(false);
-        superFood->setPosition({-1, -1});
+        superFood->setEnabled(false);
+        superFood->Food::setPosition({-1, -1});
     }
     if (isGameOver()) {
         logger.log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
@@ -144,8 +144,8 @@ void Game::printToBufferScreen() {
     }
     printHorizontalFence();
     bufferScreen << "Score: " << score << std::endl;
-    if (dynamic_cast<SuperFood *>(superFood.get())->isEnabled())
-        bufferScreen << "Moves left for Super Food: " << dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft() << std::endl;
+    if (superFood->isEnabled())
+        bufferScreen << "Moves left for Super Food: " << superFood->getMovesLeft() << std::endl;
     if (pause)
         bufferScreen << "Game paused" << std::endl;
 }
@@ -156,7 +156,7 @@ bool Game::isEatRegularFood() {
 }
 
 bool Game::isEatSuperFood() {
-    return dynamic_cast<SuperFood *>(superFood.get())->isEnabled() && snake.getPositions().at(0) == superFood->getPosition();
+    return superFood->isEnabled() && snake.getPositions().at(0) == superFood->getPosition();
 }
 
 void Game::setSnake(const Snake &s) {
@@ -170,8 +170,8 @@ void Game::setRegularFood(std::unique_ptr<Food> f) {
     food = std::move(f);
 }
 
-void Game::setSuperFood(std::unique_ptr<Food> f) {
-    superFood = std::move(f);
+void Game::setSuperFood(const std::weak_ptr<SuperFood> &f) {
+    superFood = f.lock();
 }
 
 Game::~Game() = default;
@@ -191,9 +191,9 @@ void Game::save() {
     file.write(reinterpret_cast<const char *>(&d), sizeof(d));
     file.write(reinterpret_cast<const char *>(&food->getPosition()), sizeof(food->getPosition()));
     file.write(reinterpret_cast<const char *>(&superFood->getPosition()), sizeof(superFood->getPosition()));
-    bool enabled = dynamic_cast<SuperFood *>(superFood.get())->isEnabled();
+    bool enabled = superFood->isEnabled();
     file.write(reinterpret_cast<const char *>(&enabled), sizeof(enabled));
-    int movesLeft = dynamic_cast<SuperFood *>(superFood.get())->getMovesLeft();
+    int movesLeft = superFood->getMovesLeft();
     file.write(reinterpret_cast<const char *>(&movesLeft), sizeof(movesLeft));
     file.write(reinterpret_cast<const char *>(&score), sizeof(score));
 
@@ -235,13 +235,13 @@ void Game::load() {
     food->setPosition(positionRegularFood);
     std::pair<int, int> positionSuperFood;
     file.read(reinterpret_cast<char *>(&positionSuperFood), sizeof(positionSuperFood));
-    superFood->setPosition(positionSuperFood);
+    superFood->Food::setPosition(positionSuperFood);
     bool status;
     file.read(reinterpret_cast<char *>(&status), sizeof(status));
-    dynamic_cast<SuperFood *>(superFood.get())->setEnabled(status);
+    superFood->setEnabled(status);
     int movesLeft;
     file.read(reinterpret_cast<char *>(&movesLeft), sizeof(movesLeft));
-    dynamic_cast<SuperFood *>(superFood.get())->setMovesLeft(movesLeft);
+    superFood->setMovesLeft(movesLeft);
     file.read(reinterpret_cast<char *>(&score), sizeof(score));
     file.close();
     pause = true;
@@ -311,7 +311,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         if (status == !borders) {
             setBorders(!borders);
             output << "Borders are now set to " << Utils::boolToAlpha(borders);
-            symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
+            symbol = borders ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
             changed = true;
         }
     } while (status != 0 && status != 1);
@@ -340,7 +340,7 @@ void Game::readSettings() {
     }
     file.read(reinterpret_cast<char *>(&size), sizeof(size));
     file.read(reinterpret_cast<char *>(&borders), sizeof(borders));
-    symbol = (borders) ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
+    symbol = borders ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
     file.close();
 }
 

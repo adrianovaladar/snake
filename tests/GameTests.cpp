@@ -141,15 +141,15 @@ TEST_F(GameTests, saveAndLoad) {
     }
     Game game;
     Snake snake;
-    std::unique_ptr<Food> food = std::make_unique<Food>();
+    auto food = std::make_unique<Food>();
     food->setPosition({5, 5});
     std::pair<int, int> positionsRegularFood = food->getPosition();
     game.setRegularFood(std::move(food));
-    std::unique_ptr<Food> superFood = std::make_unique<SuperFood>();
-    dynamic_cast<SuperFood *>(superFood.get())->setEnabled(true);
-    superFood->setPosition({5, 5});
+    auto superFood = std::make_shared<SuperFood>();
+    superFood->setEnabled(true);
+    superFood->Food::setPosition({5, 5});
     std::pair<int, int> positionsSuperFood = superFood->getPosition();
-    game.setSuperFood(std::move(superFood));
+    game.setSuperFood(superFood);
     snake.setPositions({{5, 5}});
     validateDirectionSnake(snake, Direction::UP);
     game.setSnake(snake);
