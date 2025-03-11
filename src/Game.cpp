@@ -106,7 +106,7 @@ bool Game::logic() {
         foodsEaten++;
         changeVelocity();
         food->setPosition(this->size, snake.getPositions(), superFood->getPosition());
-        if (superFood->isEnabled()) {
+        if (!superFood->isEnabled()) {
             superFood->setPosition(size, snake.getPositions(), food->getPosition());
             if (superFood->isEnabled()) {
                 int biggerSide = size.first > size.second ? size.first : size.second;
