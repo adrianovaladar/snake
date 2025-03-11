@@ -31,7 +31,7 @@ class Game {
 private:
     std::pair<int, int> size;
     std::unique_ptr<Food> food;
-    std::unique_ptr<Food> superFood;
+    std::shared_ptr<SuperFood> superFood;
     Snake snake;
     BestScores bestScores;
     char symbol;
@@ -65,7 +65,7 @@ public:
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setRegularFood(std::unique_ptr<Food> f);
-    void setSuperFood(std::unique_ptr<Food> f);
+    void setSuperFood(const std::weak_ptr<SuperFood> &f);
     bool isEatRegularFood();
     bool isEatSuperFood();
     void run();
