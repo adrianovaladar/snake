@@ -1,44 +1,18 @@
 #include "Game.h"
+#include "Graphics.h"
 #include "Input.h"
-#include <logorithm/Logger.h>
 #include "Utils.h"
+#include <algorithm>
 #include <bits/stdc++.h>
 #include <chrono>
 #include <iostream>
+#include <logorithm/Logger.h>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000), kbHit(false) {
     food = std::make_unique<Food>();
     superFood = std::make_shared<SuperFood>();
-}
-
-void Game::printHorizontalFence() {
-    for (int i{}; i < size.first + 2; i++) {// +2 because of the first and the last elements
-        bufferScreen << symbol;
-    }
-    bufferScreen << std::endl;
-}
-
-void Game::printVerticalFenceAndPlayableArea(int j) {
-    bufferScreen << symbol;
-    std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
-    std::sort(snakePositions.begin(), snakePositions.end());
-    for (int i{}; i < size.first; i++) {
-        std::pair<int, int> pos = std::make_pair(i, j);
-        bool positionSnake = Utils::binarySearch(snakePositions, pos);
-        if (positionSnake)
-            bufferScreen << snake.getSymbol();
-        else if (food->getPosition() == pos)
-            bufferScreen << food->getSymbol();
-        else if (superFood->isEnabled() && superFood->getPosition() == pos)
-            bufferScreen << superFood->getSymbol();
-        else
-            bufferScreen << " ";
-    }
-    bufferScreen << symbol;
-    bufferScreen << std::endl;
 }
 
 bool Game::isGameOver() {
@@ -132,22 +106,6 @@ bool Game::logic() {
         bestScores.print(size, borders);
     }
     return false;
-}
-
-void Game::printToBufferScreen() {
-    bufferScreen.clear();
-    bufferScreen.str("");
-    bufferScreen << "Snake game" << std::endl;
-    printHorizontalFence();
-    for (int j{}; j < this->size.second; j++) {
-        printVerticalFenceAndPlayableArea(j);
-    }
-    printHorizontalFence();
-    bufferScreen << "Score: " << score << std::endl;
-    if (superFood->isEnabled())
-        bufferScreen << "Moves left for Super Food: " << superFood->getMovesLeft() << std::endl;
-    if (pause)
-        bufferScreen << "Game paused" << std::endl;
 }
 
 bool Game::isEatRegularFood() {
@@ -253,36 +211,8 @@ void Game::removeIfExists() {
     }
 }
 
-void Game::showMenu() const {
-    std::cout << std::endl
-              << "   _____             _                    " << std::endl
-              << "  / ____|           | |                                    " << std::endl
-              << " | (___  _ __   __ _| | _____    __ _  __ _ _ __ ___   ___ " << std::endl
-              << R"(  \___ \| '_ \ / _` | |/ / _ \  / _` |/ _` | '_ ` _ \ / _ \ )" << std::endl
-              << "  ____) | | | | (_| |   <  __/ | (_| | (_| | | | | | |  __/" << std::endl
-              << R"( |_____/|_| |_|\__,_|_|\_\___|  \__, |\__,_|_| |_| |_|\___|)" << std::endl
-              << "                                 __/ |" << std::endl
-              << "                                |___/" << std::endl
-              << std::endl
-              << "Info: map size " << size.first << "x" << size.second << ", borders " << Utils::Utils::boolToAlpha(borders) << std::endl;
-
-    if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
-        std::cout << "0 - Continue game" << std::endl;
-    }
-    std::cout << "1 - New game" << std::endl
-              << "2 - Best scores" << std::endl
-              << "3 - Settings" << std::endl
-              << "4 - Show keys and symbols" << std::endl
-              << "5 - About" << std::endl
-              << "9 - Exit" << std::endl
-              << "Insert option: ";
-}
-
 void Game::settings(std::istream &input, std::ostream &output) {
-    output << "Settings" << std::endl;
-    output << "If you want to keep a value, insert the same value as the current one" << std::endl;
-    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << " and maximum size is " << MAX_LENGTH << "x" << MAX_WIDTH << std::endl;
-    output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
+    Graphics::showSettings(output);
     std::pair<int, int> tmpSize{};
     do {
         output << "Length (current value is " << size.first << "): ";
@@ -326,12 +256,6 @@ void Game::updateBestScores() {
     bestScores.read();
 }
 
-void Game::about() {
-    std::cout << "About" << std::endl
-              << "2023 Snake game" << std::endl
-              << "Developed by Adriano Valadar and Rogério Lopes" << std::endl;
-}
-
 void Game::readSettings() {
     std::ifstream file(directoryName + "/" + settingsFileName, std::ios::binary);
     if (!file) {
@@ -362,35 +286,16 @@ void Game::play() {
     removeIfExists();
     Input::enableRawMode();
     while (!isGameOver()) {
-        printToBufferScreen();
+        graphics.printToBufferScreen(*this);
         std::this_thread::sleep_for(std::chrono::nanoseconds(velocity));
         Utils::clearScreen();
-        std::cout << bufferScreen.str();
+        std::cout << graphics.getBufferScreen().str();
         if (logic()) {
             save();
             Input::disableRawMode();
             break;
         }
     }
-}
-
-void Game::showKeysAndSymbols() {
-    std::cout << "Show keys and symbols" << std::endl
-              << "Keys:" << std::endl
-              << KEY_MOVE_UP << " - Move up" << std::endl
-              << KEY_MOVE_DOWN << " - Move down" << std::endl
-              << KEY_MOVE_LEFT << " - Move left" << std::endl
-              << KEY_MOVE_RIGHT << " - Move right" << std::endl
-              << KEY_PAUSE << " - Pause/Resume" << std::endl
-              << KEY_SAVE
-              << " - Save and go back to menu" << std::endl
-              << std::endl
-              << "Symbols:" << std::endl
-              << snake.getSymbol() << " - Snake" << std::endl
-              << food->getSymbol() << " - Regular food" << std::endl
-              << superFood->getSymbol() << " - Super food" << std::endl
-              << SYMBOL_BORDERS_OFF << " - Borders off" << std::endl
-              << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
 }
 
 void Game::updateGameFileName() {
@@ -410,7 +315,7 @@ void Game::run() {
     do {
         Utils::clearScreen();
         kbHit = false;
-        showMenu();
+        graphics.showMenu(*this);
         std::cin >> choice;
         switch (choice) {
             case '0': {
@@ -424,7 +329,8 @@ void Game::run() {
             case '1': {
                 if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
                     char option;
-                    std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. Do you want to proceed? Type a to accept, any other key to refuse ";
+                    std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. "
+                                 "Do you want to proceed? Type 'a' to accept, any other key to refuse ";
                     std::cin >> option;
                     if (tolower(option) != 'a') {
                         Utils::printExitScreen();
@@ -447,12 +353,12 @@ void Game::run() {
                 break;
             }
             case '4': {
-                showKeysAndSymbols();
+                graphics.showKeysAndSymbols(*this);
                 Utils::printExitScreen();
                 break;
             }
             case '5': {
-                about();
+                Graphics::about();
                 Utils::printExitScreen();
                 break;
             }

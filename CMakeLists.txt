@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)            # Enable c++23 standard
 set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} --coverage")
 
 # Add source files
-set(SOURCE_FILES src/main.cpp src/BestScores.h src/BestScores.cpp src/Game.h src/Game.cpp src/Input.h src/Input.cpp src/Player.h src/Player.cpp src/Snake.h src/Snake.cpp src/Food.cpp src/Food.h src/SuperFood.cpp src/SuperFood.h src/Utils.cpp src/Utils.h)
+set(SOURCE_FILES src/main.cpp src/BestScores.h src/BestScores.cpp src/Game.h src/Game.cpp src/Input.h src/Input.cpp src/Player.h src/Player.cpp src/Snake.h src/Snake.cpp src/Food.cpp src/Food.h src/SuperFood.cpp src/SuperFood.h src/Utils.cpp src/Utils.h src/Graphics.cpp src/Graphics.h)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(snake ${SOURCE_FILES})

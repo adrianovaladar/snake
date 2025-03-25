@@ -2,10 +2,11 @@
 #define SNAKE_MAP_H
 
 #include "BestScores.h"
+#include "Food.h"
+#include "Graphics.h"
 #include "Player.h"
 #include "Snake.h"
 #include "SuperFood.h"
-#include "Food.h"
 #include <memory>
 #include <sstream>
 
@@ -33,6 +34,7 @@ private:
     std::unique_ptr<Food> food;
     std::shared_ptr<SuperFood> superFood;
     Snake snake;
+    Graphics graphics;
     BestScores bestScores;
     char symbol;
     int score;
@@ -41,21 +43,14 @@ private:
     std::string gameFileName;
     bool pause;
     bool kbHit;
-    void printVerticalFenceAndPlayableArea(int y);
-    void printHorizontalFence();
     bool readKey();
-    void showMenu() const;
-    static void about();
     void updateBestScores();
     void play();
-    void showKeysAndSymbols();
     void removeIfExists();
     bool borders;
-    std::stringstream bufferScreen;
     int foodsEaten;
     int velocity;
     bool logic();
-    void printToBufferScreen();
     void changeVelocity();
 
 public:
@@ -81,6 +76,7 @@ public:
     void updateGameFileName();
     bool hasBorders() const;
     void setBorders(bool b);
+    friend class Graphics;
 };
 
 #endif//SNAKE_MAP_H
