@@ -329,7 +329,8 @@ void Game::run() {
             case '1': {
                 if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
                     char option;
-                    Graphics::confirmNewGame();
+                    std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. "
+                                 "Do you want to proceed? Type 'a' to accept, any other key to refuse ";
                     std::cin >> option;
                     if (tolower(option) != 'a') {
                         Utils::printExitScreen();

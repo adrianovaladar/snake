@@ -58,7 +58,7 @@ void Graphics::about() {
               << "Developed by Adriano Valadar and Rogério Lopes" << std::endl;
 }
 
-void Graphics::showKeysAndSymbols(const Game &game) const {
+void Graphics::showKeysAndSymbols(const Game &game) {
     std::cout << "Show keys and symbols" << std::endl
               << "Keys:" << std::endl
               << KEY_MOVE_UP << " - Move up" << std::endl
@@ -77,7 +77,7 @@ void Graphics::showKeysAndSymbols(const Game &game) const {
               << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
 }
 
-void Graphics::showMenu(const Game &game) const {
+void Graphics::showMenu(const Game &game) {
     std::cout << "  _____             _                    " << std::endl
               << " / ____|           | |                                    " << std::endl
               << "| (___  _ __   __ _| | _____    __ _  __ _ _ __ ___   ___ " << std::endl
@@ -106,9 +106,4 @@ void Graphics::showSettings(std::ostream &output) {
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
     output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << " and maximum size is " << MAX_LENGTH << "x" << MAX_WIDTH << std::endl;
     output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
-}
-
-void Graphics::confirmNewGame() {
-    std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. "
-                 "Do you want to proceed? Type 'a' to accept, any other key to refuse ";
 }

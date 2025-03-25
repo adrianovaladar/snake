@@ -14,10 +14,9 @@ public:
     void printToBufferScreen(const Game &game);
     const std::stringstream &getBufferScreen() const;
     static void about();
-    void showKeysAndSymbols(const Game &game) const;
-    void showMenu(const Game &game) const;
+    static void showKeysAndSymbols(const Game &game);
+    static void showMenu(const Game &game);
     static void showSettings(std::ostream &output);
-    static void confirmNewGame();
 };
 
 
