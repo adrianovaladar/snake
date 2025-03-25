@@ -61,20 +61,20 @@ void Graphics::about() {
 void Graphics::showKeysAndSymbols(const Game &game) {
     std::cout << "Show keys and symbols" << std::endl
               << "Keys:" << std::endl
-              << KEY_MOVE_UP << " - Move up" << std::endl
-              << KEY_MOVE_DOWN << " - Move down" << std::endl
-              << KEY_MOVE_LEFT << " - Move left" << std::endl
-              << KEY_MOVE_RIGHT << " - Move right" << std::endl
-              << KEY_PAUSE << " - Pause/Resume" << std::endl
-              << KEY_SAVE
+              << keyMoveUp << " - Move up" << std::endl
+              << keyMoveDown << " - Move down" << std::endl
+              << keyMoveLeft << " - Move left" << std::endl
+              << keyMoveRight << " - Move right" << std::endl
+              << keyPause << " - Pause/Resume" << std::endl
+              << keySave
               << " - Save and go back to menu" << std::endl
               << std::endl
               << "Symbols:" << std::endl
               << game.snake.getSymbol() << " - Snake" << std::endl
               << game.food->getSymbol() << " - Regular food" << std::endl
               << game.superFood->getSymbol() << " - Super food" << std::endl
-              << SYMBOL_BORDERS_OFF << " - Borders off" << std::endl
-              << SYMBOL_BORDERS_ON << " - Borders on" << std::endl;
+              << symbolBordersOff << " - Borders off" << std::endl
+              << symbolBordersOn << " - Borders on" << std::endl;
 }
 
 void Graphics::showMenu(const Game &game) {
@@ -104,6 +104,6 @@ void Graphics::showMenu(const Game &game) {
 void Graphics::showSettings(std::ostream &output) {
     output << "Settings" << std::endl;
     output << "If you want to keep a value, insert the same value as the current one" << std::endl;
-    output << "Minimum size of map is " << MIN_LENGTH << "x" << MIN_WIDTH << " and maximum size is " << MAX_LENGTH << "x" << MAX_WIDTH << std::endl;
-    output << "Default size of map is " << DEFAULT_LENGTH << "X" << DEFAULT_WIDTH << std::endl;
+    output << "Minimum size of map is " << minLength << "x" << minWidth << " and maximum size is " << maxLength << "x" << maxWidth << std::endl;
+    output << "Default size of map is " << defaultLength << "X" << defaultWidth << std::endl;
 }

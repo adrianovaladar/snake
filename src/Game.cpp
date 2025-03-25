@@ -10,21 +10,21 @@
 #include <string>
 #include <vector>
 
-Game::Game() : size(DEFAULT_LENGTH, DEFAULT_WIDTH), symbol(SYMBOL_BORDERS_ON), score(0), settingsFileName("settings"), directoryName("files"), pause(false), borders(true), foodsEaten(0), velocity(100000000), kbHit(false) {
+Game::Game() : size(defaultLength, defaultWidth), score(0), directoryName("files"), pause(false), kbHit(false), borders(true), foodsEaten(0), velocity(100000000) {
     food = std::make_unique<Food>();
     superFood = std::make_shared<SuperFood>();
+    settingsFileName = "settings";
+    symbol = symbolBordersOn;
 }
 
-bool Game::isGameOver() {
-    if (score == std::numeric_limits<int>::max())
-        return true;
-    std::vector<std::pair<int, int>> snakePositions = snake.getPositions();
-    bool selfCollision = std::count(snakePositions.begin(), snakePositions.end(), snake.getPositions().at(0)) > 1;
-    bool borderCollision{};
-    std::pair<int, int> positionHead = snake.getPositions().at(0);
-    if (borders && (positionHead.first < 0 || positionHead.second < 0 || positionHead.first > size.first - 1 || positionHead.second > size.second - 1))
-        borderCollision = true;
-    return selfCollision || borderCollision;
+bool Game::isGameOver() const {
+    if (score == std::numeric_limits<int>::max()) return true;
+    // check self collision
+    if (std::vector<std::pair<int, int>> snakePositions = snake.getPositions(); std::ranges::count(snakePositions, snake.getPositions().at(0)) > 1) return true;
+    if (!borders) return false;
+    // check border collision;
+    if (auto [headSnakeX, headSnakeY] = snake.getPositions().at(0); headSnakeX < 0 || headSnakeY < 0 || headSnakeX > size.first - 1 || headSnakeY > size.second - 1) return true;
+    return false;
 }
 
 void Game::start() {
@@ -33,8 +33,8 @@ void Game::start() {
     velocity = 100000000;
     snake.setDirection(Direction::RIGHT);
     snake.setPositions(size);
-    logger.log("Map size: " + std::to_string(size.first) + "," + std::to_string(size.second), LOGLEVEL::Info);
-    logger.log("Snake head position: " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
+    logger.log(std::format("Map size: {},{}", size.first, size.second), LOGLEVEL::Info);
+    logger.log(std::format("Snake head position: {} {}", snake.getPositions().front().first, snake.getPositions().front().second), LOGLEVEL::Info);
     food->setPosition(size, snake.getPositions(), superFood->getPosition());
     superFood->setEnabled(false);
 }
@@ -46,22 +46,23 @@ bool Game::readKey() {
             kbHit = true;
         c = getchar();
     }
-    if (tolower(c) == KEY_SAVE) {
+    if (tolower(c) == keySave) {
         return true;
     }
-    if (tolower(c) == KEY_PAUSE) {
+    if (tolower(c) == keyPause) {
         pause = !pause;
     }
     if (!pause) {
-        Direction d = Direction::NONE;
-        if (tolower(c) == KEY_MOVE_UP)
-            d = Direction::UP;
-        else if (tolower(c) == KEY_MOVE_LEFT)
-            d = Direction::LEFT;
-        else if (tolower(c) == KEY_MOVE_DOWN)
-            d = Direction::DOWN;
-        else if (tolower(c) == KEY_MOVE_RIGHT)
-            d = Direction::RIGHT;
+        using enum Direction;
+        auto d = NONE;
+        if (tolower(c) == keyMoveUp)
+            d = UP;
+        else if (tolower(c) == keyMoveLeft)
+            d = LEFT;
+        else if (tolower(c) == keyMoveDown)
+            d = DOWN;
+        else if (tolower(c) == keyMoveRight)
+            d = RIGHT;
         snake.validateDirection(d);
         snake.move(size, borders);
         if (superFood->isEnabled()) {
@@ -74,7 +75,7 @@ bool Game::readKey() {
 bool Game::logic() {
     if (readKey())
         return true;
-    if (isEatRegularFood()) {
+    if (isRegularFoodEaten()) {
         ++snake;
         score++;
         foodsEaten++;
@@ -83,12 +84,12 @@ bool Game::logic() {
         if (!superFood->isEnabled()) {
             superFood->setPosition(size, snake.getPositions(), food->getPosition());
             if (superFood->isEnabled()) {
-                int biggerSide = size.first > size.second ? size.first : size.second;
+                const int biggerSide = size.first > size.second ? size.first : size.second;
                 superFood->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
             }
         }
     }
-    if (isEatSuperFood()) {
+    if (isSuperFoodEaten()) {
         ++snake;
         score += 3;
         foodsEaten++;
@@ -97,7 +98,7 @@ bool Game::logic() {
         superFood->Food::setPosition({-1, -1});
     }
     if (isGameOver()) {
-        logger.log("Game over, snake head at " + std::to_string(snake.getPositions().front().first) + "," + std::to_string(snake.getPositions().front().second), LOGLEVEL::Info);
+        logger.log("Game over", LOGLEVEL::Info, {{"Snake Head x", std::to_string(snake.getPositions().front().first)}, {"Snake Head y", std::to_string(snake.getPositions().front().second)}});
         Input::disableRawMode();
         if (bestScores.isBestScore(score)) {
             kbHit = false;
@@ -108,17 +109,16 @@ bool Game::logic() {
     return false;
 }
 
-bool Game::isEatRegularFood() {
-    bool isEatFood = snake.getPositions().at(0) == food->getPosition();
-    return isEatFood;
+bool Game::isRegularFoodEaten() const {
+    return snake.getPositions().at(0) == food->getPosition();
 }
 
-bool Game::isEatSuperFood() {
+bool Game::isSuperFoodEaten() const {
     return superFood->isEnabled() && snake.getPositions().at(0) == superFood->getPosition();
 }
 
 void Game::setSnake(const Snake &s) {
-    Game::snake = s;
+    snake = s;
 }
 
 const std::pair<int, int> &Game::getSize() const {
@@ -134,7 +134,7 @@ void Game::setSuperFood(const std::weak_ptr<SuperFood> &f) {
 
 Game::~Game() = default;
 
-void Game::save() {
+void Game::save() const {
     std::ofstream file(directoryName + "/" + gameFileName, std::ios::binary);
     if (!file || !file.good()) {
         logger.log("Error opening file for writing", LOGLEVEL::Warning);
@@ -223,7 +223,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         input >> tmpSize.second;
         if (!Utils::validateInput())
             continue;
-    } while (tmpSize.first < MIN_LENGTH || tmpSize.second < MIN_WIDTH || tmpSize.first > MAX_LENGTH || tmpSize.second > MAX_WIDTH);
+    } while (tmpSize.first < minLength || tmpSize.second < minWidth || tmpSize.first > maxLength || tmpSize.second > maxWidth);
     bool changed{};
     if (tmpSize != size) {
         changed = true;
@@ -241,7 +241,7 @@ void Game::settings(std::istream &input, std::ostream &output) {
         if (status == !borders) {
             setBorders(!borders);
             output << "Borders are now set to " << Utils::boolToAlpha(borders);
-            symbol = borders ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
+            symbol = borders ? symbolBordersOn : symbolBordersOff;
             changed = true;
         }
     } while (status != 0 && status != 1);
@@ -264,7 +264,7 @@ void Game::readSettings() {
     }
     file.read(reinterpret_cast<char *>(&size), sizeof(size));
     file.read(reinterpret_cast<char *>(&borders), sizeof(borders));
-    symbol = borders ? SYMBOL_BORDERS_ON : SYMBOL_BORDERS_OFF;
+    symbol = borders ? symbolBordersOn : symbolBordersOff;
     file.close();
 }
 

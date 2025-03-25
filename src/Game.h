@@ -8,28 +8,26 @@
 #include "Snake.h"
 #include "SuperFood.h"
 #include <memory>
-#include <sstream>
 
-#define DEFAULT_LENGTH 80
-#define DEFAULT_WIDTH 20
+constexpr int defaultLength = 80;
+constexpr int defaultWidth = 20;
 
-#define MIN_LENGTH 10
-#define MIN_WIDTH 5
-#define MAX_LENGTH 1000
-#define MAX_WIDTH 1000
+constexpr int minLength = 10;
+constexpr int minWidth = 5;
+constexpr int maxLength = 1000;
+constexpr int maxWidth = 1000;
 
-#define KEY_MOVE_UP 'w'
-#define KEY_MOVE_LEFT 'a'
-#define KEY_MOVE_DOWN 's'
-#define KEY_MOVE_RIGHT 'd'
-#define KEY_PAUSE 'p'
-#define KEY_SAVE 'm'
+constexpr char keyMoveUp = 'w';
+constexpr char keyMoveLeft = 'a';
+constexpr char keyMoveDown = 's';
+constexpr char keyMoveRight = 'd';
+constexpr char keyPause = 'p';
+constexpr char keySave = 'm';
 
-#define SYMBOL_BORDERS_ON '#'
-#define SYMBOL_BORDERS_OFF '.'
+constexpr char symbolBordersOn = '#';
+constexpr char symbolBordersOff = '.';
 
-class Game {
-private:
+class Game final {
     std::pair<int, int> size;
     std::unique_ptr<Food> food;
     std::shared_ptr<SuperFood> superFood;
@@ -55,20 +53,20 @@ private:
 
 public:
     Game();
-    virtual ~Game();
-    bool isGameOver();
+    ~Game();
+    bool isGameOver() const;
     void setSnake(const Snake &s);
     [[nodiscard]] const std::pair<int, int> &getSize() const;
     void setRegularFood(std::unique_ptr<Food> f);
     void setSuperFood(const std::weak_ptr<SuperFood> &f);
-    bool isEatRegularFood();
-    bool isEatSuperFood();
+    bool isRegularFoodEaten() const;
+    bool isSuperFoodEaten() const;
     void run();
     void start();
     void settings(std::istream &input, std::ostream &output);
     void readSettings();
     void writeSettings() const;
-    void save();
+    void save() const;
     void load();
     [[nodiscard]] const Snake &getSnake() const;
     [[nodiscard]] const Food &getRegularFood() const;

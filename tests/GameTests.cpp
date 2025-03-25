@@ -62,7 +62,7 @@ TEST_F(GameTests, isEatFoodTrue) {
     game.setRegularFood(std::move(food));
     snake.setPositions({{5, 5}});
     game.setSnake(snake);
-    EXPECT_EQ(true, game.isEatRegularFood());
+    EXPECT_EQ(true, game.isRegularFoodEaten());
 }
 
 TEST_F(GameTests, isEatFoodFalse) {
@@ -73,7 +73,7 @@ TEST_F(GameTests, isEatFoodFalse) {
     game.setRegularFood(std::move(food));
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
-    EXPECT_EQ(false, game.isEatRegularFood());
+    EXPECT_EQ(false, game.isRegularFoodEaten());
 }
 
 TEST_F(GameTests, isSnakeInMap) {
@@ -91,7 +91,7 @@ TEST_F(GameTests, writeSettings) {
     game.writeSettings();
     std::ifstream file("settings", std::ios::binary);
     if (!file) {
-        std::pair<int, int> expectedPair{DEFAULT_LENGTH, DEFAULT_WIDTH};
+        std::pair<int, int> expectedPair{defaultLength, defaultWidth};
         EXPECT_EQ(expectedPair, game.getSize());
     } else {
         // Seek to the end of the file
@@ -121,7 +121,7 @@ TEST_F(GameTests, readSettings) {
     file.open(fileNameTest, std::ios::in);
     std::stringstream output;
     if (!file) {
-        std::pair<int, int> expectedSize{DEFAULT_LENGTH, DEFAULT_WIDTH};
+        std::pair<int, int> expectedSize{defaultLength, defaultWidth};
         EXPECT_EQ(expectedSize, game.getSize());
     } else {
         game.settings(file, output);
@@ -168,8 +168,8 @@ TEST_F(GameTests, saveAndLoad) {
         EXPECT_EQ(Direction::UP, snake.getDirection());
         EXPECT_EQ(positionsRegularFood, game2.getRegularFood().getPosition());
         EXPECT_EQ(positionsSuperFood, game2.getSuperFood().getPosition());
-        EXPECT_EQ(true, game2.isEatRegularFood());
-        EXPECT_EQ(true, game2.isEatSuperFood());
+        EXPECT_EQ(true, game2.isRegularFoodEaten());
+        EXPECT_EQ(true, game2.isSuperFoodEaten());
         EXPECT_EQ(false, game2.hasBorders());
         if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
             std::filesystem::remove_all(directoryName);// Remove the empty directory
