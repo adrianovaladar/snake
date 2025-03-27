@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 
+constexpr int regularFoodScore = 1;
+constexpr int superFoodScore = 3;
+
 Game::Game() : size(defaultLength, defaultWidth), score(0), directoryName("files"), pause(false), kbHit(false), borders(true), foodsEaten(0), velocity(100000000) {
     food = std::make_unique<Food>();
     superFood = std::make_shared<SuperFood>();
@@ -37,6 +40,7 @@ void Game::start() {
     logger.log(std::format("Snake head position: {} {}", snake.getPositions().front().first, snake.getPositions().front().second), LOGLEVEL::Info);
     food->setPosition(size, snake.getPositions(), superFood->getPosition());
     superFood->setEnabled(false);
+    pause = false;
 }
 
 bool Game::readKey() {
@@ -77,7 +81,7 @@ bool Game::logic() {
         return true;
     if (isRegularFoodEaten()) {
         ++snake;
-        score++;
+        score += regularFoodScore;
         foodsEaten++;
         changeVelocity();
         food->setPosition(this->size, snake.getPositions(), superFood->getPosition());
@@ -91,7 +95,7 @@ bool Game::logic() {
     }
     if (isSuperFoodEaten()) {
         ++snake;
-        score += 3;
+        score += superFoodScore;
         foodsEaten++;
         changeVelocity();
         superFood->setEnabled(false);
@@ -142,16 +146,16 @@ void Game::save() const {
     }
     file.write(reinterpret_cast<const char *>(&size), sizeof(size));
     file.write(reinterpret_cast<const char *>(&borders), sizeof(borders));
-    size_t positionsSize = snake.getPositions().size();
+    const size_t positionsSize = snake.getPositions().size();
     file.write(reinterpret_cast<const char *>(&positionsSize), sizeof(positionsSize));
     file.write(reinterpret_cast<const char *>(snake.getPositions().data()), static_cast<std::streamsize>(positionsSize * sizeof(std::pair<int, int>)));
-    Direction d = snake.getDirection();
+    const Direction d = snake.getDirection();
     file.write(reinterpret_cast<const char *>(&d), sizeof(d));
     file.write(reinterpret_cast<const char *>(&food->getPosition()), sizeof(food->getPosition()));
     file.write(reinterpret_cast<const char *>(&superFood->getPosition()), sizeof(superFood->getPosition()));
-    bool enabled = superFood->isEnabled();
+    const bool enabled = superFood->isEnabled();
     file.write(reinterpret_cast<const char *>(&enabled), sizeof(enabled));
-    int movesLeft = superFood->getMovesLeft();
+    const int movesLeft = superFood->getMovesLeft();
     file.write(reinterpret_cast<const char *>(&movesLeft), sizeof(movesLeft));
     file.write(reinterpret_cast<const char *>(&score), sizeof(score));
 
@@ -205,7 +209,7 @@ void Game::load() {
     pause = true;
 }
 
-void Game::removeIfExists() {
+void Game::removeIfExists() const {
     if (std::filesystem::exists(directoryName + "/" + gameFileName)) {
         std::filesystem::remove(directoryName + "/" + gameFileName);
     }
@@ -221,8 +225,6 @@ void Game::settings(std::istream &input, std::ostream &output) {
             continue;
         output << "Width (current value is " << size.second << "): ";
         input >> tmpSize.second;
-        if (!Utils::validateInput())
-            continue;
     } while (tmpSize.first < minLength || tmpSize.second < minWidth || tmpSize.first > maxLength || tmpSize.second > maxWidth);
     bool changed{};
     if (tmpSize != size) {
@@ -299,7 +301,18 @@ void Game::play() {
 }
 
 void Game::updateGameFileName() {
-    gameFileName = "game_" + std::to_string(size.first) + "_" + std::to_string(size.second) + "_" + Utils::boolToAlpha(borders);
+    gameFileName = std::format("game_{}_{}_{}", size.first, size.second, borders);
+}
+
+bool Game::confirmSaveOverwrite() const {
+    if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
+        char option;
+        std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. "
+                     "Do you want to proceed? Type 'a' to accept, any other key to refuse ";
+        std::cin >> option;
+        return tolower(option) == 'a';
+    }
+    return true;
 }
 
 void Game::run() {
@@ -315,7 +328,7 @@ void Game::run() {
     do {
         Utils::clearScreen();
         kbHit = false;
-        graphics.showMenu(*this);
+        Graphics::showMenu(*this);
         std::cin >> choice;
         switch (choice) {
             case '0': {
@@ -327,15 +340,9 @@ void Game::run() {
                 break;
             }
             case '1': {
-                if (std::filesystem::exists(directoryName + "/" + gameFileName) && !std::filesystem::is_directory(directoryName + "/" + gameFileName)) {
-                    char option;
-                    std::cout << "Warning: there is a game saved and it will be deleted if a new game is started. "
-                                 "Do you want to proceed? Type 'a' to accept, any other key to refuse ";
-                    std::cin >> option;
-                    if (tolower(option) != 'a') {
-                        Utils::printExitScreen();
-                        break;
-                    }
+                if (!confirmSaveOverwrite()) {
+                    Utils::printExitScreen();
+                    break;
                 }
                 start();
                 play();
@@ -353,7 +360,7 @@ void Game::run() {
                 break;
             }
             case '4': {
-                graphics.showKeysAndSymbols(*this);
+                Graphics::showKeysAndSymbols(*this);
                 Utils::printExitScreen();
                 break;
             }
@@ -390,22 +397,22 @@ const Food &Game::getSuperFood() const {
 bool Game::hasBorders() const {
     return borders;
 }
-void Game::setBorders(bool b) {
-    Game::borders = b;
+void Game::setBorders(const bool b) {
+    borders = b;
 }
 
 void Game::changeVelocity() {
     if (velocity < 20000000) return;
-    int transition = 10;
-    float exponentialIncrease = 1.01;
+    constexpr int transition = 10;
+    float exponentialIncrease = 1.01f;
     if (foodsEaten >= transition && foodsEaten < transition * 2) {
-        exponentialIncrease = 1.02;
+        exponentialIncrease = 1.02f;
     }
-    int linearIncrease = 10000;
     if (foodsEaten < transition) {
+        constexpr int linearIncrease = 10000;
         velocity -= linearIncrease;
     } else {
-        float tempVelocity = static_cast<float>(velocity) / exponentialIncrease;
+        const float tempVelocity = static_cast<float>(velocity) / exponentialIncrease;
         velocity = static_cast<int>(tempVelocity);
     }
 }

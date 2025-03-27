@@ -44,37 +44,39 @@ class Game final {
     bool readKey();
     void updateBestScores();
     void play();
-    void removeIfExists();
+    void removeIfExists() const;
     bool borders;
     int foodsEaten;
     int velocity;
     bool logic();
     void changeVelocity();
-
-public:
-    Game();
-    ~Game();
+    bool confirmSaveOverwrite() const;
     bool isGameOver() const;
-    void setSnake(const Snake &s);
-    [[nodiscard]] const std::pair<int, int> &getSize() const;
-    void setRegularFood(std::unique_ptr<Food> f);
-    void setSuperFood(const std::weak_ptr<SuperFood> &f);
     bool isRegularFoodEaten() const;
     bool isSuperFoodEaten() const;
-    void run();
-    void start();
     void settings(std::istream &input, std::ostream &output);
     void readSettings();
     void writeSettings() const;
     void save() const;
     void load();
+    void updateGameFileName();
+    bool hasBorders() const;
+    void start();
+
+public:
+    Game();
+    ~Game();
+    void setSnake(const Snake &s);
+    [[nodiscard]] const std::pair<int, int> &getSize() const;
+    void setRegularFood(std::unique_ptr<Food> f);
+    void setSuperFood(const std::weak_ptr<SuperFood> &f);
+    void run();
     [[nodiscard]] const Snake &getSnake() const;
     [[nodiscard]] const Food &getRegularFood() const;
     [[nodiscard]] const Food &getSuperFood() const;
-    void updateGameFileName();
-    bool hasBorders() const;
     void setBorders(bool b);
     friend class Graphics;
+    friend class GameTests;
 };
 
 #endif//SNAKE_MAP_H
