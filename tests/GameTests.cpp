@@ -5,110 +5,86 @@
 #include <fstream>
 
 TEST_F(GameTests, selfCollision) {
-    Game game;
-    Snake snake;
     snake.setPositions({{4, 4}, {4, 4}});
     game.setSnake(snake);
-    EXPECT_EQ(true, game.isGameOver());
+    EXPECT_EQ(true, isGameOver());
 }
 
 TEST_F(GameTests, fenceCollisionDown) {
-    Game game;
-    Snake snake;
     snake.setPositions({{game.getSize().first / 2, game.getSize().second}});
     game.setSnake(snake);
     game.setBorders(true);
-    EXPECT_EQ(true, game.isGameOver());
+    EXPECT_EQ(true, isGameOver());
 }
 
 TEST_F(GameTests, fenceCollisionUp) {
-    Game game;
-    Snake snake;
     snake.setPositions({{game.getSize().first / 2, -1}});
     game.setSnake(snake);
     game.setBorders(true);
-    EXPECT_EQ(true, game.isGameOver());
+    EXPECT_EQ(true, isGameOver());
 }
 
 TEST_F(GameTests, fenceCollisionLeft) {
-    Game game;
-    Snake snake;
     snake.setPositions({{-1, game.getSize().first / 2}});
     game.setSnake(snake);
     game.setBorders(true);
-    EXPECT_EQ(true, game.isGameOver());
+    EXPECT_EQ(true, isGameOver());
 }
 
 TEST_F(GameTests, fenceCollisionRight) {
-    Game game;
-    Snake snake;
     snake.setPositions({{game.getSize().first, game.getSize().second / 2}});
     game.setSnake(snake);
     game.setBorders(true);
-    EXPECT_EQ(true, game.isGameOver());
+    EXPECT_EQ(true, isGameOver());
 }
 
 TEST_F(GameTests, isNotGameOver) {
-    Game game;
-    game.start();
-    EXPECT_EQ(false, game.isGameOver());
+    start();
+    EXPECT_EQ(false, isGameOver());
 }
 
-TEST_F(GameTests, isEatFoodTrue) {
-    Game game;
-    Snake snake;
-    std::unique_ptr<Food> food = std::make_unique<Food>();
+TEST_F(GameTests, isFoodEatenTrue) {
+    auto food = std::make_unique<Food>();
     food->setPosition({5, 5});
     game.setRegularFood(std::move(food));
     snake.setPositions({{5, 5}});
     game.setSnake(snake);
-    EXPECT_EQ(true, game.isEatRegularFood());
+    EXPECT_EQ(true, isRegularFoodEaten());
 }
 
-TEST_F(GameTests, isEatFoodFalse) {
-    Game game;
-    Snake snake;
-    std::unique_ptr<Food> food = std::make_unique<Food>();
+TEST_F(GameTests, isFoodEatenFalse) {
+    auto food = std::make_unique<Food>();
     food->setPosition({5, 5});
     game.setRegularFood(std::move(food));
     snake.setPositions({{5, 4}});
     game.setSnake(snake);
-    EXPECT_EQ(false, game.isEatRegularFood());
+    EXPECT_EQ(false, isRegularFoodEaten());
 }
 
 TEST_F(GameTests, isSnakeInMap) {
-    Game game;
-    game.start();
-    Snake snake;
+    start();
     snake.setPositions(game.getSize());
-    for (auto position: snake.getPositions()) {
-        EXPECT_EQ(false, (position.first < 0 || position.second < 0 || position.first > game.getSize().first - 1 || position.second > game.getSize().second - 1));
+    for (auto [snakePositionX, snakePositionY]: snake.getPositions()) {
+        EXPECT_EQ(false, (snakePositionX < 0 || snakePositionY < 0 || snakePositionX > game.getSize().first - 1 || snakePositionY > game.getSize().second - 1));
     }
 }
 
 TEST_F(GameTests, writeSettings) {
-    Game game;
-    game.writeSettings();
-    std::ifstream file("settings", std::ios::binary);
-    if (!file) {
-        std::pair<int, int> expectedPair{DEFAULT_LENGTH, DEFAULT_WIDTH};
+    writeSettings();
+    if (std::ifstream file("settings", std::ios::binary); !file) {
+        std::pair expectedPair{defaultLength, defaultWidth};
         EXPECT_EQ(expectedPair, game.getSize());
     } else {
-        // Seek to the end of the file
         file.seekg(0, std::ios::end);
-        // Get the file size
         std::streampos fileSize = file.tellg();
-        // Close the file
         file.close();
-        // Determine the size of std::pair<int, int>
         std::size_t pairSize = sizeof(std::pair<int, int>);
         EXPECT_EQ(fileSize, pairSize);
     }
 }
 
 TEST_F(GameTests, readSettings) {
-    Game game;
-    game.writeSettings();
+    writeSettings();
     std::string fileNameTest = "test";
     std::ofstream myFile;
     myFile.open(fileNameTest, std::ios::out);
@@ -119,14 +95,14 @@ TEST_F(GameTests, readSettings) {
     ifs.open(fileNameTest, std::ios::out);
     std::ifstream file;
     file.open(fileNameTest, std::ios::in);
-    std::stringstream output;
     if (!file) {
-        std::pair<int, int> expectedSize{DEFAULT_LENGTH, DEFAULT_WIDTH};
+        std::pair expectedSize{defaultLength, defaultWidth};
         EXPECT_EQ(expectedSize, game.getSize());
     } else {
-        game.settings(file, output);
+        std::stringstream output;
+        settings(file, output);
         file.close();
-        game.readSettings();
+        readSettings();
         std::pair<int, int> expectedSize = {70, 70};
         EXPECT_EQ(expectedSize, game.getSize());
     }
@@ -139,8 +115,6 @@ TEST_F(GameTests, saveAndLoad) {
     if (!std::filesystem::exists(directoryName) && !std::filesystem::is_directory(directoryName)) {
         std::filesystem::create_directory(directoryName);
     }
-    Game game;
-    Snake snake;
     auto food = std::make_unique<Food>();
     food->setPosition({5, 5});
     std::pair<int, int> positionsRegularFood = food->getPosition();
@@ -154,23 +128,21 @@ TEST_F(GameTests, saveAndLoad) {
     validateDirectionSnake(snake, Direction::UP);
     game.setSnake(snake);
     game.setBorders(false);
-    game.updateGameFileName();
-    game.save();
-    Game game2;
+    updateGameFileName();
+    save();
     game2.setBorders(false);
-    game2.updateGameFileName();
-    game2.load();
-    std::ifstream file(fileString, std::ios::binary);
-    if (!file) {
+    updateGameFileName2();
+    load2();
+    if (std::ifstream file(fileString, std::ios::binary); !file) {
         EXPECT_EQ(1, game2.getSnake().getPositions().size());
     } else {
         EXPECT_EQ(snake.getPositions(), game2.getSnake().getPositions());
         EXPECT_EQ(Direction::UP, snake.getDirection());
         EXPECT_EQ(positionsRegularFood, game2.getRegularFood().getPosition());
         EXPECT_EQ(positionsSuperFood, game2.getSuperFood().getPosition());
-        EXPECT_EQ(true, game2.isEatRegularFood());
-        EXPECT_EQ(true, game2.isEatSuperFood());
-        EXPECT_EQ(false, game2.hasBorders());
+        EXPECT_EQ(true, isRegularFoodEaten2());
+        EXPECT_EQ(true, isSuperFoodEaten2());
+        EXPECT_EQ(false, hasBorders2());
         if (std::filesystem::exists(directoryName) && std::filesystem::is_directory(directoryName)) {
             std::filesystem::remove_all(directoryName);// Remove the empty directory
         }
