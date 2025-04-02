@@ -1,14 +1,17 @@
 #include "BestScores.h"
-#include <logorithm/Logger.h>
+#include <format>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <logorithm/Logger.h>
+
+BestScores::BestScores() = default;
 
 BestScores::~BestScores() = default;
 
-void BestScores::setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName, const bool &hasBorders) {
+void BestScores::setNameFile(const std::pair<int, int> &sizeGame, const std::string &directoryName, const bool &borders) {
     std::stringstream nf;
-    std::string b = (hasBorders) ? "on" : "off";
+    std::string b = borders ? "on" : "off";
     nf << directoryName << "/best_scores_" << sizeGame.first << "_" << sizeGame.second << "_" << b;
     this->nameFile = nf.str();
 }
@@ -23,7 +26,7 @@ void BestScores::read() {
     size_t playersSize;
     myFile.read(reinterpret_cast<char *>(&playersSize), sizeof(playersSize));
     if (playersSize > size) {
-        logger.log("Number of players in file is " + std::to_string(playersSize) + ", only " + std::to_string(size) + "will be read", LOGLEVEL::Warning);
+        logger.log(std::format("Number of players in file is {}, only {} will be read", playersSize, size), LOGLEVEL::Warning);
         playersSize = 5;
     }
     players.resize(playersSize);
@@ -38,7 +41,7 @@ void BestScores::read() {
         player.setScore(tempScore);
         player.setName(tempName);
     }
-    logger.log("Number of players read: " + std::to_string(playersSize), LOGLEVEL::Info);
+    logger.log(std::format("Number of players read: {}", playersSize), LOGLEVEL::Info);
     myFile.close();
 }
 
@@ -56,7 +59,7 @@ void BestScores::updateAndWrite(std::istream &input, std::ostream &output, int s
     if (name.empty()) {
         name = "guest";
     }
-    logger.log("New best score. Name: " + name + " Score: " + std::to_string(score), LOGLEVEL::Info);
+    logger.log(std::format("New best score. Name: {}, Score: {}", name, score), LOGLEVEL::Info);
     Player p{score, name.substr(0, 15)};
     std::ofstream myFile(nameFile, std::ios::binary);
     bool inserted = false;
@@ -95,11 +98,11 @@ bool BestScores::isBestScore(int score) {
     return false;
 }
 
-void BestScores::print(const std::pair<int, int> &sizeGame, const bool borders) {
+void BestScores::print(const std::pair<int, int> &sizeGame, bool borders) const {
     std::cout << std::endl;
     std::cout << std::setw(25) << "BEST SCORES " << sizeGame.first << "X" << sizeGame.second
               << std::endl;
-    std::string b = (borders) ? "ON" : "OFF";
+    std::string b = borders ? "ON" : "OFF";
     std::cout << std::setw(25) << "BORDERS " << b << std::endl
               << std::endl;
     if (players.empty()) {
