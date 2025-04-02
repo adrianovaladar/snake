@@ -1,6 +1,6 @@
 project(tests)
 
-add_executable(AllTests main.cpp SnakeTests.cpp ../src/Snake.cpp FoodTests.cpp FoodTests.h BestScoresTests.cpp ../src/BestScores.cpp ../src/Player.cpp GameTests.cpp ../src/Game.cpp ../src/Input.cpp ../src/Food.cpp ../src/Food.h ../src/SuperFood.cpp ../src/SuperFood.h ../src/Utils.cpp ../src/Utils.h SnakeTests.h GameTests.h ../src/Graphics.cpp ../src/Graphics.h)
+add_executable(AllTests main.cpp SnakeTests.cpp ../src/Snake.cpp FoodTests.cpp FoodTests.h BestScoresTests.cpp BestScoresTests.h ../src/BestScores.cpp ../src/Player.cpp GameTests.cpp ../src/Game.cpp ../src/Input.cpp ../src/Food.cpp ../src/Food.h ../src/SuperFood.cpp ../src/SuperFood.h ../src/Utils.cpp ../src/Utils.h SnakeTests.h GameTests.h ../src/Graphics.cpp ../src/Graphics.h)
 include(FetchContent)
 FetchContent_Declare(
         googletest
