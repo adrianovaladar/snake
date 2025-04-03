@@ -17,15 +17,10 @@ const std::string &Player::getName() const {
     return name;
 }
 
-std::istream &operator>>(std::istream &is, Player &p) {
-    is >> p.score >> p.name;
-    return is;
-}
-
 void Player::setScore(int s) {
     Player::score = s;
 }
 
-void Player::setName(const std::string &n) {
+void Player::setName(std::string_view n) {
     Player::name = n;
 }
