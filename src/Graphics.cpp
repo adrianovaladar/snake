@@ -54,7 +54,7 @@ const std::stringstream &Graphics::getBufferScreen() const {
 
 void Graphics::about() {
     std::cout << "About" << std::endl
-              << "2023 Snake game" << std::endl
+              << "2025 Snake game" << std::endl
               << "Developed by Adriano Valadar and Rogério Lopes" << std::endl;
 }
 
