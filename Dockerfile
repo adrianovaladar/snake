@@ -1,20 +1,31 @@
-FROM ubuntu:latest
+# Stage 1: Build
+FROM ubuntu:latest AS builder
+
 LABEL authors="the_snake_team"
 
-# Install CMake and build tools
 RUN apt-get update && \
     apt-get install -y \
         cmake \
         build-essential \
         git \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/*
 
-CMD ["/bin/bash"]
+WORKDIR /build
+
+COPY . .
+
+RUN cmake . && \
+    make
+
+# Stage 2: Runtime
+FROM ubuntu:latest
+
+LABEL authors="the_snake_team"
 
 WORKDIR /usr/src/app
 
-COPY . ./snake
+COPY --from=builder /build/snake .
 
-RUN cd snake && \
-    cmake . && \
-    make
+RUN mkdir -p /usr/src/app/files
+
+CMD ["./snake"]
