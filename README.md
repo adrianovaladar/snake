@@ -9,6 +9,8 @@
 The Snake game project is a classic and popular game implemented in C++23 specifically for Linux terminals. It offers a
 fun and engaging gaming experience directly within the terminal environment.
 
+## Installation
+
 To compile the project, navigate to the root directory and execute the following commands:
 
     $ cmake .
@@ -22,6 +24,35 @@ the following command:
 Ensure that the logged-in user has the necessary permissions (read, write, and execute) for the project directory. These
 permissions are crucial for the game's settings, best scores files, and the ability to save and load games. These files
 will be stored in the files' directory.
+
+### Another Approach: Dockerfile
+
+#### Build the docker image
+
+First, build the Docker image using the provided Dockerfile:
+
+    $ docker build -t snake .
+
+This command will create a Docker image tagged as snake.
+
+#### Run the game
+
+Once the image is built, run the game inside a Docker container:
+
+    $ docker run -it -v ~/snake_files:/usr/src/app/files -v ~/snake_files/logs:/usr/src/app/logs snake
+
+This command does the following:
+
+- -it: Runs the container interactively with a terminal;
+- -v ~/snake_files:/usr/src/app/files: Mounts the snake_files directory from your local machine (in your home directory)
+  to /usr/src/app/files inside the container.
+  This allows the game to save data like high scores and saved games to your local machine, ensuring persistence across
+  runs;
+- -v ~/snake_files/logs:/usr/src/app/logs snake: This allows the game to save logs that can be useful for debugging and
+  issue tracking;
+- snake: Specifies the Docker image to use.
+
+## Gameplay Features
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
 

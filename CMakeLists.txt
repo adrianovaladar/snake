@@ -20,5 +20,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(LOGorithm)
 target_link_libraries(snake PRIVATE LOGorithm)
 
-# Add tests
-add_subdirectory(tests)
+# Add tests - Only if BUILD_TESTS is enabled
+option(BUILD_TESTS "Build tests" OFF)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif ()
