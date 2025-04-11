@@ -27,6 +27,8 @@ will be stored in the files' directory.
 
 ### Another Approach: Dockerfile
 
+**💡 Note: The Docker build instructions below are written with Linux systems in mind.**
+
 #### Build the docker image
 
 First, build the Docker image using the provided Dockerfile:
