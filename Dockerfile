@@ -17,7 +17,7 @@ COPY . .
 RUN cmake . && \
     make
 
-# Stage 2: Runtime
+# Stage 2: Run
 FROM ubuntu:latest
 
 LABEL authors="the_snake_team"

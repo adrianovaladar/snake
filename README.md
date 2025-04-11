@@ -27,7 +27,7 @@ will be stored in the files' directory.
 
 ### Another Approach: Dockerfile
 
-**💡 Note: The Docker build instructions below are written with Linux systems in mind.**
+💡 Note: The Docker build instructions below are written with Linux systems in mind.
 
 #### Build the docker image
 
@@ -41,9 +41,7 @@ This command will create a Docker image tagged as snake.
 
 Once the image is built, run the game inside a Docker container:
 
-    $ docker run -it \
-    -v ~/snake_files:/usr/src/app/files \
-    snake
+    $ docker run -it -v ~/snake_files:/usr/src/app/files -v ~/snake_files/logs:/usr/src/app/logs snake
 
 This command does the following:
 
@@ -52,6 +50,8 @@ This command does the following:
   to /usr/src/app/files inside the container.
   This allows the game to save data like high scores and saved games to your local machine, ensuring persistence across
   runs;
+- -v ~/snake_files/logs:/usr/src/app/logs snake: This allows the game to save logs that can be useful for debugging and
+  issue tracking;
 - snake: Specifies the Docker image to use.
 
 ## Gameplay Features
