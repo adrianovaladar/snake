@@ -40,14 +40,16 @@ This command will create a Docker image tagged as snake.
 Once the image is built, run the game inside a Docker container:
 
     $ docker run -it \
-    -v $(pwd)/files:/usr/src/app/files \
+    -v ~/snake_files:/usr/src/app/files \
     snake
 
 This command does the following:
 
-- -it: Runs the container interactively with a terminal.;
-- -v $(pwd)/files:/usr/src/app/files: Mounts a local files folder (inside your project directory) to /usr/src/app/files
-  inside the container. This allows the game to save its data (like high scores and saved games) to your local machine;
+- -it: Runs the container interactively with a terminal;
+- -v ~/snake_files:/usr/src/app/files: Mounts the snake_files directory from your local machine (in your home directory)
+  to /usr/src/app/files inside the container.
+  This allows the game to save data like high scores and saved games to your local machine, ensuring persistence across
+  runs;
 - snake: Specifies the Docker image to use.
 
 ## Gameplay Features
