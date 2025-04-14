@@ -24,20 +24,20 @@ public:
     * This method configures the terminal to allow key presses to be detected
     * without requiring the user to press Enter.
     */
-    static void enableRawMode();
+    static void enableRawMode(bool mockMode = false);
 
     /**
     * @brief Disables raw keyboard input mode.
     *
     * Restores the terminal settings to their original state.
     */
-    static void disableRawMode();
+    static void disableRawMode(bool mockMode = false);
 
     /**
     * @brief Checks if a key has been pressed.
     * @return True if a key has been pressed, otherwise false.
     */
-    static bool kbHit();
+    static bool kbHit(bool mockMode = false, int character = 0);
 };
 
 #endif// SNAKE_INPUT_H

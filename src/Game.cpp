@@ -43,12 +43,13 @@ void Game::start() {
     pause = false;
 }
 
-bool Game::readKey() {
+bool Game::readKey(const bool mockMode, const int character) {
     int c{};
-    if (Input::kbHit()) {
+    if (Input::kbHit(mockMode, character)) {
         if (!kbHit)
             kbHit = true;
-        c = getchar();
+        if (mockMode) c = character;
+        else c = getchar();
     }
     if (tolower(c) == keySave) {
         return true;

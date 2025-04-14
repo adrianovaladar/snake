@@ -148,3 +148,12 @@ TEST_F(GameTests, saveAndLoad) {
         }
     }
 }
+
+TEST_F(GameTests, readSaveKey) {
+    ASSERT_EQ(readKey(true, 'm'), true);
+}
+
+TEST_F(GameTests, readPauseKey) {
+    ASSERT_EQ(readKey(true, 'p'), false);
+    ASSERT_EQ(game.getPause(), true);
+}
