@@ -148,3 +148,37 @@ TEST_F(GameTests, saveAndLoad) {
         }
     }
 }
+
+TEST_F(GameTests, readSaveKey) {
+    ASSERT_EQ(readKey(true, keySave), true);
+}
+
+TEST_F(GameTests, readPauseKey) {
+    ASSERT_EQ(readKey(true, keyPause), false);
+    ASSERT_EQ(game.getPause(), true);
+}
+
+TEST_F(GameTests, readUpKey) {
+    start();
+    ASSERT_EQ(readKey(true, keyMoveUp), false);
+    ASSERT_EQ(game.getSnake().getDirection(), Direction::UP);
+}
+
+TEST_F(GameTests, readRightKey) {
+    start();
+    ASSERT_EQ(readKey(true, keyMoveRight), false);
+    ASSERT_EQ(game.getSnake().getDirection(), Direction::RIGHT);
+}
+
+TEST_F(GameTests, readLeftKey) {
+    start();
+    ASSERT_EQ(readKey(true, keyMoveUp), false);
+    ASSERT_EQ(readKey(true, keyMoveLeft), false);
+    ASSERT_EQ(game.getSnake().getDirection(), Direction::LEFT);
+}
+
+TEST_F(GameTests, readDownKey) {
+    start();
+    ASSERT_EQ(readKey(true, keyMoveDown), false);
+    ASSERT_EQ(game.getSnake().getDirection(), Direction::DOWN);
+}

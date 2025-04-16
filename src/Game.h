@@ -75,7 +75,7 @@ class Game final {
      * @brief Reads a key press.
      * @return True if a key was read, false otherwise.
      */
-    bool readKey();
+    bool readKey(bool mockMode = false, int character = 0);
 
     /**
      * @brief Updates the best scores.
@@ -233,6 +233,12 @@ public:
      * @param b Boolean value indicating if borders should be enabled.
      */
     void setBorders(bool b);
+
+    /**
+     * @brief Checks if the game is currently paused.
+     * @return True if the game is paused, false otherwise.
+     */
+    [[nodiscard]] bool getPause() const { return pause; }
 
     friend class Graphics; ///< Grants Graphics class access to private members
     friend class GameTests; ///< Grants GameTests class access to private members

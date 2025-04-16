@@ -73,6 +73,10 @@ protected:
     bool hasBorders2() const {
         return game2.hasBorders();
     }
+
+    bool readKey(const bool mockMode, const int character) {
+        return game.readKey(mockMode, character);
+    }
 };
 
 #endif//SNAKE_GAMETESTS_H
