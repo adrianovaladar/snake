@@ -234,6 +234,10 @@ public:
      */
     void setBorders(bool b);
 
+    /**
+     * @brief Checks if the game is currently paused.
+     * @return True if the game is paused, false otherwise.
+     */
     [[nodiscard]] bool getPause() const { return pause; }
 
     friend class Graphics; ///< Grants Graphics class access to private members
