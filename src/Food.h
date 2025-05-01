@@ -12,14 +12,14 @@
  */
 class Food {
 protected:
-    std::pair<int, int> position;///< Position of the food on the map.
-    char symbol;                 ///< Symbol representing the food.
+    std::pair<int, int> position = std::make_pair(-1, -1);///< Position of the food on the map.
+    char symbol = 'f';                                    ///< Symbol representing the food.
 
 public:
     /**
      * @brief Constructs a Food object.
      */
-    explicit Food();
+    explicit Food() = default;
 
     /**
      * @brief Virtual destructor for Food.

@@ -4,8 +4,6 @@
 #include <random>
 #include <vector>
 
-Food::Food() : position(std::make_pair(-1, -1)), symbol('f') {}
-
 char Food::getSymbol() const {
     return symbol;
 }

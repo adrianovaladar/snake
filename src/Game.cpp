@@ -13,11 +13,9 @@
 constexpr int regularFoodScore = 1;
 constexpr int superFoodScore = 3;
 
-Game::Game() : size(defaultLength, defaultWidth), score(0), directoryName("files"), pause(false), kbHit(false), borders(true), foodsEaten(0), velocity(100000000) {
+Game::Game() : settingsFileName ("settings") {
     food = std::make_unique<Food>();
     superFood = std::make_shared<SuperFood>();
-    settingsFileName = "settings";
-    symbol = symbolBordersOn;
 }
 
 bool Game::isGameOver() const {
