@@ -33,3 +33,7 @@ void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std
 
     this->position = foodPosition;
 }
+
+void Food::setSymbol(const char s) {
+    symbol = s;
+}

@@ -11,7 +11,6 @@
  * @brief Represents a piece of food in the Snake game.
  */
 class Food {
-protected:
     std::pair<int, int> position = std::make_pair(-1, -1);///< Position of the food on the map.
     char symbol = 'f';                                    ///< Symbol representing the food.
 
@@ -51,6 +50,12 @@ public:
      * @param otherFoodPosition The position of another food item to avoid overlap.
      */
     virtual void setPosition(const std::pair<int, int> &sizeMap, const std::vector<std::pair<int, int>> &positionsSnake, const std::pair<int, int> &otherFoodPosition);
+protected:
+    /**
+     * @brief Sets the symbol representing the food.
+     * @param s The character symbol to represent the food.
+     */
+    void setSymbol(char s);
 };
 
 #endif // SNAKE_FOOD_H
