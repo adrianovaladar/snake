@@ -56,7 +56,7 @@ This command does the following:
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
 
-![image](https://github.com/adrianovaladar/snake/assets/60299267/1622bc1a-3fd7-4a9c-938b-ab42a0b6f1c3)
+![snake_image](https://github.com/user-attachments/assets/de70a62b-60d1-47bc-ad81-eccfe706591a)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
 increase its length and score by 1. Additionally, there are superfood items that provide 3 points when eaten.
