@@ -23,7 +23,7 @@ void Graphics::printVerticalFenceAndPlayableArea(const Game &game, int j) {
             bufferScreen << game.snake.getSymbol();
         else if (game.food->getPosition() == pos)
             bufferScreen << game.food->getSymbol();
-        else if (game.superFood->isEnabled() && game.superFood->getPosition() == pos)
+        else if (std::dynamic_pointer_cast<SuperFood>(game.superFood)->isEnabled() && game.superFood->getPosition() == pos)
             bufferScreen << game.superFood->getSymbol();
         else
             bufferScreen << " ";
@@ -42,8 +42,8 @@ void Graphics::printToBufferScreen(const Game &game) {
     }
     printHorizontalFence(game);
     bufferScreen << "Score: " << game.score << std::endl;
-    if (game.superFood->isEnabled())
-        bufferScreen << "Moves left for Super Food: " << game.superFood->getMovesLeft() << std::endl;
+    if (std::dynamic_pointer_cast<SuperFood>(game.superFood)->isEnabled())
+        bufferScreen << "Moves left for Super Food: " << std::dynamic_pointer_cast<SuperFood>(game.superFood)->getMovesLeft() << std::endl;
     if (game.pause)
         bufferScreen << "Game paused" << std::endl;
 }

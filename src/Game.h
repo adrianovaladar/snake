@@ -56,7 +56,7 @@ constexpr char symbolBordersOff = '.';
 class Game final {
     std::pair<int, int> size; ///< Dimensions of the game map
     std::unique_ptr<Food> food; ///< Pointer to the regular food object
-    std::shared_ptr<SuperFood> superFood; ///< Shared pointer to the super food object
+    std::shared_ptr<Food> superFood;///< Shared pointer to the super food object
     Snake snake; ///< The snake object representing the player
     Graphics graphics; ///< Handles game graphics rendering
     BestScores bestScores; ///< Manages the best scores in the game
