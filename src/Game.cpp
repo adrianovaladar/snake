@@ -13,7 +13,7 @@
 constexpr int regularFoodScore = 1;
 constexpr int superFoodScore = 3;
 
-Game::Game() : settingsFileName ("settings") {
+Game::Game() {
     food = std::make_unique<Food>();
     superFood = std::make_shared<SuperFood>();
 }

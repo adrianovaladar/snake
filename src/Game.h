@@ -62,7 +62,7 @@ class Game final {
     BestScores bestScores; ///< Manages the best scores in the game
     char symbol = symbolBordersOn; ///< Symbol representing game elements
     int score = 0; ///< Current game score
-    std::string settingsFileName; ///< Name of the settings file
+    std::string settingsFileName = "settings";///< Name of the settings file
     std::string directoryName = "files"; ///< Directory where game files are stored
     std::string gameFileName; ///< Name of the game save file
     bool pause = false; ///< Flag indicating if the game is paused
