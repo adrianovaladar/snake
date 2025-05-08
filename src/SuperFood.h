@@ -12,8 +12,8 @@
  * @brief Represents a special type of food with limited-time effects in the Snake game.
  */
 class SuperFood final : public Food {
-    bool enabled; ///< Indicates whether the SuperFood is active.
-    int movesLeft; ///< Number of moves left before the SuperFood disappears.
+    bool enabled = false; ///< Indicates whether the SuperFood is active.
+    int movesLeft = 0; ///< Number of moves left before the SuperFood disappears.
 
 public:
     /**
