@@ -13,11 +13,9 @@
 constexpr int regularFoodScore = 1;
 constexpr int superFoodScore = 3;
 
-Game::Game() : size(defaultLength, defaultWidth), score(0), directoryName("files"), pause(false), kbHit(false), borders(true), foodsEaten(0), velocity(100000000) {
+Game::Game() {
     food = std::make_unique<Food>();
     superFood = std::make_shared<SuperFood>();
-    settingsFileName = "settings";
-    symbol = symbolBordersOn;
 }
 
 bool Game::isGameOver() const {
@@ -39,7 +37,7 @@ void Game::start() {
     logger.log(std::format("Map size: {},{}", size.first, size.second), LOGLEVEL::Info);
     logger.log(std::format("Snake head position: {} {}", snake.getPositions().front().first, snake.getPositions().front().second), LOGLEVEL::Info);
     food->setPosition(size, snake.getPositions(), superFood->getPosition());
-    superFood->setEnabled(false);
+    std::dynamic_pointer_cast<SuperFood>(superFood)->setEnabled(false);
     pause = false;
 }
 
@@ -70,8 +68,8 @@ bool Game::readKey(const bool mockMode, const int character) {
             d = RIGHT;
         snake.validateDirection(d);
         snake.move(size, borders);
-        if (superFood->isEnabled()) {
-            superFood->decreaseMovesLeft();
+        if (std::dynamic_pointer_cast<SuperFood>(superFood)->isEnabled()) {
+            std::dynamic_pointer_cast<SuperFood>(superFood)->decreaseMovesLeft();
         }
     }
     return false;
@@ -86,11 +84,11 @@ bool Game::logic() {
         foodsEaten++;
         changeVelocity();
         food->setPosition(this->size, snake.getPositions(), superFood->getPosition());
-        if (!superFood->isEnabled()) {
+        if (!std::dynamic_pointer_cast<SuperFood>(superFood)->isEnabled()) {
             superFood->setPosition(size, snake.getPositions(), food->getPosition());
-            if (superFood->isEnabled()) {
+            if (std::dynamic_pointer_cast<SuperFood>(superFood)->isEnabled()) {
                 const int biggerSide = size.first > size.second ? size.first : size.second;
-                superFood->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
+                std::dynamic_pointer_cast<SuperFood>(superFood)->setMovesLeft(static_cast<int>(static_cast<float>(biggerSide) * 0.7f));
             }
         }
     }
@@ -99,7 +97,7 @@ bool Game::logic() {
         score += superFoodScore;
         foodsEaten++;
         changeVelocity();
-        superFood->setEnabled(false);
+        std::dynamic_pointer_cast<SuperFood>(superFood)->setEnabled(false);
         superFood->Food::setPosition({-1, -1});
     }
     if (isGameOver()) {
@@ -119,7 +117,7 @@ bool Game::isRegularFoodEaten() const {
 }
 
 bool Game::isSuperFoodEaten() const {
-    return superFood->isEnabled() && snake.getPositions().at(0) == superFood->getPosition();
+    return std::dynamic_pointer_cast<SuperFood>(superFood)->isEnabled() && snake.getPositions().at(0) == superFood->getPosition();
 }
 
 void Game::setSnake(const Snake &s) {
@@ -154,9 +152,9 @@ void Game::save() const {
     file.write(reinterpret_cast<const char *>(&d), sizeof(d));
     file.write(reinterpret_cast<const char *>(&food->getPosition()), sizeof(food->getPosition()));
     file.write(reinterpret_cast<const char *>(&superFood->getPosition()), sizeof(superFood->getPosition()));
-    const bool enabled = superFood->isEnabled();
+    const bool enabled = std::dynamic_pointer_cast<SuperFood>(superFood)->isEnabled();
     file.write(reinterpret_cast<const char *>(&enabled), sizeof(enabled));
-    const int movesLeft = superFood->getMovesLeft();
+    const int movesLeft = std::dynamic_pointer_cast<SuperFood>(superFood)->getMovesLeft();
     file.write(reinterpret_cast<const char *>(&movesLeft), sizeof(movesLeft));
     file.write(reinterpret_cast<const char *>(&score), sizeof(score));
 
@@ -201,10 +199,10 @@ void Game::load() {
     superFood->Food::setPosition(positionSuperFood);
     bool status;
     file.read(reinterpret_cast<char *>(&status), sizeof(status));
-    superFood->setEnabled(status);
+    std::dynamic_pointer_cast<SuperFood>(superFood)->setEnabled(status);
     int movesLeft;
     file.read(reinterpret_cast<char *>(&movesLeft), sizeof(movesLeft));
-    superFood->setMovesLeft(movesLeft);
+    std::dynamic_pointer_cast<SuperFood>(superFood)->setMovesLeft(movesLeft);
     file.read(reinterpret_cast<char *>(&score), sizeof(score));
     file.close();
     pause = true;

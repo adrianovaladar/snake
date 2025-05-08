@@ -6,7 +6,7 @@
 
 class Utils {
 public:
-    static void signalHandler(int signal);
+    [[noreturn]] static void signalHandler(int signal);
     static void printExitScreen();
     static std::string boolToAlpha(bool status);
     static bool validateInput();

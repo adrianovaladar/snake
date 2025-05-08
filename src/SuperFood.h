@@ -17,6 +17,13 @@ class SuperFood final : public Food {
 
 public:
     /**
+     * @brief Brings the base class overload of setPosition into scope.
+     *
+     * This allows the SuperFood class to use the base class's setPosition(const std::pair<int, int>&)
+     * in addition to its own overridden version with three parameters.
+     */
+    using Food::setPosition;
+    /**
      * @brief Constructs a SuperFood object.
      */
     explicit SuperFood();

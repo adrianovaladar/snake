@@ -1,3 +1,12 @@
+/**
+ * @file BestScores.h
+ * @brief Header file for the BestScores class which manages top scores in the Snake game.
+ *
+ * This file contains the declaration of the BestScores class, which handles
+ * reading, storing, and updating the highest scores achieved in the Snake game.
+ * The scores are persisted to a file and can be displayed based on game settings.
+ */
+
 #ifndef SNAKE_BESTSCORES_H
 #define SNAKE_BESTSCORES_H
 

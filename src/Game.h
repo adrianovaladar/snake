@@ -54,22 +54,22 @@ constexpr char symbolBordersOff = '.';
  * @brief Manages the game state and controls the game flow.
  */
 class Game final {
-    std::pair<int, int> size; ///< Dimensions of the game map
+    std::pair<int, int> size = std::pair(defaultLength, defaultWidth);; ///< Dimensions of the game map
     std::unique_ptr<Food> food; ///< Pointer to the regular food object
-    std::shared_ptr<SuperFood> superFood; ///< Shared pointer to the super food object
+    std::shared_ptr<Food> superFood; ///< Shared pointer to the super food object
     Snake snake; ///< The snake object representing the player
     Graphics graphics; ///< Handles game graphics rendering
     BestScores bestScores; ///< Manages the best scores in the game
-    char symbol; ///< Symbol representing game elements
-    int score; ///< Current game score
-    std::string settingsFileName; ///< Name of the settings file
-    std::string directoryName; ///< Directory where game files are stored
+    char symbol = symbolBordersOn; ///< Symbol representing game elements
+    int score = 0; ///< Current game score
+    std::string settingsFileName = "settings"; ///< Name of the settings file
+    std::string directoryName = "files"; ///< Directory where game files are stored
     std::string gameFileName; ///< Name of the game save file
-    bool pause; ///< Flag indicating if the game is paused
-    bool kbHit; ///< Flag for keyboard input detection
-    bool borders; ///< Flag indicating if borders are enabled
-    int foodsEaten; ///< Counter for eaten food
-    int velocity; ///< Speed of the snake movement
+    bool pause = false; ///< Flag indicating if the game is paused
+    bool kbHit = false; ///< Flag for keyboard input detection
+    bool borders = true; ///< Flag indicating if borders are enabled
+    int foodsEaten = 0; ///< Counter for eaten food
+    int velocity = 100000000; ///< Speed of the snake movement
 
     /**
      * @brief Reads a key press.

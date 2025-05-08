@@ -4,8 +4,6 @@
 #include <random>
 #include <vector>
 
-Food::Food() : position(std::make_pair(-1, -1)), symbol('f') {}
-
 char Food::getSymbol() const {
     return symbol;
 }
@@ -34,4 +32,8 @@ void Food::setPosition(const std::pair<int, int> &sizeMap, const std::vector<std
     } while (isSnakePosition || otherFoodPosition == foodPosition);
 
     this->position = foodPosition;
+}
+
+void Food::setSymbol(const char s) {
+    symbol = s;
 }

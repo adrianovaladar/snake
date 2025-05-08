@@ -4,7 +4,7 @@
 #include <algorithm>
 
 SuperFood::SuperFood() : enabled(false), movesLeft(0) {
-    this->symbol = 'F';
+    this->setSymbol('F');
 }
 
 void SuperFood::setMovesLeft(const int moves) {
@@ -15,7 +15,7 @@ void SuperFood::decreaseMovesLeft() {
     movesLeft--;
     if (movesLeft == 0) {
         enabled = false;
-        position = {-1, -1};
+        this->setPosition(std::make_pair(-1, -1));
     }
 }
 
@@ -23,8 +23,7 @@ void SuperFood::setPosition(const std::pair<int, int> &sizeMap, const std::vecto
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_real_distribution dis(0.0, 1.0);
-    double probability = 0.2;
-    if (dis(rng) <= probability) {
+    if (constexpr double probability = 0.2; dis(rng) <= probability) {
         Food::setPosition(sizeMap, positionsSnake, otherFoodPosition);
         enabled = true;
     }

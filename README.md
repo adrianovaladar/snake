@@ -56,7 +56,7 @@ This command does the following:
 
 Upon launching the game, a menu will be displayed, similar to the example image provided.
 
-![image](https://github.com/adrianovaladar/snake/assets/60299267/1622bc1a-3fd7-4a9c-938b-ab42a0b6f1c3)
+![snake_image](https://github.com/user-attachments/assets/de70a62b-60d1-47bc-ad81-eccfe706591a)
 
 The game features various elements to enhance gameplay. There are regular food items that the snake can consume to
 increase its length and score by 1. Additionally, there are superfood items that provide 3 points when eaten.
@@ -109,6 +109,12 @@ support for the project: [Snake game](https://adrianovaladar.itch.io/snake-game)
 The code includes a command to clear the terminal for a better gaming experience. If you have any important data or
 output in the current terminal session, it is recommended to open a new terminal window or to save your work before
 running the game to avoid unintended data loss.
+
+## Trello Boards
+Below are the boards documenting the completed work for the Snake project across versions 1.0, 2.0, and 2.1:
+- Version 2.1: https://trello.com/b/55YJ2rtQ/snake-21;
+- Version 2.0: https://trello.com/b/xpxblVbo/snake-20;
+- Version 1.0: https://trello.com/b/3CvG943P/snake-10.
 
 ## Creators
 
