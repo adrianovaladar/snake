@@ -11,8 +11,8 @@
  * @brief Represents a piece of food in the Snake game.
  */
 class Food {
-    std::pair<int, int> position = std::make_pair(-1, -1);///< Position of the food on the map.
-    char symbol = 'f';                                    ///< Symbol representing the food.
+    std::pair<int, int> position = std::make_pair(-1, -1); ///< Position of the food on the map.
+    char symbol = 'f'; ///< Symbol representing the food.
 
 public:
     /**

@@ -56,13 +56,13 @@ constexpr char symbolBordersOff = '.';
 class Game final {
     std::pair<int, int> size = std::pair(defaultLength, defaultWidth);; ///< Dimensions of the game map
     std::unique_ptr<Food> food; ///< Pointer to the regular food object
-    std::shared_ptr<Food> superFood;///< Shared pointer to the super food object
+    std::shared_ptr<Food> superFood; ///< Shared pointer to the super food object
     Snake snake; ///< The snake object representing the player
     Graphics graphics; ///< Handles game graphics rendering
     BestScores bestScores; ///< Manages the best scores in the game
     char symbol = symbolBordersOn; ///< Symbol representing game elements
     int score = 0; ///< Current game score
-    std::string settingsFileName = "settings";///< Name of the settings file
+    std::string settingsFileName = "settings"; ///< Name of the settings file
     std::string directoryName = "files"; ///< Directory where game files are stored
     std::string gameFileName; ///< Name of the game save file
     bool pause = false; ///< Flag indicating if the game is paused

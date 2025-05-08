@@ -38,7 +38,6 @@ void Game::start() {
     logger.log(std::format("Snake head position: {} {}", snake.getPositions().front().first, snake.getPositions().front().second), LOGLEVEL::Info);
     food->setPosition(size, snake.getPositions(), superFood->getPosition());
     std::dynamic_pointer_cast<SuperFood>(superFood)->setEnabled(false);
-
     pause = false;
 }
 
