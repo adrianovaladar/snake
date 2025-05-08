@@ -67,7 +67,7 @@ class Game final {
     std::string gameFileName; ///< Name of the game save file
     bool pause = false; ///< Flag indicating if the game is paused
     bool kbHit = false; ///< Flag for keyboard input detection
-    bool borders = false; ///< Flag indicating if borders are enabled
+    bool borders = true; ///< Flag indicating if borders are enabled
     int foodsEaten = 0; ///< Counter for eaten food
     int velocity = 100000000; ///< Speed of the snake movement
 
