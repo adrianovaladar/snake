@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 
-SuperFood::SuperFood() : enabled(false), movesLeft(0) {
+SuperFood::SuperFood() {
     this->setSymbol('F');
 }
 
