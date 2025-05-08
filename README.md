@@ -110,6 +110,12 @@ The code includes a command to clear the terminal for a better gaming experience
 output in the current terminal session, it is recommended to open a new terminal window or to save your work before
 running the game to avoid unintended data loss.
 
+## Trello Boards
+Below are the boards documenting the completed work for the Snake project across versions 1.0, 2.0, and 2.1:
+- Version 2.1: https://trello.com/b/55YJ2rtQ/snake-21;
+- Version 2.0: https://trello.com/b/xpxblVbo/snake-20;
+- Version 1.0: https://trello.com/b/3CvG943P/snake-10.
+
 ## Creators
 
 This project was created by [**Adriano Valadar**](https://github.com/adrianovaladar) and [**Rogério
